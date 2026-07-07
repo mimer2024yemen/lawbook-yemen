@@ -4,164 +4,172 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>لوبوك | المنصة القانونية اليمنية</title>
-<meta name="description" content="لوبوك - المنصة القانونية اليمنية الشاملة. بحث في القوانين اليمنية، عقود قانونية جاهزة، إجراءات التقاضي، واستشارات قانونية.">
-<meta name="keywords" content="قانون يمني, عقود قانونية, القوانين اليمنية, محامي يمني, استشارة قانونية, قانون الأحوال الشخصية, القانون المدني, القانون التجاري">
+<meta name="description" content="لوبوك - المنصة القانونية اليمنية الشاملة. بحث في القوانين اليمنية، عقود قانونية جاهزة، إجراءات التقاضي.">
 <meta property="og:title" content="لوبوك | المنصة القانونية اليمنية">
-<meta property="og:description" content="المنصة القانونية اليمنية الشاملة - بحث في القوانين والعقود والإجراءات">
+<meta property="og:description" content="المنصة القانونية اليمنية الشاملة">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://mimer2024yemen.github.io/lawbook-yemen/">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e40af'/><text x='50' y='70' text-anchor='middle' font-size='60' fill='white' font-weight='bold'>⚖</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23f59e0b' font-weight='bold'>LB</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ═══════════════════════════════════════════
+   Design Tokens
+   ═══════════════════════════════════════════ */
 :root {
-  --primary: #1e40af;
-  --primary-light: #3b82f6;
-  --primary-dark: #1e3a8a;
-  --secondary: #0f172a;
-  --accent: #f59e0b;
-  --accent-light: #fbbf24;
-  --bg: #f8fafc;
-  --bg-dark: #0f172a;
-  --card: #ffffff;
-  --text: #1e293b;
-  --text-light: #64748b;
-  --text-white: #f1f5f9;
-  --border: #e2e8f0;
-  --success: #22c55e;
+  --font: 'IBM Plex Sans Arabic', -apple-system, sans-serif;
+  --navy: #0c1a3a;
+  --navy-light: #132044;
+  --blue: #1e40af;
+  --blue-light: #3b82f6;
   --gold: #d4a843;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'Tajawal', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.7;
+  --gold-light: #f5c563;
+  --bg: #f4f6fa;
+  --card: #ffffff;
+  --text: #1a1f2e;
+  --text-2: #5a6178;
+  --text-3: #8b92a5;
+  --border: #e5e8f0;
+  --border-2: #d0d4de;
+  --green: #16a34a;
+  --red: #dc2626;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.07);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.1);
+  --radius: 12px;
+  --radius-lg: 16px;
 }
 
 /* ═══════════════════════════════════════════
-   Header & Navigation
+   Reset & Base
    ═══════════════════════════════════════════ */
-.header {
-  background: linear-gradient(135deg, var(--secondary) 0%, var(--primary-dark) 100%);
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══════════════════════════════════════════
+   Navbar
+   ═══════════════════════════════════════════ */
+.navbar {
+  background: var(--navy);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  border-bottom: 3px solid var(--gold);
 }
 
-.nav {
-  max-width: 1300px;
+.navbar-inner {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 70px;
+  height: 64px;
 }
 
-.logo {
+.brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   text-decoration: none;
   color: white;
 }
 
-.logo-icon {
-  width: 45px;
-  height: 45px;
-  background: linear-gradient(135deg, var(--accent), var(--gold));
-  border-radius: 12px;
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  box-shadow: 0 4px 15px rgba(245,158,11,0.3);
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--navy);
 }
 
-.logo-text {
-  font-size: 24px;
-  font-weight: 800;
+.brand-name {
+  font-size: 22px;
+  font-weight: 700;
   letter-spacing: -0.5px;
 }
 
-.logo-sub {
-  font-size: 11px;
-  color: var(--accent-light);
+.brand-tag {
+  font-size: 10px;
+  color: var(--gold);
   font-weight: 500;
+  display: block;
+  margin-top: -2px;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .nav-link {
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.7);
   text-decoration: none;
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.nav-link:hover, .nav-link.active {
-  color: white;
-  background: rgba(255,255,255,0.1);
-}
-
-.nav-link i { margin-left: 6px; }
+.nav-link:hover { color: white; background: rgba(255,255,255,0.08); }
+.nav-link.active { color: var(--gold); background: rgba(212,168,67,0.1); }
 
 .nav-cta {
-  background: linear-gradient(135deg, var(--accent), var(--gold));
-  color: var(--secondary) !important;
-  font-weight: 700 !important;
-  padding: 10px 20px !important;
+  background: var(--gold) !important;
+  color: var(--navy) !important;
+  font-weight: 600 !important;
 }
 
-.nav-cta:hover {
-  box-shadow: 0 4px 15px rgba(245,158,11,0.4);
-  transform: translateY(-1px);
-}
+.nav-cta:hover { background: var(--gold-light) !important; }
 
-.menu-btn {
+.menu-toggle {
   display: none;
   background: none;
   border: none;
   color: white;
-  font-size: 24px;
+  font-size: 22px;
   cursor: pointer;
+  padding: 4px;
 }
 
 /* ═══════════════════════════════════════════
-   Hero Section
+   Hero
    ═══════════════════════════════════════════ */
 .hero {
-  background: linear-gradient(135deg, var(--secondary) 0%, var(--primary-dark) 50%, var(--primary) 100%);
-  padding: 80px 24px;
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-light) 40%, var(--blue) 100%);
+  padding: 70px 20px 60px;
   text-align: center;
   position: relative;
   overflow: hidden;
 }
 
-.hero::before {
+.hero::after {
   content: '';
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
-  bottom: 0;
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  opacity: 0.5;
+  height: 60px;
+  background: linear-gradient(transparent, var(--bg));
 }
 
 .hero-content {
-  max-width: 800px;
+  max-width: 700px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -170,161 +178,212 @@ body {
 .hero-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: rgba(245,158,11,0.15);
-  border: 1px solid rgba(245,158,11,0.3);
-  color: var(--accent-light);
-  padding: 8px 20px;
+  gap: 6px;
+  background: rgba(212,168,67,0.12);
+  border: 1px solid rgba(212,168,67,0.25);
+  color: var(--gold-light);
+  padding: 6px 16px;
   border-radius: 50px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .hero h1 {
-  font-size: 3.5rem;
-  font-weight: 900;
+  font-size: 2.8rem;
+  font-weight: 700;
   color: white;
-  margin-bottom: 20px;
-  line-height: 1.2;
+  margin-bottom: 14px;
+  line-height: 1.3;
 }
 
-.hero h1 span {
-  background: linear-gradient(135deg, var(--accent), var(--accent-light));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.hero h1 em {
+  font-style: normal;
+  color: var(--gold);
 }
 
 .hero p {
-  font-size: 18px;
-  color: rgba(255,255,255,0.7);
-  max-width: 600px;
-  margin: 0 auto 32px;
+  font-size: 16px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 30px;
   line-height: 1.8;
 }
 
-.hero-search {
-  max-width: 600px;
+/* Search */
+.search-wrap {
+  max-width: 560px;
   margin: 0 auto;
   position: relative;
 }
 
-.hero-search input {
+.search-input {
   width: 100%;
-  padding: 18px 60px 18px 24px;
-  border-radius: 16px;
+  padding: 16px 56px 16px 20px;
+  border-radius: var(--radius);
   border: 2px solid rgba(255,255,255,0.1);
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.07);
   color: white;
-  font-size: 16px;
-  font-family: inherit;
+  font-size: 15px;
+  font-family: var(--font);
   outline: none;
-  transition: all 0.3s;
+  transition: all 0.2s;
+  direction: rtl;
 }
 
-.hero-search input::placeholder { color: rgba(255,255,255,0.4); }
-.hero-search input:focus {
-  border-color: var(--accent);
-  background: rgba(255,255,255,0.15);
-  box-shadow: 0 0 30px rgba(245,158,11,0.2);
+.search-input::placeholder { color: rgba(255,255,255,0.35); }
+.search-input:focus {
+  border-color: var(--gold);
+  background: rgba(255,255,255,0.1);
+  box-shadow: 0 0 0 3px rgba(212,168,67,0.15);
 }
 
-.hero-search button {
+.search-btn {
   position: absolute;
   left: 6px;
   top: 50%;
   transform: translateY(-50%);
-  background: linear-gradient(135deg, var(--accent), var(--gold));
+  background: var(--gold);
   border: none;
-  border-radius: 12px;
-  padding: 12px 20px;
-  color: var(--secondary);
-  font-size: 18px;
+  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
+  color: var(--navy);
+  font-size: 18px;
 }
 
-.hero-search button:hover {
-  box-shadow: 0 4px 15px rgba(245,158,11,0.4);
+.search-btn:hover { background: var(--gold-light); }
+
+/* Search Results Dropdown */
+.search-results {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 50;
+  text-align: right;
 }
 
+.search-results.show { display: block; }
+
+.search-result-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.search-result-item:hover { background: var(--bg); }
+.search-result-item:last-child { border-bottom: none; }
+
+.result-type {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.result-type.law { background: rgba(30,64,175,0.08); color: var(--blue); }
+.result-type.contract { background: rgba(212,168,67,0.1); color: var(--gold); }
+.result-type.post { background: rgba(22,163,74,0.08); color: var(--green); }
+
+.result-title { font-size: 14px; font-weight: 500; }
+.result-empty { padding: 20px; text-align: center; color: var(--text-3); font-size: 14px; }
+
+/* Stats */
 .hero-stats {
   display: flex;
   justify-content: center;
-  gap: 40px;
-  margin-top: 40px;
-}
-
-.hero-stat {
-  text-align: center;
+  gap: 32px;
+  margin-top: 36px;
 }
 
 .hero-stat-num {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--accent);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--gold);
 }
 
 .hero-stat-label {
-  font-size: 14px;
-  color: rgba(255,255,255,0.6);
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
 }
 
 /* ═══════════════════════════════════════════
    Sections
    ═══════════════════════════════════════════ */
-.section {
-  max-width: 1300px;
+.container {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 60px 24px;
+  padding: 0 20px;
 }
 
-.section-header {
+.section {
+  padding: 50px 0;
+}
+
+.section-head {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 32px;
 }
 
-.section-badge {
+.section-label {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(30,64,175,0.08);
-  color: var(--primary);
-  padding: 6px 16px;
+  background: rgba(30,64,175,0.06);
+  color: var(--blue);
+  padding: 5px 14px;
   border-radius: 50px;
   font-size: 13px;
   font-weight: 600;
-  margin-bottom: 12px;
-}
-
-.section-title {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--text);
   margin-bottom: 10px;
 }
 
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
 .section-desc {
-  color: var(--text-light);
-  font-size: 16px;
-  max-width: 600px;
+  color: var(--text-2);
+  font-size: 15px;
+  max-width: 550px;
   margin: 0 auto;
 }
 
 /* Cards Grid */
-.cards-grid {
+.grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  gap: 16px;
 }
 
 .card {
   background: var(--card);
-  border-radius: 16px;
-  padding: 24px;
+  border-radius: var(--radius);
+  padding: 20px;
   border: 1px solid var(--border);
-  transition: all 0.3s;
+  transition: all 0.2s;
   cursor: pointer;
   text-decoration: none;
   color: var(--text);
@@ -332,38 +391,37 @@ body {
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
-  border-color: var(--primary-light);
+  border-color: var(--blue-light);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .card-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  margin-bottom: 16px;
+  font-size: 20px;
+  margin-bottom: 14px;
 }
 
-.card-icon.blue { background: rgba(30,64,175,0.08); color: var(--primary); }
-.card-icon.green { background: rgba(34,197,94,0.08); color: var(--success); }
-.card-icon.amber { background: rgba(245,158,11,0.08); color: var(--accent); }
-.card-icon.purple { background: rgba(139,92,246,0.08); color: #8b5cf6; }
-.card-icon.red { background: rgba(239,68,68,0.08); color: #ef4444; }
-.card-icon.cyan { background: rgba(6,182,212,0.08); color: #06b6d4; }
+.card-icon.navy { background: rgba(12,26,58,0.06); color: var(--navy); }
+.card-icon.blue { background: rgba(30,64,175,0.06); color: var(--blue); }
+.card-icon.gold { background: rgba(212,168,67,0.08); color: var(--gold); }
+.card-icon.green { background: rgba(22,163,74,0.06); color: var(--green); }
+.card-icon.red { background: rgba(220,38,38,0.06); color: var(--red); }
 
 .card h3 {
-  font-size: 17px;
-  font-weight: 700;
-  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
 }
 
 .card p {
-  font-size: 14px;
-  color: var(--text-light);
+  font-size: 13px;
+  color: var(--text-2);
   line-height: 1.6;
 }
 
@@ -371,165 +429,114 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: 14px;
+  padding-top: 14px;
   border-top: 1px solid var(--border);
-}
-
-.card-count {
   font-size: 13px;
-  color: var(--text-light);
+  color: var(--text-3);
 }
 
-.card-arrow {
-  color: var(--primary-light);
-  font-size: 18px;
-}
+.card-arrow { color: var(--blue-light); font-weight: 600; }
 
-/* Laws List */
-.laws-list {
+/* Contract Cards */
+.contract-grid {
   display: grid;
-  gap: 12px;
-}
-
-.law-item {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 16px 20px;
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  transition: all 0.2s;
-  cursor: pointer;
-  text-decoration: none;
-  color: var(--text);
-}
-
-.law-item:hover {
-  border-color: var(--primary-light);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-
-.law-icon {
-  width: 45px;
-  height: 45px;
-  border-radius: 10px;
-  background: rgba(30,64,175,0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--primary);
-  font-size: 20px;
-  flex-shrink: 0;
-}
-
-.law-info { flex: 1; }
-.law-info h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-.law-info p { font-size: 13px; color: var(--text-light); }
-
-.law-badge {
-  background: rgba(30,64,175,0.08);
-  color: var(--primary);
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-
-/* Contracts Grid */
-.contracts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
 }
 
 .contract-card {
   background: var(--card);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: var(--radius);
+  padding: 18px;
   border: 1px solid var(--border);
   transition: all 0.2s;
   cursor: pointer;
   text-decoration: none;
   color: var(--text);
+  display: block;
 }
 
 .contract-card:hover {
-  border-color: var(--accent);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+  border-color: var(--gold);
+  box-shadow: var(--shadow-md);
 }
 
 .contract-card h4 {
   font-size: 15px;
   font-weight: 600;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  margin-bottom: 6px;
 }
 
 .contract-card p {
-  font-size: 13px;
-  color: var(--text-light);
+  font-size: 12px;
+  color: var(--text-2);
   line-height: 1.6;
 }
 
-/* ═══════════════════════════════════════════
-   Features Section
-   ═══════════════════════════════════════════ */
-.features {
-  background: linear-gradient(135deg, var(--secondary) 0%, var(--primary-dark) 100%);
-  padding: 80px 24px;
-  margin: 60px 0;
+.contract-card .meta {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* Features */
+.features-section {
+  background: var(--navy);
+  padding: 60px 20px;
+  margin: 40px 0;
 }
 
 .features-grid {
-  max-width: 1300px;
+  max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
 }
 
 .feature {
   text-align: center;
-  padding: 30px;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  transition: all 0.3s;
+  padding: 28px 20px;
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: all 0.2s;
 }
 
 .feature:hover {
-  background: rgba(255,255,255,0.08);
-  transform: translateY(-4px);
+  background: rgba(255,255,255,0.07);
+  transform: translateY(-2px);
 }
 
 .feature-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, var(--accent), var(--gold));
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  color: var(--secondary);
-  margin: 0 auto 20px;
+  font-size: 24px;
+  color: var(--navy);
+  margin: 0 auto 16px;
 }
 
 .feature h3 {
   color: white;
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
 .feature p {
-  color: rgba(255,255,255,0.6);
-  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
   line-height: 1.7;
 }
 
@@ -537,300 +544,232 @@ body {
    Footer
    ═══════════════════════════════════════════ */
 .footer {
-  background: var(--secondary);
-  color: rgba(255,255,255,0.7);
-  padding: 60px 24px 30px;
+  background: var(--navy);
+  color: rgba(255,255,255,0.6);
+  padding: 50px 20px 24px;
 }
 
 .footer-grid {
-  max-width: 1300px;
+  max-width: 1200px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 40px;
-  margin-bottom: 40px;
+  gap: 32px;
+  margin-bottom: 32px;
 }
 
 .footer-col h4 {
   color: white;
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 14px;
 }
 
 .footer-col a {
   display: block;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255,255,255,0.5);
   text-decoration: none;
-  padding: 4px 0;
-  font-size: 14px;
-  transition: color 0.2s;
+  padding: 3px 0;
+  font-size: 13px;
+  transition: color 0.15s;
 }
 
-.footer-col a:hover { color: var(--accent); }
+.footer-col a:hover { color: var(--gold); }
 
 .footer-bottom {
-  max-width: 1300px;
+  max-width: 1200px;
   margin: 0 auto;
   padding-top: 20px;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(255,255,255,0.08);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .footer-social {
   display: flex;
-  gap: 12px;
+  gap: 8px;
 }
 
 .footer-social a {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 8px;
   background: rgba(255,255,255,0.05);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255,255,255,0.6);
-  transition: all 0.2s;
-}
-
-.footer-social a:hover {
-  background: var(--accent);
-  color: var(--secondary);
-}
-
-/* ═══════════════════════════════════════════
-   Search Results
-   ═══════════════════════════════════════════ */
-#searchResults {
-  display: none;
-  max-width: 600px;
-  margin: 0 auto;
-  background: var(--card);
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-  overflow: hidden;
-  position: relative;
-  z-index: 10;
-}
-
-.search-result-item {
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  transition: background 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.search-result-item:hover { background: var(--bg); }
-.search-result-item:last-child { border-bottom: none; }
-
-.search-result-type {
-  padding: 2px 8px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.search-result-type.law { background: rgba(30,64,175,0.1); color: var(--primary); }
-.search-result-type.contract { background: rgba(245,158,11,0.1); color: var(--accent); }
-.search-result-type.post { background: rgba(139,92,246,0.1); color: #8b5cf6; }
-
-.search-result-title {
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  transition: all 0.15s;
   font-size: 14px;
-  font-weight: 500;
 }
+
+.footer-social a:hover { background: var(--gold); color: var(--navy); }
 
 /* ═══════════════════════════════════════════
    Responsive
    ═══════════════════════════════════════════ */
 @media (max-width: 768px) {
-  .menu-btn { display: block; }
+  .menu-toggle { display: block; }
   .nav-links {
     display: none;
     position: absolute;
-    top: 70px;
+    top: 64px;
     left: 0;
     right: 0;
-    background: var(--secondary);
+    background: var(--navy);
     flex-direction: column;
-    padding: 20px;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 16px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    gap: 4px;
   }
   .nav-links.open { display: flex; }
-  .hero h1 { font-size: 2rem; }
-  .hero-stats { gap: 20px; }
-  .hero-stat-num { font-size: 1.5rem; }
-  .section-title { font-size: 1.5rem; }
-  .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+  .hero h1 { font-size: 1.8rem; }
+  .hero-stats { gap: 16px; flex-wrap: wrap; }
+  .hero-stat-num { font-size: 1.4rem; }
+  .section-title { font-size: 1.4rem; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
 }
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<header class="header">
-  <nav class="nav">
-    <a href="#" class="logo">
-      <div class="logo-icon">⚖</div>
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="#" class="brand">
+      <div class="brand-icon">LB</div>
       <div>
-        <div class="logo-text">لوبوك</div>
-        <div class="logo-sub">المنصة القانونية اليمنية</div>
+        <div class="brand-name">لوبوك</div>
+        <span class="brand-tag">المنصة القانونية اليمنية</span>
       </div>
     </a>
     <div class="nav-links" id="navLinks">
-      <a href="#laws" class="nav-link active"><i class="fas fa-gavel"></i> القوانين</a>
-      <a href="#contracts" class="nav-link"><i class="fas fa-file-contract"></i> العقود</a>
-      <a href="#procedures" class="nav-link"><i class="fas fa-tasks"></i> الإجراءات</a>
-      <a href="#articles" class="nav-link"><i class="fas fa-newspaper"></i> المقالات</a>
-      <a href="#contact" class="nav-link nav-cta"><i class="fas fa-headset"></i> استشارة قانونية</a>
+      <a href="#laws" class="nav-link active">القوانين</a>
+      <a href="#contracts" class="nav-link">العقود</a>
+      <a href="#procedures" class="nav-link">الإجراءات</a>
+      <a href="#articles" class="nav-link">المقالات</a>
+      <a href="#contact" class="nav-link nav-cta">استشارة قانونية</a>
     </div>
-    <button class="menu-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">
-      <i class="fas fa-bars"></i>
-    </button>
-  </nav>
-</header>
+    <button class="menu-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">&#9776;</button>
+  </div>
+</nav>
 
 <!-- Hero -->
 <section class="hero">
   <div class="hero-content">
-    <div class="hero-badge">
-      <i class="fas fa-shield-alt"></i>
-      المرجع القانوني الأول في اليمن
-    </div>
-    <h1>المنصة القانونية<br><span>اليمنية الشاملة</span></h1>
-    <p>ابحث في آلاف المواد القانونية، احصل على عقود قانونية جاهزة، وتابع إجراءات التقاضي بسهولة واحترافية</p>
+    <div class="hero-badge">المرجع القانوني الأول في اليمن</div>
+    <h1>المنصة القانونية<br><em>اليمنية الشاملة</em></h1>
+    <p>ابحث في آلاف المواد القانونية، احصل على عقود قانونية جاهزة، وتابع إجراءات التقاضي</p>
     
-    <div class="hero-search">
-      <input type="text" id="heroSearch" placeholder="ابحث عن قانون، عقد، أو إجراء قانوني..." oninput="handleSearch(this.value)">
-      <button onclick="doSearch()"><i class="fas fa-search"></i></button>
+    <div class="search-wrap">
+      <input type="text" class="search-input" id="heroSearch" placeholder="ابحث عن قانون، عقد، أو إجراء قانوني..." oninput="handleSearch(this.value)" onfocus="handleSearch(this.value)">
+      <button class="search-btn" onclick="doSearch()">&#128269;</button>
+      <div class="search-results" id="searchResults"></div>
     </div>
-    
-    <div id="searchResults"></div>
     
     <div class="hero-stats">
-      <div class="hero-stat">
-        <div class="hero-stat-num">30+</div>
-        <div class="hero-stat-label">قانون يمني</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">12,000+</div>
-        <div class="hero-stat-label">مادة قانونية</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">72+</div>
-        <div class="hero-stat-label">عقد جاهز</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">63+</div>
-        <div class="hero-stat-label">إجراء قانوني</div>
-      </div>
+      <div><div class="hero-stat-num">30+</div><div class="hero-stat-label">قانون يمني</div></div>
+      <div><div class="hero-stat-num">12,868</div><div class="hero-stat-label">مادة قانونية</div></div>
+      <div><div class="hero-stat-num">72+</div><div class="hero-stat-label">عقد جاهز</div></div>
+      <div><div class="hero-stat-num">22</div><div class="hero-stat-label">مقال قانوني</div></div>
     </div>
   </div>
 </section>
 
 <!-- Laws Section -->
 <section class="section" id="laws">
-  <div class="section-header">
-    <div class="section-badge"><i class="fas fa-gavel"></i> المكتبة القانونية</div>
-    <h2 class="section-title">القوانين اليمنية</h2>
-    <p class="section-desc">مجموعة شاملة من القوانين اليمنية النافذة مع نصوص المواد القانونية كاملة</p>
-  </div>
-  
-  <div class="cards-grid" id="lawsGrid">
-    <!-- Filled by JS -->
+  <div class="container">
+    <div class="section-head">
+      <div class="section-label">المكتبة القانونية</div>
+      <h2 class="section-title">القوانين اليمنية</h2>
+      <p class="section-desc">مجموعة شاملة من القوانين اليمنية النافذة مع نصوص المواد القانونية كاملة</p>
+    </div>
+    <div class="grid" id="lawsGrid"></div>
   </div>
 </section>
 
 <!-- Contracts Section -->
 <section class="section" id="contracts">
-  <div class="section-header">
-    <div class="section-badge"><i class="fas fa-file-contract"></i> نماذج العقود</div>
-    <h2 class="section-title">عقود قانونية جاهزة</h2>
-    <p class="section-desc">نماذج عقود قانونية احترافية جاهزة للاستخدام والاستخدام</p>
-  </div>
-  
-  <div class="contracts-grid" id="contractsGrid">
-    <!-- Filled by JS -->
+  <div class="container">
+    <div class="section-head">
+      <div class="section-label">نماذج العقود</div>
+      <h2 class="section-title">عقود قانونية جاهزة</h2>
+      <p class="section-desc">نماذج عقود قانونية احترافية جاهزة للاستخدام</p>
+    </div>
+    <div class="contract-grid" id="contractsGrid"></div>
   </div>
 </section>
 
 <!-- Features -->
-<section class="features">
-  <div class="section-header" style="margin-bottom:40px">
-    <div class="section-badge" style="background:rgba(245,158,11,0.15);color:var(--accent)"><i class="fas fa-star"></i> لماذا لوبوك؟</div>
+<section class="features-section">
+  <div class="section-head" style="margin-bottom:32px">
+    <div class="section-label" style="background:rgba(212,168,67,0.12);color:var(--gold)">لماذا لوبوك؟</div>
     <h2 class="section-title" style="color:white">مميزات المنصة</h2>
   </div>
-  
   <div class="features-grid">
     <div class="feature">
-      <div class="feature-icon"><i class="fas fa-search"></i></div>
+      <div class="feature-icon">&#128270;</div>
       <h3>بحث ذكي</h3>
       <p>بحث سريع ودقيق في آلاف المواد القانونية اليمنية</p>
     </div>
     <div class="feature">
-      <div class="feature-icon"><i class="fas fa-file-download"></i></div>
+      <div class="feature-icon">&#128196;</div>
       <h3>عقود جاهزة</h3>
-      <p>نماذج عقود قانونية احترافية جاهزة للتحميل والاستخدام</p>
+      <p>نماذج عقود قانونية احترافية جاهزة للتحميل</p>
     </div>
     <div class="feature">
-      <div class="feature-icon"><i class="fas fa-book"></i></div>
+      <div class="feature-icon">&#128218;</div>
       <h3>مكتبة شاملة</h3>
       <p>جميع القوانين اليمنية النافذة في مكان واحد</p>
     </div>
     <div class="feature">
-      <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+      <div class="feature-icon">&#128241;</div>
       <h3>متوافق مع الأجهزة</h3>
-      <p>يعمل بسلاسة على الهاتف والتابلت والحاسوب</p>
+      <p>يعمل بسلاسة على الهاتف والحاسوب</p>
     </div>
   </div>
 </section>
 
 <!-- Procedures Section -->
 <section class="section" id="procedures">
-  <div class="section-header">
-    <div class="section-badge"><i class="fas fa-tasks"></i> إجراءات قانونية</div>
-    <h2 class="section-title">إجراءات التقاضي</h2>
-    <p class="section-desc">دليل شامل لإجراءات التقاضي والمهل القانونية في اليمن</p>
-  </div>
-  
-  <div class="cards-grid" id="proceduresGrid">
-    <!-- Filled by JS -->
+  <div class="container">
+    <div class="section-head">
+      <div class="section-label">إجراءات قانونية</div>
+      <h2 class="section-title">إجراءات التقاضي</h2>
+      <p class="section-desc">دليل شامل لإجراءات التقاضي والمهل القانونية</p>
+    </div>
+    <div class="grid" id="proceduresGrid"></div>
   </div>
 </section>
 
 <!-- Articles Section -->
 <section class="section" id="articles">
-  <div class="section-header">
-    <div class="section-badge"><i class="fas fa-newspaper"></i> مقالات قانونية</div>
-    <h2 class="section-title">مقالات وشروحات قانونية</h2>
-    <p class="section-desc">مقالات قانونية توعوية وشروحات للقوانين والإجراءات</p>
-  </div>
-  
-  <div class="cards-grid" id="articlesGrid">
-    <!-- Filled by JS -->
+  <div class="container">
+    <div class="section-head">
+      <div class="section-label">مقالات قانونية</div>
+      <h2 class="section-title">مقالات وشروحات قانونية</h2>
+      <p class="section-desc">مقالات قانونية توعوية وشروحات للقوانين</p>
+    </div>
+    <div class="grid" id="articlesGrid"></div>
   </div>
 </section>
 
 <!-- Contact -->
 <section class="section" id="contact">
-  <div class="section-header">
-    <div class="section-badge"><i class="fas fa-headset"></i> تواصل معنا</div>
-    <h2 class="section-title">استشارة قانونية</h2>
-    <p class="section-desc">هل تحتاج مساعدة قانونية؟ تواصل مع فريقنا من المحامين المتخصصين</p>
-  </div>
-  
-  <div style="max-width:500px;margin:0 auto;text-align:center">
-    <a href="https://wa.me/967777777777" style="display:inline-flex;align-items:center;gap:10px;background:#25D366;color:white;padding:16px 32px;border-radius:12px;text-decoration:none;font-size:18px;font-weight:600;box-shadow:0 4px 15px rgba(37,211,102,0.3)">
-      <i class="fab fa-whatsapp" style="font-size:24px"></i>
-      تواصل عبر واتساب
-    </a>
+  <div class="container">
+    <div class="section-head">
+      <div class="section-label">تواصل معنا</div>
+      <h2 class="section-title">استشارة قانونية</h2>
+      <p class="section-desc">هل تحتاج مساعدة قانونية؟ تواصل مع فريقنا</p>
+    </div>
+    <div style="text-align:center">
+      <a href="https://wa.me/967777777777" style="display:inline-flex;align-items:center;gap:10px;background:#25D366;color:white;padding:14px 28px;border-radius:10px;text-decoration:none;font-size:16px;font-weight:600">
+        تواصل عبر واتساب
+      </a>
+    </div>
   </div>
 </section>
 
@@ -838,8 +777,8 @@ body {
 <footer class="footer">
   <div class="footer-grid">
     <div class="footer-col">
-      <h4>⚖ لوبوك</h4>
-      <p style="font-size:14px;line-height:1.8;margin-bottom:16px">المنصة القانونية اليمنية الشاملة. نوفر لك الوصول إلى القوانين والعقود والإجراءات القانونية بسهولة.</p>
+      <h4>لوبوك</h4>
+      <p style="font-size:13px;line-height:1.8">المنصة القانونية اليمنية الشاملة. نوفر لك الوصول إلى القوانين والعقود بسهولة.</p>
     </div>
     <div class="footer-col">
       <h4>روابط سريعة</h4>
@@ -857,28 +796,24 @@ body {
     </div>
     <div class="footer-col">
       <h4>تواصل معنا</h4>
-      <a href="#"><i class="fas fa-envelope"></i> info@lawbook-ye.com</a>
-      <a href="#"><i class="fas fa-phone"></i> +967 777 777 777</a>
-      <a href="#"><i class="fas fa-map-marker-alt"></i> صنعاء، اليمن</a>
+      <a href="#">info@lawbook-ye.com</a>
+      <a href="#">+967 777 777 777</a>
+      <a href="#">صنعاء، اليمن</a>
     </div>
   </div>
-  
   <div class="footer-bottom">
-    <div>© 2024 لوبوك - المنصة القانونية اليمنية. جميع الحقوق محفوظة.</div>
+    <div>&copy; 2024 لوبوك - المنصة القانونية اليمنية. جميع الحقوق محفوظة.</div>
     <div class="footer-social">
-      <a href="#"><i class="fab fa-twitter"></i></a>
-      <a href="#"><i class="fab fa-facebook"></i></a>
-      <a href="#"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-youtube"></i></a>
+      <a href="#">&#120143;</a>
+      <a href="#">&#120147;</a>
+      <a href="#">&#120153;</a>
     </div>
   </div>
 </footer>
 
 <script>
-// Database will be loaded
 let db = null;
 
-// Load database
 async function loadDB() {
   try {
     const res = await fetch('database.json');
@@ -892,168 +827,145 @@ async function loadDB() {
   }
 }
 
-// Render Laws
 function renderLaws() {
   const grid = document.getElementById('lawsGrid');
-  const sections = {
-    'personal-status': { name: 'الأحوال الشخصية', icon: 'fas fa-users', color: 'blue' },
-    'civil': { name: 'القانون المدني', icon: 'fas fa-balance-scale', color: 'green' },
-    'commercial': { name: 'القانون التجاري', icon: 'fas fa-store', color: 'amber' },
-    'criminal': { name: 'القانون الجنائي', icon: 'fas fa-gavel', color: 'red' },
-    'labor': { name: 'قانون العمل', icon: 'fas fa-hard-hat', color: 'purple' },
-    'yemeni-laws': { name: 'قوانين متنوعة', icon: 'fas fa-landmark', color: 'cyan' }
-  };
+  const sections = [
+    { key: 'personal-status', name: 'الأحوال الشخصية', icon: '&#128101;', color: 'navy' },
+    { key: 'civil', name: 'القانون المدني', icon: '&#9878;', color: 'blue' },
+    { key: 'commercial', name: 'القانون التجاري', icon: '&#127978;', color: 'gold' },
+    { key: 'criminal', name: 'القانون الجنائي', icon: '&#9876;', color: 'red' },
+    { key: 'labor', name: 'قانون العمل', icon: '&#128119;', color: 'green' },
+    { key: 'yemeni-laws', name: 'قوانين متنوعة', icon: '&#127963;', color: 'navy' }
+  ];
   
-  let html = '';
-  for (const [key, info] of Object.entries(sections)) {
-    const count = db.laws[key] ? db.laws[key].length : 0;
-    html += `
-      <a href="laws.html?section=${key}" class="card">
-        <div class="card-icon ${info.color}"><i class="${info.icon}"></i></div>
-        <h3>${info.name}</h3>
-        <p>مجموعة شاملة من قوانين ${info.name} اليمنية النافذة</p>
+  grid.innerHTML = sections.map(s => {
+    const count = db.laws[s.key] ? db.laws[s.key].length : 0;
+    return `
+      <a href="laws.html?section=${s.key}" class="card">
+        <div class="card-icon ${s.color}">${s.icon}</div>
+        <h3>${s.name}</h3>
+        <p>مجموعة شاملة من قوانين ${s.name} اليمنية النافذة</p>
         <div class="card-footer">
-          <span class="card-count">${count} قانون</span>
-          <span class="card-arrow"><i class="fas fa-arrow-left"></i></span>
+          <span>${count} قانون</span>
+          <span class="card-arrow">&#8592;</span>
         </div>
       </a>
     `;
-  }
-  grid.innerHTML = html;
+  }).join('');
 }
 
-// Render Contracts
 function renderContracts() {
   const grid = document.getElementById('contractsGrid');
-  const contractCategories = {
-    'بيع': { icon: '🛒', desc: 'عقود بيع العقارات والمنقولات' },
-    'إيجار': { icon: '🏠', desc: 'عقود إيجار المساكن والمحلات' },
-    'شركة': { icon: '🤝', desc: 'عقود تأسيس الشركات' },
-    'وكالة': { icon: '📋', desc: 'عقود التوكيلات المختلفة' },
-    'قرض': { icon: '💰', desc: 'عقود القروض والتمويل' },
-    'عمل': { icon: '👷', desc: 'عقود العمل والتوظيف' }
-  };
-  
-  let html = '';
   const categories = {};
+  
   db.contracts.forEach(c => {
     const title = c.title || c.slug;
     let cat = 'أخرى';
-    if (title.includes('بيع') || title.includes('bay')) cat = 'بيع';
-    else if (title.includes('إيجار') || title.includes('ijar') || title.includes('سكن')) cat = 'إيجار';
-    else if (title.includes('شركة') || title.includes('sharaka')) cat = 'شركة';
-    else if (title.includes('وكالة') || title.includes('wkala') || title.includes('wakala')) cat = 'وكالة';
-    else if (title.includes('قرض') || title.includes('qrd')) cat = 'قرض';
-    else if (title.includes('عمل') || title.includes('amal')) cat = 'عمل';
+    if (title.includes('بيع')) cat = 'بيع';
+    else if (title.includes('إيجار') || title.includes('سكن')) cat = 'إيجار';
+    else if (title.includes('شركة')) cat = 'شركة';
+    else if (title.includes('وكالة')) cat = 'وكالة';
+    else if (title.includes('قرض')) cat = 'قرض';
+    else if (title.includes('تنازل')) cat = 'تنازل';
+    else if (title.includes('إقرار')) cat = 'إقرار';
+    else if (title.includes('كفالة')) cat = 'كفالة';
     
     if (!categories[cat]) categories[cat] = [];
     categories[cat].push(c);
   });
   
-  for (const [cat, contracts] of Object.entries(categories)) {
-    const info = contractCategories[cat] || { icon: '📄', desc: 'عقود متنوعة' };
-    html += `
-      <div class="contract-card" onclick="showContracts('${cat}')">
-        <h4>${info.icon} ${cat}</h4>
-        <p>${info.desc}</p>
-        <div style="margin-top:12px;font-size:12px;color:var(--primary)">${contracts.length} عقد</div>
+  const icons = { 'بيع': '&#128722;', 'إيجار': '&#127968;', 'شركة': '&#129309;', 'وكالة': '&#128203;', 'قرض': '&#128176;', 'تنازل': '&#128260;', 'إقرار': '&#128221;', 'كفالة': '&#128188;', 'أخرى': '&#128196;' };
+  
+  grid.innerHTML = Object.entries(categories).map(([cat, contracts]) => `
+    <a href="contracts.html?category=${encodeURIComponent(cat)}" class="contract-card">
+      <h4>${icons[cat] || '&#128196;'} ${cat}</h4>
+      <p>نماذج عقود ${cat} قانونية جاهزة للاستخدام</p>
+      <div class="meta">
+        <span>${contracts.length} عقد</span>
+        <span style="color:var(--gold)">&#8592;</span>
       </div>
-    `;
-  }
-  grid.innerHTML = html;
+    </a>
+  `).join('');
 }
 
-// Render Procedures
 function renderProcedures() {
   const grid = document.getElementById('proceduresGrid');
   const procedures = [
-    { title: 'تقديم الدعوى', desc: 'إجراءات رفع الدعوى القضائية', icon: 'fas fa-file-alt', color: 'blue' },
-    { title: 'الاستئناف', desc: 'إجراءات الطعن بالاستئناف', icon: 'fas fa-redo', color: 'green' },
-    { title: 'النقض', desc: 'إجراءات الطعن بالنقض', icon: 'fas fa-gavel', color: 'purple' },
-    { title: 'التنفيذ', desc: 'إجراءات تنفيذ الأحكام', icon: 'fas fa-check-circle', color: 'amber' },
-    { title: 'التحفظ', desc: 'إجراءات طلب التحفظ', icon: 'fas fa-lock', color: 'red' },
-    { title: 'الخبرة', desc: 'إجراءات تعيين الخبير', icon: 'fas fa-search', color: 'cyan' }
+    { title: 'تقديم الدعوى', desc: 'إجراءات رفع الدعوى القضائية', icon: '&#128196;', color: 'blue' },
+    { title: 'الاستئناف', desc: 'إجراءات الطعن بالاستئناف', icon: '&#128260;', color: 'green' },
+    { title: 'النقض', desc: 'إجراءات الطعن بالنقض', icon: '&#9876;', color: 'navy' },
+    { title: 'التنفيذ', desc: 'إجراءات تنفيذ الأحكام', icon: '&#9989;', color: 'gold' },
+    { title: 'التحفظ', desc: 'إجراءات طلب التحفظ', icon: '&#128274;', color: 'red' },
+    { title: 'الخبرة', desc: 'إجراءات تعيين الخبير', icon: '&#128270;', color: 'blue' }
   ];
   
-  let html = '';
-  procedures.forEach(p => {
-    html += `
-      <div class="card">
-        <div class="card-icon ${p.color}"><i class="${p.icon}"></i></div>
-        <h3>${p.title}</h3>
-        <p>${p.desc}</p>
-      </div>
-    `;
-  });
-  grid.innerHTML = html;
+  grid.innerHTML = procedures.map(p => `
+    <div class="card">
+      <div class="card-icon ${p.color}">${p.icon}</div>
+      <h3>${p.title}</h3>
+      <p>${p.desc}</p>
+    </div>
+  `).join('');
 }
 
-// Render Articles
 function renderArticles() {
   const grid = document.getElementById('articlesGrid');
   if (!db.posts) return;
   
-  let html = '';
-  db.posts.slice(0, 6).forEach(p => {
-    html += `
-      <a href="${p.url}" target="_blank" class="card">
-        <div class="card-icon purple"><i class="fas fa-newspaper"></i></div>
-        <h3>${p.title}</h3>
-        <p>${p.description || 'مقال قانوني توعوي'}</p>
-      </a>
-    `;
-  });
-  grid.innerHTML = html;
+  grid.innerHTML = db.posts.slice(0, 6).map(p => `
+    <a href="${p.url}" target="_blank" class="card">
+      <div class="card-icon green">&#128240;</div>
+      <h3>${p.title}</h3>
+      <p>${p.description || 'مقال قانوني توعوي'}</p>
+    </a>
+  `).join('');
 }
 
 // Search
 function handleSearch(query) {
   const results = document.getElementById('searchResults');
   if (!query || query.length < 2) {
-    results.style.display = 'none';
+    results.classList.remove('show');
     return;
   }
   
   const matches = [];
-  const regex = new RegExp(query, 'gi');
+  const regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
   
-  // Search laws
   Object.entries(db.laws).forEach(([section, pages]) => {
     pages.forEach(page => {
-      if (regex.test(page.title) || page.content.some(c => regex.test(c))) {
-        matches.push({ type: 'law', title: page.title, url: page.url, section });
+      if (regex.test(page.title) || (page.content && page.content.some(c => regex.test(c)))) {
+        matches.push({ type: 'law', title: page.title, url: page.url, typeLabel: 'قانون' });
       }
     });
   });
   
-  // Search contracts
   db.contracts.forEach(c => {
-    if (regex.test(c.title)) {
-      matches.push({ type: 'contract', title: c.title, url: c.url });
+    if (regex.test(c.title || '')) {
+      matches.push({ type: 'contract', title: c.title, url: c.url, typeLabel: 'عقد' });
     }
   });
   
-  // Search posts
   if (db.posts) {
     db.posts.forEach(p => {
-      if (regex.test(p.title)) {
-        matches.push({ type: 'post', title: p.title, url: p.url });
+      if (regex.test(p.title || '')) {
+        matches.push({ type: 'post', title: p.title, url: p.url, typeLabel: 'مقال' });
       }
     });
   }
   
   if (matches.length === 0) {
-    results.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-light)">لا توجد نتائج</div>';
+    results.innerHTML = '<div class="result-empty">لا توجد نتائج</div>';
   } else {
-    results.innerHTML = matches.slice(0, 10).map(m => `
-      <a href="${m.url}" target="_blank" class="search-result-item" style="text-decoration:none;color:var(--text)">
-        <span class="search-result-type ${m.type}">${m.type === 'law' ? 'قانون' : m.type === 'contract' ? 'عقد' : 'مقال'}</span>
-        <span class="search-result-title">${m.title}</span>
+    results.innerHTML = matches.slice(0, 8).map(m => `
+      <a href="${m.url}" target="_blank" class="search-result-item">
+        <span class="result-type ${m.type}">${m.typeLabel}</span>
+        <span class="result-title">${m.title}</span>
       </a>
     `).join('');
   }
   
-  results.style.display = 'block';
+  results.classList.add('show');
 }
 
 function doSearch() {
@@ -1061,13 +973,25 @@ function doSearch() {
   if (query) handleSearch(query);
 }
 
-// Show contracts by category
-function showContracts(category) {
-  // Navigate to contracts page
-  window.location.href = `contracts.html?category=${encodeURIComponent(category)}`;
-}
+// Close search on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.search-wrap')) {
+    document.getElementById('searchResults').classList.remove('show');
+  }
+});
 
-// Initialize
+// Smooth scroll for nav links
+document.querySelectorAll('.nav-link[href^="#"]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    document.getElementById('navLinks').classList.remove('open');
+  });
+});
+
 loadDB();
 </script>
 </body>
