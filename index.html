@@ -13,7 +13,6 @@
 html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
 
-/* Navbar */
 .navbar{background:var(--navy);position:sticky;top:0;z-index:100;border-bottom:3px solid var(--gold)}
 .navbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:64px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
@@ -27,7 +26,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .nav-cta{background:var(--gold)!important;color:var(--navy)!important;font-weight:600!important}
 .menu-toggle{display:none;background:none;border:none;color:#fff;font-size:22px;cursor:pointer;padding:4px}
 
-/* Hero */
 .hero{background:linear-gradient(160deg,var(--navy) 0%,var(--navy2) 40%,var(--blue) 100%);padding:60px 20px 50px;text-align:center;position:relative;overflow:hidden}
 .hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(transparent,var(--bg))}
 .hero-content{max-width:700px;margin:0 auto;position:relative;z-index:1}
@@ -36,7 +34,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .hero h1 em{font-style:normal;color:var(--gold)}
 .hero p{font-size:15px;color:rgba(255,255,255,.6);margin-bottom:28px;line-height:1.8}
 
-/* Search */
 .search-wrap{max-width:560px;margin:0 auto;position:relative}
 .search-input{width:100%;padding:15px 54px 15px 20px;border-radius:var(--r);border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.07);color:#fff;font-size:15px;font-family:var(--font);outline:none;transition:all .2s;direction:rtl}
 .search-input::placeholder{color:rgba(255,255,255,.35)}
@@ -54,20 +51,16 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .result-title{font-size:14px;font-weight:500}
 .result-empty{padding:20px;text-align:center;color:var(--text3);font-size:14px}
 
-/* Stats */
 .hero-stats{display:flex;justify-content:center;gap:32px;margin-top:32px}
 .hero-stat-num{font-size:1.7rem;font-weight:700;color:var(--gold)}
 .hero-stat-label{font-size:12px;color:rgba(255,255,255,.5)}
 
-/* Sections */
 .container{max-width:1200px;margin:0 auto;padding:0 20px}
 .section{padding:40px 0}
 .section-head{text-align:center;margin-bottom:28px}
 .section-label{display:inline-flex;align-items:center;gap:6px;background:rgba(30,64,175,.06);color:var(--blue);padding:5px 14px;border-radius:50px;font-size:13px;font-weight:600;margin-bottom:8px}
 .section-title{font-size:1.7rem;font-weight:700;margin-bottom:6px}
-.section-desc{color:var(--text2);font-size:14px;max-width:550px;margin:0 auto}
 
-/* Library Grid - Same as original */
 .library-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
 .library-card{background:var(--card);border-radius:var(--r-lg);padding:24px;border:1px solid var(--border);transition:all .2s;cursor:pointer;text-decoration:none;color:var(--text);display:block}
 .library-card:hover{border-color:var(--blue2);box-shadow:var(--shadow-md);transform:translateY(-2px)}
@@ -82,25 +75,22 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .library-card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);font-size:13px;color:var(--text3)}
 .library-card-arrow{color:var(--blue2);font-weight:600}
 
-/* Laws List */
 .laws-list{display:grid;gap:10px;margin-top:20px}
 .law-item{background:var(--card);border-radius:var(--r);padding:14px 18px;border:1px solid var(--border);display:flex;align-items:center;gap:14px;transition:all .15s;text-decoration:none;color:var(--text)}
 .law-item:hover{border-color:var(--blue2);box-shadow:var(--shadow)}
 .law-item-icon{width:40px;height:40px;border-radius:8px;background:rgba(30,64,175,.06);display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:16px;flex-shrink:0}
 .law-item-info{flex:1;min-width:0}
-.law-item-info h4{font-size:14px;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.law-item-info p{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.law-item-info h4{font-size:14px;font-weight:600;margin-bottom:2px}
+.law-item-info p{font-size:12px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .law-item-badge{background:rgba(30,64,175,.06);color:var(--blue);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;flex-shrink:0}
 
-/* Contracts Grid */
 .contracts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:20px}
-.contract-item{background:var(--card);border-radius:var(--r);padding:18px;border:1px solid var(--border);transition:all .15s;text-decoration:none;color:var(--text);display:block}
+.contract-item{background:var(--card);border-radius:var(--r);padding:18px;border:1px solid var(--border);transition:all .15s;text-decoration:none;color:var(--text);display:block;cursor:pointer}
 .contract-item:hover{border-color:var(--gold);box-shadow:var(--shadow-md)}
 .contract-item h4{font-size:15px;font-weight:600;margin-bottom:6px}
 .contract-item p{font-size:12px;color:var(--text2);line-height:1.6}
 .contract-item .meta{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text3)}
 
-/* Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center}
 .modal-overlay.show{display:flex}
 .modal{background:var(--card);border-radius:var(--r-lg);max-width:700px;width:90%;max-height:80vh;overflow-y:auto;padding:24px}
@@ -113,7 +103,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .btn-gold:hover{box-shadow:0 4px 12px rgba(212,168,67,.3)}
 .btn-blue{background:var(--blue);color:#fff}
 
-/* Features */
 .features-section{background:var(--navy);padding:50px 20px;margin:40px 0}
 .features-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
 .feature{text-align:center;padding:24px 18px;border-radius:var(--r);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);transition:all .2s}
@@ -122,23 +111,18 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .feature h3{color:#fff;font-size:15px;font-weight:600;margin-bottom:6px}
 .feature p{color:rgba(255,255,255,.5);font-size:13px;line-height:1.7}
 
-/* Footer */
 .footer{background:var(--navy);color:rgba(255,255,255,.6);padding:40px 20px 20px}
 .footer-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:28px;margin-bottom:28px}
 .footer-col h4{color:#fff;font-size:14px;font-weight:600;margin-bottom:12px}
 .footer-col a{display:block;color:rgba(255,255,255,.5);text-decoration:none;padding:3px 0;font-size:13px;transition:color .15s}
 .footer-col a:hover{color:var(--gold)}
 .footer-bottom{max-width:1200px;margin:0 auto;padding-top:16px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;font-size:12px}
-.footer-social{display:flex;gap:8px}
-.footer-social a{width:30px;height:30px;border-radius:6px;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);text-decoration:none;transition:all .15s;font-size:13px}
-.footer-social a:hover{background:var(--gold);color:var(--navy)}
 
 @media(max-width:768px){.menu-toggle{display:block}.nav-links{display:none;position:absolute;top:64px;left:0;right:0;background:var(--navy);flex-direction:column;padding:16px;border-top:1px solid rgba(255,255,255,.08)}.nav-links.open{display:flex}.hero h1{font-size:1.8rem}.hero-stats{gap:16px;flex-wrap:wrap}.hero-stat-num{font-size:1.3rem}.section-title{font-size:1.3rem}.footer-bottom{flex-direction:column;gap:12px;text-align:center}}
 </style>
 </head>
 <body>
 
-<!-- Navbar -->
 <nav class="navbar">
 <div class="navbar-inner">
 <a href="#" class="brand"><div class="brand-icon">LB</div><div><div class="brand-name">لوبوك</div><span class="brand-tag">المكتبة القانونية اليمنية</span></div></a>
@@ -152,7 +136,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 </div>
 </nav>
 
-<!-- Hero -->
 <section class="hero">
 <div class="hero-content">
 <div class="hero-badge">المكتبة القانونية اليمنية الشاملة</div>
@@ -172,7 +155,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 </div>
 </section>
 
-<!-- Library Sections - Same as Original Website -->
 <section class="section" id="library">
 <div class="container">
 <div class="section-head">
@@ -183,7 +165,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 </div>
 </section>
 
-<!-- Laws -->
 <section class="section" id="laws">
 <div class="container">
 <div class="section-head">
@@ -194,7 +175,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 </div>
 </section>
 
-<!-- Contracts -->
 <section class="section" id="contracts">
 <div class="container">
 <div class="section-head">
@@ -205,7 +185,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 </div>
 </section>
 
-<!-- Features -->
 <section class="features-section">
 <div class="section-head" style="margin-bottom:28px">
 <div class="section-label" style="background:rgba(212,168,67,.12);color:var(--gold)">لماذا لوبوك؟</div>
@@ -219,7 +198,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 </div>
 </section>
 
-<!-- Contact -->
 <section class="section" id="contact">
 <div class="container">
 <div class="section-head">
@@ -232,7 +210,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 </div>
 </section>
 
-<!-- Footer -->
 <footer class="footer">
 <div class="footer-grid">
 <div class="footer-col"><h4>لوبوك</h4><p style="font-size:13px;line-height:1.8">المكتبة القانونية اليمنية الشاملة.</p></div>
@@ -240,84 +217,153 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 <div class="footer-col"><h4>القوانين</h4><a href="#">قانون الأحوال الشخصية</a><a href="#">القانون المدني</a><a href="#">القانون التجاري</a></div>
 <div class="footer-col"><h4>تواصل معنا</h4><a href="#">info@lawbook-ye.com</a><a href="#">+967 777 777 777</a></div>
 </div>
-<div class="footer-bottom"><div>&copy; 2024 لوبوك - المكتبة القانونية اليمنية</div><div class="footer-social"><a href="#">&#120143;</a><a href="#">&#120147;</a></div></div>
+<div class="footer-bottom"><div>&copy; 2024 لوبوك - المكتبة القانونية اليمنية</div></div>
 </footer>
 
-<!-- Modal -->
 <div class="modal-overlay" id="modal"><div class="modal"><h3 id="modalTitle"></h3><div class="modal-content" id="modalContent"></div><div class="modal-actions"><button class="btn btn-gold" onclick="downloadContent()">&#128190; تحميل</button><button class="btn btn-blue" onclick="closeModal()">&#10005; إغلاق</button></div></div></div>
 
 <script>
-let db=null,searchIndex=null,searchCache={},currentModal=null;
+var db=null;
+var searchIndex=null;
+var searchCache={};
+var currentModal=null;
 
 async function loadDB(){
-  const r=await fetch('database.json');
-  db=await r.json();
-  renderLibrary();
-  renderLaws();
-  renderContracts();
+  try{
+    var r=await fetch('database.json');
+    db=await r.json();
+    renderLibrary();
+    renderLaws();
+    renderContracts();
+  }catch(e){
+    console.error('Error loading database:',e);
+  }
 }
 
-// Build search index
 function buildIndex(){
   if(searchIndex)return;
   searchIndex=[];
-  Object.entries(db.laws).forEach(([section,pages])=>{
-    pages.forEach(p=>{
-      searchIndex.push({type:'law',title:p.title||'',titleLower:(p.title||'').toLowerCase(),content:(p.content||[]).join(' ').toLowerCase(),url:p.url,typeLabel:'قانون',section});
+  var sections=Object.keys(db.laws);
+  for(var i=0;i<sections.length;i++){
+    var section=sections[i];
+    var pages=db.laws[section];
+    for(var j=0;j<pages.length;j++){
+      var p=pages[j];
+      searchIndex.push({
+        type:'law',
+        title:p.title||'',
+        titleLower:(p.title||'').toLowerCase(),
+        content:(p.content||[]).join(' ').toLowerCase(),
+        url:p.url,
+        typeLabel:'قانون',
+        section:section
+      });
+    }
+  }
+  for(var i=0;i<db.contracts.length;i++){
+    var c=db.contracts[i];
+    searchIndex.push({
+      type:'contract',
+      title:c.title||'',
+      titleLower:(c.title||'').toLowerCase(),
+      content:(c.content||[]).join(' ').toLowerCase(),
+      url:c.url,
+      typeLabel:'عقد'
     });
-  });
-  db.contracts.forEach(c=>{
-    searchIndex.push({type:'contract',title:c.title||'',titleLower:(c.title||'').toLowerCase(),content:(c.content||[]).join(' ').toLowerCase(),url:c.url,typeLabel:'عقد'});
-  });
-  (db.posts||[]).forEach(p=>{
-    searchIndex.push({type:'post',title:p.title||'',titleLower:(p.title||'').toLowerCase(),content:(p.description||'').toLowerCase(),url:p.url,typeLabel:'مقال'});
-  });
+  }
+  if(db.posts){
+    for(var i=0;i<db.posts.length;i++){
+      var p=db.posts[i];
+      searchIndex.push({
+        type:'post',
+        title:p.title||'',
+        titleLower:(p.title||'').toLowerCase(),
+        content:(p.description||'').toLowerCase(),
+        url:p.url,
+        typeLabel:'مقال'
+      });
+    }
+  }
 }
 
-// Smart scoring
 function scoreItem(item,q){
-  const t=item.titleLower,c=item.content;
+  var t=item.titleLower;
+  var c=item.content;
   if(t===q)return 1000;
-  let s=0;
-  if(t.startsWith(q))s+=500;
-  if(t.includes(q))s+=300;
-  const tw=t.split(/\s+/),qw=q.split(/\s+/);
-  qw.forEach(w=>{if(w.length<2)return;tw.forEach(t=>{if(t===w)s+=100;else if(t.startsWith(w))s+=50;else if(t.includes(w))s+=20})});
-  if(c.includes(q))s+=10;
-  qw.forEach(w=>{if(w.length>=2&&c.includes(w))s+=5});
+  var s=0;
+  if(t.indexOf(q)===0)s+=500;
+  if(t.indexOf(q)!==-1)s+=300;
+  var tw=t.split(/\s+/);
+  var qw=q.split(/\s+/);
+  for(var i=0;i<qw.length;i++){
+    var w=qw[i];
+    if(w.length<2)continue;
+    for(var j=0;j<tw.length;j++){
+      var ti=tw[j];
+      if(ti===w)s+=100;
+      else if(ti.indexOf(w)===0)s+=50;
+      else if(ti.indexOf(w)!==-1)s+=20;
+    }
+  }
+  if(c.indexOf(q)!==-1)s+=10;
+  for(var i=0;i<qw.length;i++){
+    if(qw[i].length>=2&&c.indexOf(qw[i])!==-1)s+=5;
+  }
   if(item.type==='law')s+=5;
   return s;
 }
 
 function handleSearch(query){
-  const el=document.getElementById('searchResults');
-  if(!query||query.length<2){el.classList.remove('show');return}
-  const key=query.toLowerCase();
-  if(searchCache[key]){renderResults(searchCache[key],el);return}
+  var el=document.getElementById('searchResults');
+  if(!query||query.length<2){el.classList.remove('show');return;}
+  var key=query.toLowerCase();
+  if(searchCache[key]){renderResults(searchCache[key],el);return;}
   buildIndex();
-  const scored=[];
-  for(const item of searchIndex){const s=scoreItem(item,key);if(s>0)scored.push({item,score:s})}
-  scored.sort((a,b)=>b.score-a.score);
-  const matches=scored.slice(0,10).map(s=>s.item);
+  var scored=[];
+  for(var i=0;i<searchIndex.length;i++){
+    var s=scoreItem(searchIndex[i],key);
+    if(s>0)scored.push({item:searchIndex[i],score:s});
+  }
+  scored.sort(function(a,b){return b.score-a.score;});
+  var matches=[];
+  for(var i=0;i<Math.min(scored.length,10);i++){
+    matches.push(scored[i].item);
+  }
   searchCache[key]=matches;
   renderResults(matches,el);
 }
 
 function renderResults(matches,el){
-  if(!matches.length){el.innerHTML='<div class="result-empty">لا توجد نتائج</div>'}
-  else{el.innerHTML=matches.map(m=>`<a href="${m.url}" target="_blank" class="search-result-item"><span class="result-type ${m.type}">${m.typeLabel}</span><span class="result-title">${m.title}</span></a>`).join('')}
+  if(!matches.length){
+    el.innerHTML='<div class="result-empty">لا توجد نتائج</div>';
+  }else{
+    var html='';
+    for(var i=0;i<matches.length;i++){
+      var m=matches[i];
+      html+='<a href="'+m.url+'" target="_blank" class="search-result-item">';
+      html+='<span class="result-type '+m.type+'">'+m.typeLabel+'</span>';
+      html+='<span class="result-title">'+m.title+'</span>';
+      html+='</a>';
+    }
+    el.innerHTML=html;
+  }
   el.classList.add('show');
 }
 
-function doSearch(){const q=document.getElementById('heroSearch').value;if(q)handleSearch(q)}
+function doSearch(){
+  var q=document.getElementById('heroSearch').value;
+  if(q)handleSearch(q);
+}
 
-document.addEventListener('click',function(e){if(!e.target.closest('.search-wrap'))document.getElementById('searchResults').classList.remove('show')});
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.search-wrap')){
+    document.getElementById('searchResults').classList.remove('show');
+  }
+});
 
-// Render Library - Same structure as original website
 function renderLibrary(){
-  const grid=document.getElementById('libraryGrid');
-  // Same sections as original website
-  const sections=[
+  var grid=document.getElementById('libraryGrid');
+  var sections=[
     {key:'litigation-procedures',name:'إجراءات التقاضي',desc:'فتح إجراءات التقاضي',icon:'&#128203;',color:'blue'},
     {key:'legal-procedure-deadlines',name:'مواعيد الإجراءات القانونية',desc:'فتح مواعيد الإجراءات',icon:'&#128197;',color:'gold'},
     {key:'civil',name:'الدعاوى المدنية',desc:'فتح الدعاوى المدنية',icon:'&#9878;',color:'navy'},
@@ -329,85 +375,131 @@ function renderLibrary(){
     {key:'yemeni-laws',name:'القوانين اليمنية',desc:'فتح القوانين اليمنية',icon:'&#127963;',color:'navy'}
   ];
   
-  grid.innerHTML=sections.map(s=>{
-    const count=db.laws[s.key]?db.laws[s.key].length:0;
-    return `<a href="laws.html?section=${s.key}" class="library-card">
-      <div class="library-card-icon ${s.color}">${s.icon}</div>
-      <h3>${s.name}</h3>
-      <p>${s.desc}</p>
-      <div class="library-card-footer"><span>${count} عنصر</span><span class="library-card-arrow">&#8592;</span></div>
-    </a>`;
-  }).join('');
+  var html='';
+  for(var i=0;i<sections.length;i++){
+    var s=sections[i];
+    var count=db.laws[s.key]?db.laws[s.key].length:0;
+    html+='<a href="laws.html?section='+s.key+'" class="library-card">';
+    html+='<div class="library-card-icon '+s.color+'">'+s.icon+'</div>';
+    html+='<h3>'+s.name+'</h3>';
+    html+='<p>'+s.desc+'</p>';
+    html+='<div class="library-card-footer"><span>'+count+' عنصر</span><span class="library-card-arrow">&#8592;</span></div>';
+    html+='</a>';
+  }
+  grid.innerHTML=html;
 }
 
-// Render Laws - Use exact titles from database
 function renderLaws(){
-  const list=document.getElementById('lawsList');
-  const allLaws=[];
-  Object.entries(db.laws).forEach(([section,pages])=>{pages.forEach(p=>allLaws.push({...p,section}))});
+  var list=document.getElementById('lawsList');
+  var allLaws=[];
+  var sections=Object.keys(db.laws);
+  for(var i=0;i<sections.length;i++){
+    var pages=db.laws[sections[i]];
+    for(var j=0;j<pages.length;j++){
+      allLaws.push(pages[j]);
+    }
+  }
   
-  list.innerHTML=allLaws.slice(0,20).map(l=>`<a href="${l.url}" target="_blank" class="law-item">
-    <div class="law-item-icon">&#9876;</div>
-    <div class="law-item-info"><h4>${l.title}</h4><p>${(l.content||[])[0]||''}</p></div>
-    <span class="law-item-badge">${l.articles?l.articles.length+' مادة':l.section}</span>
-  </a>`).join('');
+  var html='';
+  var limit=Math.min(allLaws.length,20);
+  for(var i=0;i<limit;i++){
+    var l=allLaws[i];
+    var desc='';
+    if(l.content&&l.content.length>0){
+      desc=l.content[0];
+      if(desc.length>80)desc=desc.substring(0,80)+'...';
+    }
+    html+='<a href="'+l.url+'" target="_blank" class="law-item">';
+    html+='<div class="law-item-icon">&#9876;</div>';
+    html+='<div class="law-item-info"><h4>'+l.title+'</h4><p>'+desc+'</p></div>';
+    if(l.articles&&l.articles.length>0){
+      html+='<span class="law-item-badge">'+l.articles.length+' مادة</span>';
+    }
+    html+='</a>';
+  }
+  list.innerHTML=html;
 }
 
-// Render Contracts - Use exact titles from database
 function renderContracts(){
-  const grid=document.getElementById('contractsGrid');
-  const cats={};
-  db.contracts.forEach(c=>{
-    const t=c.title||c.slug;
-    let k='أخرى';
-    if(t.includes('بيع'))k='بيع';
-    else if(t.includes('إيجار')||t.includes('سكن'))k='إيجار';
-    else if(t.includes('شركة'))k='شركة';
-    else if(t.includes('وكالة'))k='وكالة';
-    else if(t.includes('قرض'))k='قرض';
-    else if(t.includes('تنازل'))k='تنازل';
-    else if(t.includes('إقرار'))k='إقرار';
-    else if(t.includes('كفالة'))k='كفالة';
+  var grid=document.getElementById('contractsGrid');
+  var cats={};
+  for(var i=0;i<db.contracts.length;i++){
+    var c=db.contracts[i];
+    var t=c.title||c.slug||'';
+    var k='أخرى';
+    if(t.indexOf('بيع')!==-1)k='بيع';
+    else if(t.indexOf('إيجار')!==-1||t.indexOf('سكن')!==-1)k='إيجار';
+    else if(t.indexOf('شركة')!==-1)k='شركة';
+    else if(t.indexOf('وكالة')!==-1)k='وكالة';
+    else if(t.indexOf('قرض')!==-1)k='قرض';
+    else if(t.indexOf('تنازل')!==-1)k='تنازل';
+    else if(t.indexOf('إقرار')!==-1)k='إقرار';
+    else if(t.indexOf('كفالة')!==-1)k='كفالة';
     if(!cats[k])cats[k]=[];
     cats[k].push(c);
-  });
+  }
   
-  const icons={'بيع':'&#128722;','إيجار':'&#127968;','شركة':'&#129309;','وكالة':'&#128203;','قرض':'&#128176;','تنازل':'&#128260;','إقرار':'&#128221;','كفالة':'&#128188;','أخرى':'&#128196;'};
+  var icons={'بيع':'&#128722;','إيجار':'&#127968;','شركة':'&#129309;','وكالة':'&#128203;','قرض':'&#128176;','تنازل':'&#128260;','إقرار':'&#128221;','كفالة':'&#128188;','أخرى':'&#128196;'};
   
-  grid.innerHTML=Object.entries(cats).map(([cat,contracts])=>`<div class="contract-item" onclick="showContracts('${cat}')">
-    <h4>${icons[cat]||'&#128196;'} ${cat}</h4>
-    <p>نماذج عقود ${cat} قانونية جاهزة</p>
-    <div class="meta"><span>${contracts.length} عقد</span><span style="color:var(--gold)">&#8592;</span></div>
-  </div>`).join('');
+  var html='';
+  var catNames=Object.keys(cats);
+  for(var i=0;i<catNames.length;i++){
+    var cat=catNames[i];
+    var contracts=cats[cat];
+    var icon=icons[cat]||'&#128196;';
+    html+='<div class="contract-item" onclick="showContracts(\''+cat+'\')">';
+    html+='<h4>'+icon+' '+cat+'</h4>';
+    html+='<p>نماذج عقود '+cat+' قانونية جاهزة</p>';
+    html+='<div class="meta"><span>'+contracts.length+' عقد</span><span style="color:var(--gold)">&#8592;</span></div>';
+    html+='</div>';
+  }
+  grid.innerHTML=html;
 }
 
-function showContracts(cat){window.location.href='contracts.html?category='+encodeURIComponent(cat)}
+function showContracts(cat){
+  window.location.href='contracts.html?category='+encodeURIComponent(cat);
+}
 
-// Modal
 function showContent(title,content,type){
-  currentModal={title,content,type};
+  currentModal={title:title,content:content,type:type};
   document.getElementById('modalTitle').textContent=title;
-  document.getElementById('modalContent').innerHTML=content.map(b=>`<p>${b}</p>`).join('')||'<p>لا يوجد محتوى</p>';
+  var html='';
+  for(var i=0;i<content.length;i++){
+    html+='<p>'+content[i]+'</p>';
+  }
+  document.getElementById('modalContent').innerHTML=html||'<p>لا يوجد محتوى</p>';
   document.getElementById('modal').classList.add('show');
 }
-function closeModal(){document.getElementById('modal').classList.remove('show')}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('show');
+}
+
 function downloadContent(){
   if(!currentModal)return;
-  let t=currentModal.title+'\n'+'='.repeat(50)+'\n\n';
-  currentModal.content.forEach(b=>{t+=b+'\n\n'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'}));a.download=(currentModal.title||'content')+'.txt';a.click();
+  var t=currentModal.title+'\n'+'==================================================\n\n';
+  for(var i=0;i<currentModal.content.length;i++){
+    t+=currentModal.content[i]+'\n\n';
+  }
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'}));
+  a.download=(currentModal.title||'content')+'.txt';
+  a.click();
 }
-document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
 
-// Smooth scroll
-document.querySelectorAll('.nav-link[href^="#"]').forEach(l=>{
-  l.addEventListener('click',function(e){
+document.getElementById('modal').addEventListener('click',function(e){
+  if(e.target===this)closeModal();
+});
+
+var navLinks=document.querySelectorAll('.nav-link[href^="#"]');
+for(var i=0;i<navLinks.length;i++){
+  navLinks[i].addEventListener('click',function(e){
     e.preventDefault();
-    const t=document.querySelector(this.getAttribute('href'));
-    if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+    var target=document.querySelector(this.getAttribute('href'));
+    if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
     document.getElementById('navLinks').classList.remove('open');
   });
-});
+}
 
 loadDB();
 </script>
