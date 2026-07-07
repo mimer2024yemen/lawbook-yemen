@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>العقود القانونية | لوبوك</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--primary:#1e40af;--primary-light:#3b82f6;--secondary:#0f172a;--accent:#f59e0b;--bg:#f8fafc;--card:#fff;--text:#1e293b;--text-light:#64748b;--border:#e2e8f0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+.header{background:var(--secondary);padding:16px 24px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:white}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),#d4a843);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.logo-text{font-size:20px;font-weight:800}
+.back-btn{color:rgba(255,255,255,0.8);text-decoration:none;display:flex;align-items:center;gap:6px;font-size:14px}
+.back-btn:hover{color:white}
+.container{max-width:1200px;margin:0 auto;padding:24px}
+.page-header{text-align:center;padding:40px 0}
+.page-header h1{font-size:2rem;font-weight:800;margin-bottom:8px}
+.page-header p{color:var(--text-light)}
+.search-box{margin:20px 0;text-align:center}
+.search-box input{width:100%;max-width:500px;padding:14px 20px;border-radius:12px;border:1px solid var(--border);background:white;font-size:15px;font-family:inherit;outline:none;direction:rtl}
+.search-box input:focus{border-color:var(--primary-light)}
+.tabs{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap;justify-content:center}
+.tab{padding:8px 20px;border-radius:8px;background:white;border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:14px;transition:all 0.2s;color:var(--text-light)}
+.tab:hover,.tab.active{background:var(--accent);color:white;border-color:var(--accent)}
+.contracts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin:20px 0}
+.contract-card{background:white;border-radius:12px;padding:20px;border:1px solid var(--border);transition:all 0.2s;cursor:pointer;text-decoration:none;color:var(--text);display:block}
+.contract-card:hover{border-color:var(--accent);box-shadow:0 8px 25px rgba(0,0,0,0.06)}
+.contract-card h4{font-size:16px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.contract-card p{font-size:13px;color:var(--text-light);line-height:1.6}
+.contract-card .meta{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text-light)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;text-decoration:none;border:none}
+.btn-primary{background:var(--primary);color:white}
+.btn-primary:hover{background:var(--primary-light)}
+.btn-accent{background:var(--accent);color:var(--secondary)}
+.btn-accent:hover{box-shadow:0 4px 15px rgba(245,158,11,0.3)}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:white;border-radius:16px;max-width:700px;width:90%;max-height:80vh;overflow-y:auto;padding:24px}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.modal-content{direction:rtl;text-align:right;font-size:14px;line-height:2}
+.modal-content p{margin-bottom:12px}
+.modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
+.footer{background:var(--secondary);color:rgba(255,255,255,0.7);text-align:center;padding:30px 24px;margin-top:40px;font-size:14px}
+@media(max-width:768px){.contracts-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="header-inner">
+<a href="index.html" class="logo">
+<div class="logo-icon">⚖</div>
+<div class="logo-text">لوبوك</div>
+</a>
+<a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i> الرئيسية</a>
+</div>
+</header>
+
+<div class="container">
+<div class="page-header">
+<h1>📄 العقود القانونية</h1>
+<p>نماذج عقود قانونية احترافية جاهزة للاستخدام</p>
+</div>
+
+<div class="search-box">
+<input type="text" id="searchInput" placeholder="🔍 ابحث في العقود..." oninput="filterContracts()">
+</div>
+
+<div class="tabs" id="tabs"></div>
+<div class="contracts-grid" id="contractsGrid"></div>
+</div>
+
+<!-- Contract Modal -->
+<div class="modal-overlay" id="contractModal">
+<div class="modal">
+<h3><i class="fas fa-file-contract"></i> <span id="modalTitle"></span></h3>
+<div class="modal-content" id="modalContent"></div>
+<div class="modal-actions">
+<button class="btn btn-accent" onclick="downloadContract()"><i class="fas fa-download"></i> تحميل</button>
+<button class="btn btn-primary" onclick="closeModal()"><i class="fas fa-times"></i> إغلاق</button>
+</div>
+</div>
+</div>
+
+<footer class="footer">
+<p>© 2024 لوبوك - المنصة القانونية اليمنية</p>
+</footer>
+
+<script>
+let db = null;
+let currentCategory = 'all';
+let currentContract = null;
+
+async function loadDB() {
+  const res = await fetch('database.json');
+  db = await res.json();
+  
+  // Get category from URL
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('category')) {
+    currentCategory = params.get('category');
+  }
+  
+  renderTabs();
+  renderContracts();
+}
+
+function getCategories() {
+  const categories = { 'الكل': [] };
+  db.contracts.forEach(c => {
+    const title = c.title || c.slug;
+    let cat = 'أخرى';
+    if (title.includes('بيع') || title.includes('bay')) cat = 'بيع';
+    else if (title.includes('إيجار') || title.includes('ijar') || title.includes('سكن')) cat = 'إيجار';
+    else if (title.includes('شركة') || title.includes('sharaka')) cat = 'شركة';
+    else if (title.includes('وكالة') || title.includes('wkala') || title.includes('wakala')) cat = 'وكالة';
+    else if (title.includes('قرض') || title.includes('qrd')) cat = 'قرض';
+    else if (title.includes('تنازل') || title.includes('tnazl')) cat = 'تنازل';
+    else if (title.includes('إقرار') || title.includes('iqrar')) cat = 'إقرار';
+    else if (title.includes('كفالة') || title.includes('kfala')) cat = 'كفالة';
+    
+    if (!categories[cat]) categories[cat] = [];
+    categories[cat].push(c);
+    categories['الكل'].push(c);
+  });
+  return categories;
+}
+
+function renderTabs() {
+  const tabs = document.getElementById('tabs');
+  const categories = getCategories();
+  
+  tabs.innerHTML = Object.keys(categories).map(cat => 
+    `<button class="tab ${cat === currentCategory ? 'active' : ''}" onclick="setCategory('${cat}')">${cat} (${categories[cat].length})</button>`
+  ).join('');
+}
+
+function setCategory(cat) {
+  currentCategory = cat;
+  renderTabs();
+  renderContracts();
+}
+
+function renderContracts() {
+  const grid = document.getElementById('contractsGrid');
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  const categories = getCategories();
+  
+  let contracts = currentCategory === 'الكل' ? db.contracts : (categories[currentCategory] || []);
+  
+  if (query) {
+    contracts = contracts.filter(c => (c.title || '').toLowerCase().includes(query));
+  }
+  
+  if (contracts.length === 0) {
+    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-light);grid-column:1/-1">لا توجد عقود</div>';
+    return;
+  }
+  
+  grid.innerHTML = contracts.map((c, i) => `
+    <div class="contract-card" onclick="showContract(${i})">
+      <h4>📄 ${c.title || c.slug}</h4>
+      <p>${c.description || c.content[0] || 'عقد قانوني جاهز للاستخدام'}</p>
+      <div class="meta">
+        <span>${c.content ? c.content.length + ' بند' : ''}</span>
+        <span class="btn btn-accent" style="padding:4px 12px;font-size:12px">عرض العقد</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function showContract(index) {
+  const categories = getCategories();
+  const contracts = currentCategory === 'الكل' ? db.contracts : (categories[currentCategory] || []);
+  const contract = contracts[index];
+  if (!contract) return;
+  
+  currentContract = contract;
+  document.getElementById('modalTitle').textContent = contract.title || contract.slug;
+  
+  let content = '';
+  if (contract.content && contract.content.length > 0) {
+    contract.content.forEach((block, i) => {
+      content += `<p>${block}</p>`;
+    });
+  }
+  document.getElementById('modalContent').innerHTML = content || '<p>لا يوجد محتوى</p>';
+  document.getElementById('contractModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('contractModal').classList.remove('show');
+}
+
+function downloadContract() {
+  if (!currentContract) return;
+  
+  let text = currentContract.title + '\n';
+  text += '='.repeat(50) + '\n\n';
+  if (currentContract.content) {
+    currentContract.content.forEach(block => {
+      text += block + '\n\n';
+    });
+  }
+  
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (currentContract.title || 'contract') + '.txt';
+  a.click();
+}
+
+function filterContracts() {
+  renderContracts();
+}
+
+// Close modal on outside click
+document.getElementById('contractModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+loadDB();
+</script>
+</body>
+</html>

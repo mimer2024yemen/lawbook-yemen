@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>القوانين اليمنية | لوبوك</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--primary:#1e40af;--primary-light:#3b82f6;--secondary:#0f172a;--accent:#f59e0b;--bg:#f8fafc;--card:#fff;--text:#1e293b;--text-light:#64748b;--border:#e2e8f0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+.header{background:var(--secondary);padding:16px 24px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:white}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),#d4a843);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.logo-text{font-size:20px;font-weight:800}
+.back-btn{color:rgba(255,255,255,0.8);text-decoration:none;display:flex;align-items:center;gap:6px;font-size:14px}
+.back-btn:hover{color:white}
+.container{max-width:1200px;margin:0 auto;padding:24px}
+.page-header{text-align:center;padding:40px 0}
+.page-header h1{font-size:2rem;font-weight:800;margin-bottom:8px}
+.page-header p{color:var(--text-light)}
+.search-box{margin:20px 0;text-align:center}
+.search-box input{width:100%;max-width:500px;padding:14px 20px;border-radius:12px;border:1px solid var(--border);background:white;font-size:15px;font-family:inherit;outline:none;direction:rtl}
+.search-box input:focus{border-color:var(--primary-light)}
+.tabs{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap;justify-content:center}
+.tab{padding:8px 20px;border-radius:8px;background:white;border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:14px;transition:all 0.2s;color:var(--text-light)}
+.tab:hover,.tab.active{background:var(--primary);color:white;border-color:var(--primary)}
+.laws-grid{display:grid;gap:12px;margin:20px 0}
+.law-card{background:white;border-radius:12px;padding:16px 20px;border:1px solid var(--border);display:flex;align-items:center;gap:16px;cursor:pointer;transition:all 0.2s;text-decoration:none;color:var(--text)}
+.law-card:hover{border-color:var(--primary-light);box-shadow:0 4px 15px rgba(0,0,0,0.05)}
+.law-icon{width:45px;height:45px;border-radius:10px;background:rgba(30,64,175,0.08);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:18px;flex-shrink:0}
+.law-info{flex:1}
+.law-info h4{font-size:15px;font-weight:600;margin-bottom:4px}
+.law-info p{font-size:13px;color:var(--text-light);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:600px}
+.law-badge{background:rgba(30,64,175,0.08);color:var(--primary);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;flex-shrink:0}
+.footer{background:var(--secondary);color:rgba(255,255,255,0.7);text-align:center;padding:30px 24px;margin-top:40px;font-size:14px}
+@media(max-width:768px){.law-card{flex-direction:column;align-items:flex-start}.law-info p{white-space:normal}}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="header-inner">
+<a href="index.html" class="logo">
+<div class="logo-icon">⚖</div>
+<div class="logo-text">لوبوك</div>
+</a>
+<a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i> الرئيسية</a>
+</div>
+</header>
+
+<div class="container">
+<div class="page-header">
+<h1>📚 القوانين اليمنية</h1>
+<p>مجموعة شاملة من القوانين اليمنية النافذة</p>
+</div>
+
+<div class="search-box">
+<input type="text" id="searchInput" placeholder="🔍 ابحث في القوانين..." oninput="filterLaws()">
+</div>
+
+<div class="tabs" id="tabs"></div>
+<div class="laws-grid" id="lawsGrid"></div>
+</div>
+
+<footer class="footer">
+<p>© 2024 لوبوك - المنصة القانونية اليمنية</p>
+</footer>
+
+<script>
+let db = null;
+let currentSection = 'all';
+
+async function loadDB() {
+  const res = await fetch('database.json');
+  db = await res.json();
+  renderTabs();
+  renderLaws();
+}
+
+function renderTabs() {
+  const tabs = document.getElementById('tabs');
+  const sections = [
+    { key: 'all', name: 'الكل' },
+    { key: 'personal-status', name: 'الأحوال الشخصية' },
+    { key: 'civil', name: 'المدني' },
+    { key: 'commercial', name: 'التجاري' },
+    { key: 'criminal', name: 'الجنائي' },
+    { key: 'labor', name: 'العمل' },
+    { key: 'yemeni-laws', name: 'متنوعة' }
+  ];
+  
+  tabs.innerHTML = sections.map(s => 
+    `<button class="tab ${s.key === currentSection ? 'active' : ''}" onclick="setSection('${s.key}')">${s.name}</button>`
+  ).join('');
+}
+
+function setSection(key) {
+  currentSection = key;
+  renderTabs();
+  renderLaws();
+}
+
+function renderLaws() {
+  const grid = document.getElementById('lawsGrid');
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  
+  let laws = [];
+  if (currentSection === 'all') {
+    Object.entries(db.laws).forEach(([section, pages]) => {
+      pages.forEach(p => laws.push({ ...p, section }));
+    });
+  } else {
+    (db.laws[currentSection] || []).forEach(p => laws.push({ ...p, section: currentSection }));
+  }
+  
+  if (query) {
+    laws = laws.filter(l => 
+      l.title.toLowerCase().includes(query) || 
+      l.content.some(c => c.toLowerCase().includes(query))
+    );
+  }
+  
+  if (laws.length === 0) {
+    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-light)">لا توجد نتائج</div>';
+    return;
+  }
+  
+  grid.innerHTML = laws.slice(0, 100).map(l => `
+    <a href="${l.url}" target="_blank" class="law-card">
+      <div class="law-icon"><i class="fas fa-gavel"></i></div>
+      <div class="law-info">
+        <h4>${l.title}</h4>
+        <p>${l.content[0] || l.description || ''}</p>
+      </div>
+      <span class="law-badge">${l.articles ? l.articles.length + ' مادة' : l.section}</span>
+    </a>
+  `).join('');
+}
+
+function filterLaws() {
+  renderLaws();
+}
+
+loadDB();
+</script>
+</body>
+</html>
