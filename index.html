@@ -922,6 +922,92 @@ function renderArticles() {
 }
 
 // Search
+// Smart search cache
+let searchCache = {};
+let searchIndex = null;
+
+// Build search index on load
+function buildSearchIndex() {
+  if (searchIndex) return;
+  searchIndex = { laws: [], contracts: [], posts: [] };
+  
+  Object.entries(db.laws).forEach(([section, pages]) => {
+    pages.forEach(page => {
+      searchIndex.laws.push({
+        type: 'law',
+        title: page.title || '',
+        titleLower: (page.title || '').toLowerCase(),
+        content: (page.content || []).join(' ').toLowerCase(),
+        url: page.url,
+        typeLabel: 'قانون',
+        section: section
+      });
+    });
+  });
+  
+  db.contracts.forEach(c => {
+    searchIndex.contracts.push({
+      type: 'contract',
+      title: c.title || c.slug || '',
+      titleLower: (c.title || c.slug || '').toLowerCase(),
+      content: (c.content || []).join(' ').toLowerCase(),
+      url: c.url,
+      typeLabel: 'عقد'
+    });
+  });
+  
+  (db.posts || []).forEach(p => {
+    searchIndex.posts.push({
+      type: 'post',
+      title: p.title || '',
+      titleLower: (p.title || '').toLowerCase(),
+      content: (p.description || '').toLowerCase(),
+      url: p.url,
+      typeLabel: 'مقال'
+    });
+  });
+}
+
+// Smart scoring function
+function scoreMatch(item, query) {
+  let score = 0;
+  const title = item.titleLower;
+  const content = item.content;
+  
+  // Title exact match = highest score
+  if (title === query) return 1000;
+  
+  // Title starts with query
+  if (title.startsWith(query)) score += 500;
+  
+  // Title contains query as whole word
+  if (title.includes(query)) score += 300;
+  
+  // Title contains query
+  const titleWords = title.split(/\s+/);
+  const queryWords = query.split(/\s+/);
+  
+  queryWords.forEach(qw => {
+    if (qw.length < 2) return;
+    titleWords.forEach(tw => {
+      if (tw === qw) score += 100;
+      else if (tw.startsWith(qw)) score += 50;
+      else if (tw.includes(qw)) score += 20;
+    });
+  });
+  
+  // Content match (lower priority)
+  if (content.includes(query)) score += 10;
+  queryWords.forEach(qw => {
+    if (qw.length >= 2 && content.includes(qw)) score += 5;
+  });
+  
+  // Boost law type
+  if (item.type === 'law') score += 5;
+  
+  return score;
+}
+
 function handleSearch(query) {
   const results = document.getElementById('searchResults');
   if (!query || query.length < 2) {
@@ -929,42 +1015,52 @@ function handleSearch(query) {
     return;
   }
   
-  const matches = [];
-  const regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-  
-  Object.entries(db.laws).forEach(([section, pages]) => {
-    pages.forEach(page => {
-      if (regex.test(page.title) || (page.content && page.content.some(c => regex.test(c)))) {
-        matches.push({ type: 'law', title: page.title, url: page.url, typeLabel: 'قانون' });
-      }
-    });
-  });
-  
-  db.contracts.forEach(c => {
-    if (regex.test(c.title || '')) {
-      matches.push({ type: 'contract', title: c.title, url: c.url, typeLabel: 'عقد' });
-    }
-  });
-  
-  if (db.posts) {
-    db.posts.forEach(p => {
-      if (regex.test(p.title || '')) {
-        matches.push({ type: 'post', title: p.title, url: p.url, typeLabel: 'مقال' });
-      }
-    });
+  // Check cache
+  const cacheKey = query.toLowerCase();
+  if (searchCache[cacheKey]) {
+    renderSearchResults(searchCache[cacheKey], results);
+    return;
   }
   
+  // Build index if needed
+  buildSearchIndex();
+  
+  const queryLower = cacheKey;
+  const allItems = [...searchIndex.laws, ...searchIndex.contracts, ...searchIndex.posts];
+  
+  // Score and filter
+  const scored = [];
+  for (let i = 0; i < allItems.length; i++) {
+    const item = allItems[i];
+    const score = scoreMatch(item, queryLower);
+    if (score > 0) {
+      scored.push({ item, score });
+    }
+  }
+  
+  // Sort by score (highest first)
+  scored.sort((a, b) => b.score - a.score);
+  
+  // Get top results
+  const matches = scored.slice(0, 10).map(s => s.item);
+  
+  // Cache results
+  searchCache[cacheKey] = matches;
+  
+  renderSearchResults(matches, results);
+}
+
+function renderSearchResults(matches, results) {
   if (matches.length === 0) {
     results.innerHTML = '<div class="result-empty">لا توجد نتائج</div>';
   } else {
-    results.innerHTML = matches.slice(0, 8).map(m => `
+    results.innerHTML = matches.map(m => `
       <a href="${m.url}" target="_blank" class="search-result-item">
         <span class="result-type ${m.type}">${m.typeLabel}</span>
         <span class="result-title">${m.title}</span>
       </a>
     `).join('');
   }
-  
   results.classList.add('show');
 }
 
