@@ -118,7 +118,76 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .footer-col a:hover{color:var(--gold)}
 .footer-bottom{max-width:1200px;margin:0 auto;padding-top:16px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;font-size:12px}
 
-@media(max-width:768px){.menu-toggle{display:block}.nav-links{display:none;position:absolute;top:64px;left:0;right:0;background:var(--navy);flex-direction:column;padding:16px;border-top:1px solid rgba(255,255,255,.08)}.nav-links.open{display:flex}.hero h1{font-size:1.8rem}.hero-stats{gap:16px;flex-wrap:wrap}.hero-stat-num{font-size:1.3rem}.section-title{font-size:1.3rem}.footer-bottom{flex-direction:column;gap:12px;text-align:center}}
+/* Responsive Breakpoints */
+
+/* Tablet (768px - 1024px) */
+@media(max-width:1024px){
+  .library-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  .hero h1{font-size:2.2rem}
+  .hero-stats{gap:24px}
+}
+
+/* Mobile (480px - 768px) */
+@media(max-width:768px){
+  .menu-toggle{display:block}
+  .nav-links{display:none;position:absolute;top:64px;left:0;right:0;background:var(--navy);flex-direction:column;padding:16px;border-top:1px solid rgba(255,255,255,.08);gap:4px}
+  .nav-links.open{display:flex}
+  .nav-link{padding:12px 16px;font-size:15px}
+  .hero{padding:40px 16px 36px}
+  .hero h1{font-size:1.8rem}
+  .hero p{font-size:14px}
+  .hero-stats{gap:16px;flex-wrap:wrap}
+  .hero-stat-num{font-size:1.3rem}
+  .hero-stat-label{font-size:11px}
+  .search-input{padding:12px 48px 12px 16px;font-size:14px}
+  .search-btn{width:38px;height:38px}
+  .section{padding:30px 0}
+  .section-title{font-size:1.3rem}
+  .section-desc{font-size:13px}
+  .library-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .library-card{padding:16px}
+  .library-card-icon{width:40px;height:40px;font-size:18px;margin-bottom:12px}
+  .library-card h3{font-size:15px}
+  .library-card p{font-size:12px}
+  .laws-list{gap:8px}
+  .law-item{padding:12px 14px;gap:10px}
+  .law-item-icon{width:36px;height:36px;font-size:14px}
+  .law-item-info h4{font-size:13px}
+  .law-item-info p{font-size:11px}
+  .contracts-grid{grid-template-columns:1fr;gap:12px}
+  .contract-item{padding:14px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:20px}
+  .footer-bottom{flex-direction:column;gap:12px;text-align:center}
+}
+
+/* Small Mobile (< 480px) */
+@media(max-width:480px){
+  .navbar-inner{height:56px;padding:0 12px}
+  .brand-name{font-size:18px}
+  .brand-icon{width:34px;height:34px;font-size:13px}
+  .hero{padding:30px 12px 28px}
+  .hero h1{font-size:1.5rem}
+  .hero p{font-size:13px;margin-bottom:20px}
+  .hero-badge{font-size:11px;padding:4px 12px}
+  .hero-stats{gap:12px}
+  .hero-stat-num{font-size:1.2rem}
+  .search-input{padding:10px 44px 10px 12px;font-size:13px}
+  .search-btn{width:34px;height:34px;font-size:16px}
+  .container{padding:0 12px}
+  .section{padding:24px 0}
+  .section-title{font-size:1.2rem}
+  .library-grid{grid-template-columns:1fr;gap:10px}
+  .library-card{padding:14px}
+  .library-card-footer{font-size:12px}
+  .law-item{padding:10px 12px;flex-wrap:wrap}
+  .law-item-badge{font-size:10px}
+  .features-grid{grid-template-columns:1fr;gap:12px}
+  .feature{padding:18px 14px}
+  .footer{padding:30px 12px 16px}
+  .footer-grid{grid-template-columns:1fr;gap:16px}
+  .footer-col h4{font-size:13px}
+  .footer-col a{font-size:12px}
+}
 </style>
 </head>
 <body>

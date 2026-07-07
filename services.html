@@ -34,7 +34,28 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .feature-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2)}
 .feature-item::before{content:'✓';color:var(--gold);font-weight:700}
 .footer{background:var(--navy);color:rgba(255,255,255,.5);text-align:center;padding:24px;font-size:12px}
-@media(max-width:768px){.grid{grid-template-columns:1fr}}
+/* Responsive */
+@media(max-width:1024px){
+  .grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+}
+
+@media(max-width:768px){
+  .navbar-inner{height:56px}
+  .page-head{padding:30px 0 16px}
+  .page-head h1{font-size:1.6rem}
+  .grid{grid-template-columns:1fr;gap:14px}
+  .service-card{padding:20px}
+  .service-icon{width:50px;height:50px;font-size:24px}
+  .service-card h3{font-size:16px}
+  .service-card p{font-size:13px}
+  .features{gap:6px}
+  .feature-item{font-size:12px}
+}
+
+@media(max-width:480px){
+  .container{padding:0 12px}
+  .page-head h1{font-size:1.4rem}
+}
 </style>
 </head>
 <body>

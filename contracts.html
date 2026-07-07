@@ -38,7 +38,31 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2)}
 .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
 .footer{background:var(--navy);color:rgba(255,255,255,.5);text-align:center;padding:24px;font-size:12px}
-@media(max-width:768px){.grid{grid-template-columns:1fr}}
+/* Responsive */
+@media(max-width:1024px){
+  .grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+}
+
+@media(max-width:768px){
+  .navbar-inner{height:56px}
+  .page-head{padding:30px 0 16px}
+  .page-head h1{font-size:1.6rem}
+  .tabs{gap:4px}
+  .tab{padding:6px 10px;font-size:12px}
+  .grid{grid-template-columns:1fr;gap:12px}
+  .card{padding:14px}
+  .card h4{font-size:14px}
+  .card p{font-size:12px}
+  .card-actions{flex-wrap:wrap;gap:6px}
+  .card-actions .btn{flex:1;justify-content:center;font-size:11px;padding:6px 10px}
+}
+
+@media(max-width:480px){
+  .container{padding:0 12px}
+  .page-head h1{font-size:1.4rem}
+  .tabs{flex-wrap:wrap;justify-content:center}
+  .tab{font-size:11px;padding:5px 8px}
+}
 </style>
 </head>
 <body>
