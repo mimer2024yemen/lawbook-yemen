@@ -3,40 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>القوانين اليمنية | لوبوك</title>
+<title>القوانين | لوبوك</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>LB</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--font:'IBM Plex Sans Arabic',sans-serif;--navy:#0c1a3a;--blue:#1e40af;--blue-light:#3b82f6;--gold:#d4a843;--bg:#f4f6fa;--card:#fff;--text:#1a1f2e;--text-2:#5a6178;--text-3:#8b92a5;--border:#e5e8f0;--shadow:0 1px 3px rgba(0,0,0,.06);--shadow-md:0 4px 12px rgba(0,0,0,.07);--radius:12px}
+:root{--font:'IBM Plex Sans Arabic',sans-serif;--navy:#0c1a3a;--blue:#1e40af;--gold:#d4a843;--bg:#f4f6fa;--card:#fff;--text:#1a1f2e;--text2:#5a6178;--text3:#8b92a5;--border:#e5e8f0;--shadow-md:0 4px 12px rgba(0,0,0,.07);--r:12px}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.7}
 .navbar{background:var(--navy);position:sticky;top:0;z-index:100;border-bottom:3px solid var(--gold)}
 .navbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:60px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
 .brand-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),#f5c563);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--navy)}
 .brand-name{font-size:20px;font-weight:700}
-.back-btn{color:rgba(255,255,255,.7);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px;transition:all .15s}
+.back-btn{color:rgba(255,255,255,.7);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px}
 .back-btn:hover{color:#fff;background:rgba(255,255,255,.08)}
 .container{max-width:1200px;margin:0 auto;padding:0 20px}
 .page-head{text-align:center;padding:40px 0 20px}
 .page-head h1{font-size:2rem;font-weight:700;margin-bottom:6px}
-.page-head p{color:var(--text-2);font-size:15px}
+.page-head p{color:var(--text2);font-size:15px}
 .search-box{margin:20px 0;text-align:center}
-.search-box input{width:100%;max-width:500px;padding:12px 18px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);font-size:14px;font-family:var(--font);outline:none;direction:rtl;transition:border-color .15s}
-.search-box input:focus{border-color:var(--blue-light);box-shadow:0 0 0 3px rgba(59,130,246,.08)}
+.search-box input{width:100%;max-width:500px;padding:12px 18px;border-radius:var(--r);border:1px solid var(--border);background:var(--card);font-size:14px;font-family:var(--font);outline:none;direction:rtl}
+.search-box input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,64,175,.08)}
 .tabs{display:flex;gap:6px;margin:16px 0;flex-wrap:wrap;justify-content:center}
-.tab{padding:7px 16px;border-radius:8px;background:var(--card);border:1px solid var(--border);cursor:pointer;font-family:var(--font);font-size:13px;transition:all .15s;color:var(--text-2)}
+.tab{padding:7px 14px;border-radius:8px;background:var(--card);border:1px solid var(--border);cursor:pointer;font-family:var(--font);font-size:13px;transition:all .15s;color:var(--text2)}
 .tab:hover,.tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
-.laws-grid{display:grid;gap:10px;margin:16px 0;padding-bottom:40px}
-.law-card{background:var(--card);border-radius:var(--radius);padding:14px 18px;border:1px solid var(--border);display:flex;align-items:center;gap:14px;transition:all .15s;text-decoration:none;color:var(--text)}
-.law-card:hover{border-color:var(--blue-light);box-shadow:var(--shadow-md)}
-.law-icon{width:40px;height:40px;border-radius:8px;background:rgba(30,64,175,.06);display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:16px;flex-shrink:0}
+.grid{display:grid;gap:12px;margin:16px 0;padding-bottom:40px}
+.law-card{background:var(--card);border-radius:var(--r);padding:16px 20px;border:1px solid var(--border);display:flex;align-items:center;gap:16px;transition:all .15s}
+.law-card:hover{border-color:var(--blue);box-shadow:var(--shadow-md)}
+.law-icon{width:44px;height:44px;border-radius:10px;background:rgba(30,64,175,.06);display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:18px;flex-shrink:0}
 .law-info{flex:1;min-width:0}
-.law-info h4{font-size:14px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.law-info p{font-size:12px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.law-badge{background:rgba(30,64,175,.06);color:var(--blue);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;flex-shrink:0}
+.law-info h4{font-size:14px;font-weight:600;margin-bottom:3px}
+.law-info p{font-size:12px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.law-actions{display:flex;gap:6px;flex-shrink:0}
+.btn{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:6px;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;text-decoration:none;border:none}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{box-shadow:0 4px 12px rgba(212,168,67,.3)}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
 .footer{background:var(--navy);color:rgba(255,255,255,.5);text-align:center;padding:24px;font-size:12px}
-@media(max-width:768px){.law-card{flex-direction:column;align-items:flex-start}.law-info p{white-space:normal}}
+@media(max-width:768px){.law-card{flex-direction:column;align-items:flex-start}.law-actions{width:100%}.law-actions .btn{flex:1;justify-content:center}}
 </style>
 </head>
 <body>
@@ -45,17 +51,162 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 <div class="page-head"><h1>القوانين اليمنية</h1><p>مجموعة شاملة من القوانين اليمنية النافذة</p></div>
 <div class="search-box"><input type="text" id="searchInput" placeholder="ابحث في القوانين..." oninput="filterLaws()"></div>
 <div class="tabs" id="tabs"></div>
-<div class="laws-grid" id="lawsGrid"></div>
+<div class="grid" id="grid"></div>
 </div>
-<footer class="footer">&copy; 2024 لوبوك - المنصة القانونية اليمنية</footer>
+<footer class="footer">&copy; 2024 لوبوك - المكتبة القانونية اليمنية</footer>
+
 <script>
-let db=null,section='all';
-async function load(){const r=await fetch('database.json');db=await r.json();const p=new URLSearchParams(location.search);if(p.get('section'))section=p.get('section');renderTabs();renderLaws()}
-function renderTabs(){const s=[{k:'all',n:'الكل'},{k:'personal-status',n:'الأحوال الشخصية'},{k:'civil',n:'المدني'},{k:'commercial',n:'التجاري'},{k:'criminal',n:'الجنائي'},{k:'labor',n:'العمل'},{k:'yemeni-laws',n:'متنوعة'}];document.getElementById('tabs').innerHTML=s.map(t=>`<button class="tab${t.k===section?' active':''}" onclick="setS('${t.k}')">${t.n}</button>`).join('')}
-function setS(k){section=k;renderTabs();renderLaws()}
-function renderLaws(){const g=document.getElementById('lawsGrid'),q=document.getElementById('searchInput').value.trim().toLowerCase();let laws=[];if(section==='all')Object.entries(db.laws).forEach(([s,p])=>p.forEach(l=>laws.push({...l,section:s})));else(db.laws[section]||[]).forEach(l=>laws.push({...l,section}));if(q)laws=laws.filter(l=>l.title.toLowerCase().includes(q)||(l.content||[]).some(c=>c.toLowerCase().includes(q)));if(!laws.length){g.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-3)">لا توجد نتائج</div>';return}g.innerHTML=laws.slice(0,80).map(l=>`<a href="${l.url}" target="_blank" class="law-card"><div class="law-icon">&#9876;</div><div class="law-info"><h4>${l.title}</h4><p>${(l.content||[])[0]||''}</p></div><span class="law-badge">${l.articles?l.articles.length+' مادة':l.section}</span></a>`).join('')}
-function filterLaws(){renderLaws()}
-load();
+var db=null;
+var section='all';
+
+async function loadDB(){
+  var r=await fetch('database.json');
+  db=await r.json();
+  var p=new URLSearchParams(location.search);
+  if(p.get('section'))section=p.get('section');
+  renderTabs();
+  renderLaws();
+}
+
+function renderTabs(){
+  var s=[
+    {k:'all',n:'الكل'},
+    {k:'personal-status',n:'الأحوال الشخصية'},
+    {k:'civil',n:'المدني'},
+    {k:'commercial',n:'التجاري'},
+    {k:'criminal',n:'الجنائي'},
+    {k:'labor',n:'العمل'},
+    {k:'yemeni-laws',n:'القوانين'}
+  ];
+  var html='';
+  for(var i=0;i<s.length;i++){
+    html+='<button class="tab'+(s[i].k===section?' active':'')+'" onclick="setSection(\''+s[i].k+'\')">'+s[i].n+'</button>';
+  }
+  document.getElementById('tabs').innerHTML=html;
+}
+
+function setSection(k){section=k;renderTabs();renderLaws();}
+
+function renderLaws(){
+  var grid=document.getElementById('grid');
+  var q=document.getElementById('searchInput').value.trim().toLowerCase();
+  var laws=[];
+  
+  if(section==='all'){
+    var sections=Object.keys(db.laws);
+    for(var i=0;i<sections.length;i++){
+      var pages=db.laws[sections[i]];
+      for(var j=0;j<pages.length;j++){
+        laws.push(pages[j]);
+      }
+    }
+  }else{
+    var pages=db.laws[section]||[];
+    for(var i=0;i<pages.length;i++){
+      laws.push(pages[i]);
+    }
+  }
+  
+  if(q){
+    var filtered=[];
+    for(var i=0;i<laws.length;i++){
+      var l=laws[i];
+      if((l.title||'').toLowerCase().indexOf(q)!==-1){
+        filtered.push(l);
+      }
+    }
+    laws=filtered;
+  }
+  
+  var html='';
+  for(var i=0;i<laws.length;i++){
+    var l=laws[i];
+    var desc='';
+    if(l.content&&l.content.length>0){
+      desc=l.content[0];
+      if(desc.length>100)desc=desc.substring(0,100)+'...';
+    }
+    var badge='';
+    if(l.articles&&l.articles.length>0){
+      badge='<span style="background:rgba(30,64,175,.06);color:var(--blue);padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;flex-shrink:0">'+l.articles.length+' مادة</span>';
+    }
+    
+    html+='<div class="law-card">';
+    html+='<div class="law-icon">&#9876;</div>';
+    html+='<div class="law-info"><h4>'+l.title+'</h4><p>'+desc+'</p></div>';
+    html+=badge;
+    html+='<div class="law-actions">';
+    html+='<button class="btn btn-gold" onclick="downloadPDF(\''+l.url+'\')">&#128190; PDF</button>';
+    html+='<button class="btn btn-blue" onclick="window.open(\''+l.url+'\',\'_blank\')">&#128065; عرض</button>';
+    html+='</div></div>';
+  }
+  
+  grid.innerHTML=html||'<div style="text-align:center;padding:40px;color:var(--text3)">لا توجد نتائج</div>';
+}
+
+function filterLaws(){renderLaws();}
+
+function downloadPDF(url){
+  // Find law data
+  var law=null;
+  var sections=Object.keys(db.laws);
+  for(var i=0;i<sections.length;i++){
+    var pages=db.laws[sections[i]];
+    for(var j=0;j<pages.length;j++){
+      if(pages[j].url===url){
+        law=pages[j];
+        break;
+      }
+    }
+    if(law)break;
+  }
+  
+  if(!law){window.open(url,'_blank');return;}
+  
+  var title=law.title||'قانون';
+  var content='';
+  if(law.articles&&law.articles.length>0){
+    for(var i=0;i<law.articles.length;i++){
+      var a=law.articles[i];
+      content+='<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #e5e8f0">';
+      content+='<strong style="color:#0b225a">مادة ('+a.number+')</strong> ';
+      content+='<span>'+a.text+'</span>';
+      content+='</div>';
+    }
+  }else if(law.content){
+    for(var i=0;i<law.content.length;i++){
+      content+='<div style="margin-bottom:10px;line-height:2;font-size:14px">'+law.content[i]+'</div>';
+    }
+  }
+  
+  var pdfHtml='<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>'+title+'</title>';
+  pdfHtml+='<style>';
+  pdfHtml+='@page{size:Letter;margin:0.55in 0.39in}';
+  pdfHtml+='body{font-family:"IBM Plex Sans Arabic",Tahoma,Arial,sans-serif;margin:0;padding:0;background:#fff}';
+  pdfHtml+='@media screen{body{background:#e5e7eb}.page{width:min(8.5in,calc(100vw - 40px));min-height:11in;margin:20px auto;background:#fff;padding:0.5in;box-shadow:0 10px 40px rgba(0,0,0,.15)}}';
+  pdfHtml+='@media print{.page{width:100%;padding:0;margin:0;box-shadow:none}}';
+  pdfHtml+='.header{text-align:center;padding-bottom:12px;border-bottom:2px solid #d4a843;margin-bottom:20px}';
+  pdfHtml+='.header h2{font-size:16px;color:#0c1a3a;margin:0 0 4px;font-weight:700}';
+  pdfHtml+='.header p{font-size:11px;color:#8b92a5;margin:0}';
+  pdfHtml+='.title{text-align:center;font-size:22px;font-weight:900;color:#0b225a;margin-bottom:20px;line-height:1.5}';
+  pdfHtml+='.content{direction:rtl;text-align:right}';
+  pdfHtml+='.footer{text-align:center;padding-top:12px;border-top:1px solid #d6c288;margin-top:30px;font-size:10px;color:#8b92a5}';
+  pdfHtml+='</style></head><body>';
+  pdfHtml+='<div class="page">';
+  pdfHtml+='<div class="header"><h2>لوبوك - المكتبة القانونية اليمنية</h2><p>www.lawbook-ye.com</p></div>';
+  pdfHtml+='<div class="title">'+title+'</div>';
+  pdfHtml+='<div class="content">'+content+'</div>';
+  pdfHtml+='<div class="footer">تم تحميل هذا المحرر من لوبوك - المكتبة القانونية اليمنية | '+new Date().toLocaleDateString('ar')+'</div>';
+  pdfHtml+='</div></body></html>';
+  
+  var win=window.open('','_blank');
+  win.document.write(pdfHtml);
+  win.document.close();
+  
+  setTimeout(function(){win.print();},500);
+}
+
+loadDB();
 </script>
 </body>
 </html>
