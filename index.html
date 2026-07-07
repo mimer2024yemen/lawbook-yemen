@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>لوبوك | المكتبة القانونية اليمنية</title>
-<meta name="description" content="لوبوك - المكتبة القانونية اليمنية الشاملة. دعاوى مدنية، أحوال شخصية، جنائية، تجارية، قوانين يمنية، عقود قانونية.">
+<meta name="description" content="لوبوك - المكتبة القانونية اليمنية الشاملة">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>LB</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -67,7 +67,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .section-title{font-size:1.7rem;font-weight:700;margin-bottom:6px}
 .section-desc{color:var(--text2);font-size:14px;max-width:550px;margin:0 auto}
 
-/* Library Grid */
+/* Library Grid - Same as original */
 .library-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
 .library-card{background:var(--card);border-radius:var(--r-lg);padding:24px;border:1px solid var(--border);transition:all .2s;cursor:pointer;text-decoration:none;color:var(--text);display:block}
 .library-card:hover{border-color:var(--blue2);box-shadow:var(--shadow-md);transform:translateY(-2px)}
@@ -143,7 +143,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 <div class="navbar-inner">
 <a href="#" class="brand"><div class="brand-icon">LB</div><div><div class="brand-name">لوبوك</div><span class="brand-tag">المكتبة القانونية اليمنية</span></div></a>
 <div class="nav-links" id="navLinks">
-<a href="#library" class="nav-link active">المكتبة</a>
+<a href="#library" class="nav-link active">فهرس المكتبة</a>
 <a href="#laws" class="nav-link">القوانين</a>
 <a href="#contracts" class="nav-link">العقود</a>
 <a href="#contact" class="nav-link nav-cta">استشارة قانونية</a>
@@ -172,13 +172,12 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 </div>
 </section>
 
-<!-- Library Sections -->
+<!-- Library Sections - Same as Original Website -->
 <section class="section" id="library">
 <div class="container">
 <div class="section-head">
 <div class="section-label">فهرس المكتبة القانونية</div>
-<h2 class="section-title">أقسام المكتبة</h2>
-<p class="section-desc">استعرض أقسام المكتبة القانونية اليمنية</p>
+<h2 class="section-title">فهرس المكتبة القانونية اليمنية</h2>
 </div>
 <div class="library-grid" id="libraryGrid"></div>
 </div>
@@ -188,9 +187,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 <section class="section" id="laws">
 <div class="container">
 <div class="section-head">
-<div class="section-label">القوانين اليمنية</div>
-<h2 class="section-title">القوانين اليمنية النافذة</h2>
-<p class="section-desc">مجموعة شاملة من القوانين اليمنية مع نصوص المواد القانونية</p>
+<div class="section-label">القوانين</div>
+<h2 class="section-title">القوانين اليمنية</h2>
 </div>
 <div class="laws-list" id="lawsList"></div>
 </div>
@@ -200,9 +198,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 <section class="section" id="contracts">
 <div class="container">
 <div class="section-head">
-<div class="section-label">نماذج العقود</div>
-<h2 class="section-title">عقود قانونية جاهزة</h2>
-<p class="section-desc">نماذج عقود قانونية احترافية جاهزة للاستخدام</p>
+<div class="section-label">العقود</div>
+<h2 class="section-title">نماذج العقود</h2>
 </div>
 <div class="contracts-grid" id="contractsGrid"></div>
 </div>
@@ -228,7 +225,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 <div class="section-head">
 <div class="section-label">تواصل معنا</div>
 <h2 class="section-title">استشارة قانونية</h2>
-<p class="section-desc">هل تحتاج مساعدة قانونية؟ تواصل مع فريقنا</p>
 </div>
 <div style="text-align:center">
 <a href="https://wa.me/967777777777" style="display:inline-flex;align-items:center;gap:10px;background:#25D366;color:white;padding:14px 28px;border-radius:10px;text-decoration:none;font-size:16px;font-weight:600">تواصل عبر واتساب</a>
@@ -240,7 +236,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 <footer class="footer">
 <div class="footer-grid">
 <div class="footer-col"><h4>لوبوك</h4><p style="font-size:13px;line-height:1.8">المكتبة القانونية اليمنية الشاملة.</p></div>
-<div class="footer-col"><h4>روابط سريعة</h4><a href="#library">المكتبة</a><a href="#laws">القوانين</a><a href="#contracts">العقود</a></div>
+<div class="footer-col"><h4>روابط سريعة</h4><a href="#library">فهرس المكتبة</a><a href="#laws">القوانين</a><a href="#contracts">العقود</a></div>
 <div class="footer-col"><h4>القوانين</h4><a href="#">قانون الأحوال الشخصية</a><a href="#">القانون المدني</a><a href="#">القانون التجاري</a></div>
 <div class="footer-col"><h4>تواصل معنا</h4><a href="#">info@lawbook-ye.com</a><a href="#">+967 777 777 777</a></div>
 </div>
@@ -317,19 +313,20 @@ function doSearch(){const q=document.getElementById('heroSearch').value;if(q)han
 
 document.addEventListener('click',function(e){if(!e.target.closest('.search-wrap'))document.getElementById('searchResults').classList.remove('show')});
 
-// Render Library Sections
+// Render Library - Same structure as original website
 function renderLibrary(){
   const grid=document.getElementById('libraryGrid');
+  // Same sections as original website
   const sections=[
-    {key:'litigation-procedures',name:'إجراءات التقاضي',desc:'شرح إجراءات رفع الدعاوى والطعون',icon:'&#128203;',color:'blue'},
-    {key:'legal-procedure-deadlines',name:'مواعيد الإجراءات القانونية',desc:'المهل والمواعيد القانونية للإجراءات',icon:'&#128197;',color:'gold'},
-    {key:'civil',name:'الدعاوى المدنية',desc:'شرح الدعاوى المدنية والإجراءات',icon:'&#9878;',color:'navy'},
-    {key:'urgent',name:'الدعاوى المستعجلة',desc:'شرح الدعاوى المستعجلة وحالاتها',icon:'&#9889;',color:'red'},
-    {key:'commercial',name:'الدعاوى التجارية',desc:'شرح دعاوى القانون التجاري',icon:'&#127978;',color:'gold'},
-    {key:'personal-status',name:'الأحوال الشخصية',desc:'دعاوى نفقة وحضانة وفسخ',icon:'&#128101;',color:'blue'},
-    {key:'criminal',name:'الجرائم الجنائية',desc:'شرح الجرائم والعقوبات',icon:'&#9876;',color:'red'},
-    {key:'labor',name:'قانون العمل',desc:'الدعاوى العمالية وقانون العمل',icon:'&#128119;',color:'green'},
-    {key:'yemeni-laws',name:'القوانين اليمنية',desc:'القوانين اليمنية النافذة',icon:'&#127963;',color:'navy'}
+    {key:'litigation-procedures',name:'إجراءات التقاضي',desc:'فتح إجراءات التقاضي',icon:'&#128203;',color:'blue'},
+    {key:'legal-procedure-deadlines',name:'مواعيد الإجراءات القانونية',desc:'فتح مواعيد الإجراءات',icon:'&#128197;',color:'gold'},
+    {key:'civil',name:'الدعاوى المدنية',desc:'فتح الدعاوى المدنية',icon:'&#9878;',color:'navy'},
+    {key:'urgent',name:'الدعاوى المستعجلة',desc:'فتح الدعاوى المستعجلة',icon:'&#9889;',color:'red'},
+    {key:'commercial',name:'الدعاوى التجارية',desc:'فتح الدعاوى التجارية',icon:'&#127978;',color:'gold'},
+    {key:'personal-status',name:'الأحوال الشخصية',desc:'فتح الأحوال الشخصية',icon:'&#128101;',color:'blue'},
+    {key:'criminal',name:'الجرائم الجنائية',desc:'فتح الجرائم الجنائية',icon:'&#9876;',color:'red'},
+    {key:'labor',name:'قانون العمل والدعاوى العمالية',desc:'فتح الدعاوى العمالية',icon:'&#128119;',color:'green'},
+    {key:'yemeni-laws',name:'القوانين اليمنية',desc:'فتح القوانين اليمنية',icon:'&#127963;',color:'navy'}
   ];
   
   grid.innerHTML=sections.map(s=>{
@@ -343,13 +340,12 @@ function renderLibrary(){
   }).join('');
 }
 
-// Render Laws
+// Render Laws - Use exact titles from database
 function renderLaws(){
   const list=document.getElementById('lawsList');
   const allLaws=[];
   Object.entries(db.laws).forEach(([section,pages])=>{pages.forEach(p=>allLaws.push({...p,section}))});
   
-  // Show first 20
   list.innerHTML=allLaws.slice(0,20).map(l=>`<a href="${l.url}" target="_blank" class="law-item">
     <div class="law-item-icon">&#9876;</div>
     <div class="law-item-info"><h4>${l.title}</h4><p>${(l.content||[])[0]||''}</p></div>
@@ -357,7 +353,7 @@ function renderLaws(){
   </a>`).join('');
 }
 
-// Render Contracts
+// Render Contracts - Use exact titles from database
 function renderContracts(){
   const grid=document.getElementById('contractsGrid');
   const cats={};
