@@ -1,51 +1,68 @@
-# إعداد لوحة الإدارة الإنتاجية — المستشار اليمني القانوني
+# إعداد Supabase — المستشار اليمني القانوني
 
-## الخطوة 1: إنشاء مشروع Supabase
+## ✅ تم الربط
 
-1. اذهب إلى [supabase.com](https://supabase.com)
-2. أنشئ حساب مجاني
-3. أنشئ مشروع جديد
-4. احفظ **Project URL** و **anon key**
+تم ربط الموقع بمشروع Supabase الخاص بك.
 
-## الخطوة 2: إنشاء قاعدة البيانات
+### الإعدادات المُعدّة:
+- **Project URL**: `https://ocucwsjzrqrnivgytapk.supabase.co`
+- **Anon Key**: مُعدّ في `backend.js`
 
-1. في Supabase Dashboard → SQL Editor
-2. انسخ محتوى `supabase-schema.sql` والصقه
-3. اضغط Run
+## ⚠️ خطوة مطلوبة: إنشاء الجداول
 
-## الخطوة 3: تحديث الإعدادات
+يجب تشغيل مخطط قاعدة البيانات في Supabase:
 
-في ملف `backend.js`، استبدل:
+1. اذهب إلى [Supabase Dashboard](https://supabase.com/dashboard)
+2. اختر مشروعك
+3. اذهب إلى **SQL Editor**
+4. انسخ محتوى `supabase-schema.sql`
+5. اضغط **Run**
 
-```javascript
-SUPABASE_URL: 'https://xxxxx.supabase.co',
-SUPABASE_ANON_KEY: 'eyJxxxx...',
-```
+### الجداول التي سيتم إنشاؤها:
+- `admin_users` — إدارة المستخدمين
+- `knowledge_base` — قاعدة المعرفة القانونية
+- `site_analytics` — تتبع الزيارات والتحليلات
+- `audit_log` — سجل العمليات
+- `advisor_settings` — إعدادات المستشار
+- `uploaded_files` — الملفات المرفوعة
 
-## الخطوة 4: إنشاء المستخدم الأول
+## 🔐 إنشاء مستخدم الإدارة
 
 في Supabase Dashboard → Authentication → Users:
-1. أضف مستخدم جديد
-2. البريد: `admin@lawbook-ye.local`
-3. كلمة المرور: `777287583`
+1. Add User
+2. Email: `admin@lawbook-ye.local`
+3. Password: `777287583`
+4. Confirm
 
-## الخطوة 5: النشر
+## 🧪 اختبار
 
-ارفع الملفات إلى GitHub Pages أو أي استضافة static.
+بعد إنشاء الجداول:
+1. افتح `admin.html`
+2. سجل الدخول بـ `admin` / `777287583`
+3. تحقق من عمل لوحة التحكم
 
----
+## 📊 المميزات المُفعّلة
 
-## البدائل المجانية
+| الميزة | الحالة |
+|--------|--------|
+| مصادقة مركزية | ✅ |
+| قاعدة بيانات مركزية | ✅ |
+| تحليلات مركزية | ✅ |
+| سجل عمليات مركزي | ✅ |
+| إعدادات مركزية | ✅ |
+| إدارة مستخدمين | ✅ |
+| تخزين ملفات | ⚠️ يتطلب Storage bucket |
+| بحث نصي كامل | ⚠️ يتطلب تفعيل pg_trgm |
 
-إذا لم ترد Supabase:
+## 🔧 تفعيل البحث النصي (اختياري)
 
-| الخدمة | المميزات | الحد المجاني |
-|--------|---------|-------------|
-| Supabase | PostgreSQL + Auth + Storage | 500MB DB + 1GB Storage |
-| Neon | PostgreSQL فقط | 512MB |
-| PlanetScale | MySQL | 5GB |
-| Firebase | Firestore + Auth | 1GB Storage |
+في SQL Editor:
+```sql
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+```
 
-## بدون Backend
+## 📁 تفعيل تخزين الملفات (اختياري)
 
-إذا لم تُعد backend، النظام يعمل بـ IndexedDB محلياً (جهاز واحد فقط).
+في Supabase Dashboard → Storage:
+1. Create Bucket: `legal-files`
+2. Set as Public
