@@ -280,7 +280,7 @@
       typeLabel: 'مادة',
       section: section,
       sectionLabel: SECTION_LABELS[section] || law.sectionLabel || '',
-      url: law.url || 'viewer.html?type=law&section=' + encodeURIComponent(section) + '&slug=' + encodeURIComponent(law.slug || ''),
+      url: 'article.html?law=' + encodeURIComponent(law.slug || '') + '&article=' + encodeURIComponent(num) + '&section=' + encodeURIComponent(section),
       slug: law.slug || '',
       lawTitle: law.title || '',
       articleNumber: num,

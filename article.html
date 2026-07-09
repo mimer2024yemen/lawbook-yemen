@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>عرض المادة | لوبوك</title>
+<meta name="theme-color" content="#0a1628">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>LB</text></svg>">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* Article-specific styles */
+.article-page { max-width: 960px; margin: 0 auto; padding: var(--sp-6) var(--sp-4) var(--sp-10); }
+
+/* Breadcrumb */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-5);
+  font-size: 13px;
+}
+.breadcrumb a {
+  color: var(--text-tertiary);
+  text-decoration: none;
+  transition: color var(--duration-fast);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.breadcrumb a:hover { color: var(--blue-500); }
+.breadcrumb .sep { color: var(--border-medium); }
+.breadcrumb .current { color: var(--text-primary); font-weight: 600; }
+
+/* Article Hero Card */
+.article-hero {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--r-2xl);
+  padding: var(--sp-8);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--sp-5);
+  position: relative;
+  overflow: hidden;
+}
+.article-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--gold-400), var(--blue-500), var(--gold-400));
+}
+.article-law-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--navy-50);
+  color: var(--navy-600);
+  padding: 6px 14px;
+  border-radius: var(--r-full);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: var(--sp-4);
+  text-decoration: none;
+  transition: all var(--duration-fast);
+}
+.article-law-tag:hover { background: var(--navy-100); }
+.article-number-big {
+  font-size: clamp(3rem, 8vw, 5rem);
+  font-weight: 900;
+  color: var(--gold-400);
+  line-height: 1;
+  margin-bottom: var(--sp-3);
+  opacity: .15;
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  direction: ltr;
+}
+.article-title-label {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  margin-bottom: var(--sp-2);
+}
+.article-text-full {
+  font-size: 18px;
+  line-height: 2.2;
+  color: var(--text-primary);
+  font-weight: 500;
+  background: var(--bg);
+  padding: var(--sp-6);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border-light);
+  margin-top: var(--sp-4);
+  white-space: pre-wrap;
+}
+
+/* Article Actions */
+.article-actions {
+  display: flex;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  margin-top: var(--sp-5);
+}
+.article-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--r-md);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all var(--duration-fast);
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid var(--border-light);
+  background: var(--surface);
+  color: var(--text-secondary);
+}
+.article-action-btn:hover { border-color: var(--gold-400); color: var(--gold-600); box-shadow: var(--shadow-sm); }
+.article-action-btn.primary { background: var(--navy-800); color: #fff; border-color: var(--navy-800); }
+.article-action-btn.primary:hover { background: var(--navy-700); }
+
+/* Prev/Next Navigation */
+.article-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-6);
+}
+.article-nav-card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--r-lg);
+  padding: var(--sp-5);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all var(--duration-normal) var(--ease-out);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.article-nav-card:hover { border-color: var(--blue-400); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.article-nav-card.next { text-align: left; }
+.article-nav-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.article-nav-card.next .article-nav-label { justify-content: flex-end; }
+.article-nav-num {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--navy-800);
+}
+.article-nav-preview {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.article-nav-card.disabled {
+  opacity: .4;
+  pointer-events: none;
+}
+
+/* Section Headers */
+.info-section {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--r-xl);
+  padding: var(--sp-6);
+  margin-bottom: var(--sp-5);
+  box-shadow: var(--shadow-xs);
+}
+.info-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy-800);
+  margin-bottom: var(--sp-4);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding-bottom: var(--sp-3);
+  border-bottom: 2px solid var(--gold-400);
+}
+.info-section-title .section-icon {
+  width: 32px; height: 32px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* Law Info Card */
+.law-info-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+  background: var(--bg);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-light);
+}
+.law-info-icon {
+  width: 48px; height: 48px;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--navy-800), var(--navy-600));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: var(--gold-300);
+  flex-shrink: 0;
+}
+.law-info-body { flex: 1; }
+.law-info-body h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.law-info-body p { font-size: 13px; color: var(--text-secondary); }
+.law-info-body .law-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--blue-500);
+  font-weight: 600;
+  text-decoration: none;
+}
+.law-info-body .law-link:hover { text-decoration: underline; }
+
+/* Related Articles Grid */
+.related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--sp-3); }
+.related-card {
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--r-md);
+  padding: var(--sp-4);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all var(--duration-fast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.related-card:hover { border-color: var(--gold-400); box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+.related-card-law { font-size: 11px; color: var(--text-tertiary); font-weight: 600; }
+.related-card-num { font-size: 16px; font-weight: 800; color: var(--navy-800); }
+.related-card-text { font-size: 13px; color: var(--text-secondary); line-height: 1.7; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+
+/* Explanation/Content */
+.explanation-block {
+  padding: var(--sp-4);
+  background: var(--bg);
+  border-radius: var(--r-md);
+  border-right: 3px solid var(--gold-400);
+  margin-bottom: var(--sp-3);
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.9;
+}
+.explanation-block:last-child { margin-bottom: 0; }
+
+/* Empty states */
+.empty-section {
+  padding: var(--sp-6);
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  background: var(--bg);
+  border-radius: var(--r-md);
+  border: 1px dashed var(--border-light);
+}
+
+/* Loading */
+.loading-state {
+  text-align: center;
+  padding: var(--sp-16);
+  color: var(--text-tertiary);
+}
+.loading-spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--border-light);
+  border-top-color: var(--gold-400);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin: 0 auto var(--sp-4);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 768px) {
+  .article-hero { padding: var(--sp-5); }
+  .article-text-full { font-size: 16px; padding: var(--sp-4); }
+  .article-nav { grid-template-columns: 1fr; }
+  .article-nav-card.next { text-align: right; }
+  .article-nav-card.next .article-nav-label { justify-content: flex-start; }
+  .related-grid { grid-template-columns: 1fr; }
+  .article-number-big { font-size: 3rem; }
+  .law-info-card { flex-direction: column; }
+}
+@media (max-width: 480px) {
+  .article-page { padding: var(--sp-4) 12px var(--sp-8); }
+  .article-hero { padding: var(--sp-4); }
+  .article-text-full { font-size: 15px; padding: var(--sp-3); line-height: 2; }
+  .info-section { padding: var(--sp-4); }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="brand">
+      <div class="brand-icon">LB</div>
+      <div class="brand-text"><div class="brand-name">لوبوك</div></div>
+    </a>
+    <a id="backLink" href="laws.html" class="back-btn">← رجوع</a>
+  </div>
+</nav>
+
+<div class="article-page" id="articlePage">
+  <!-- Loading -->
+  <div class="loading-state" id="loadingState">
+    <div class="loading-spinner"></div>
+    <div>جاري تحميل المادة القانونية...</div>
+  </div>
+
+  <!-- Content (hidden until loaded) -->
+  <div id="articleContent" style="display:none">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" id="breadcrumb">
+      <a href="index.html">🏠 الرئيسية</a>
+      <span class="sep">›</span>
+      <a id="bcSection" href="laws.html">القوانين</a>
+      <span class="sep">›</span>
+      <a id="bcLaw" href="#">القانون</a>
+      <span class="sep">›</span>
+      <span class="current" id="bcArticle">المادة</span>
+    </nav>
+
+    <!-- Prev/Next Navigation (Top) -->
+    <div class="article-nav" id="topNav"></div>
+
+    <!-- Article Hero -->
+    <section class="article-hero">
+      <div class="article-number-big" id="articleNumBg"></div>
+      <a id="lawTag" href="#" class="article-law-tag">
+        <span>📘</span>
+        <span id="lawTagName"></span>
+      </a>
+      <div class="article-title-label" id="articleTitleLabel">المادة</div>
+      <div class="article-text-full" id="articleText">جاري التحميل...</div>
+      <div class="article-actions" id="articleActions"></div>
+    </section>
+
+    <!-- Law Info Section -->
+    <section class="info-section" id="lawInfoSection">
+      <div class="info-section-title">
+        <div class="section-icon" style="background:var(--navy-50);color:var(--navy-600)">🏛️</div>
+        القانون المنتمية إليه المادة
+      </div>
+      <div class="law-info-card" id="lawInfoCard"></div>
+    </section>
+
+    <!-- Related Articles Section -->
+    <section class="info-section" id="relatedSection">
+      <div class="info-section-title">
+        <div class="section-icon" style="background:var(--gold-100);color:var(--gold-600)">🔗</div>
+        المواد المرتبطة
+      </div>
+      <div class="related-grid" id="relatedGrid"></div>
+    </section>
+
+    <!-- Explanation Section -->
+    <section class="info-section" id="explanationSection">
+      <div class="info-section-title">
+        <div class="section-icon" style="background:var(--blue-100);color:var(--blue-600)">📖</div>
+        الشرح والسياق القانوني
+      </div>
+      <div id="explanationContent"></div>
+    </section>
+
+    <!-- Prev/Next Navigation (Bottom) -->
+    <div class="article-nav" id="bottomNav"></div>
+  </div>
+</div>
+
+<footer class="footer-simple">&copy; 2026 لوبوك — المكتبة القانونية اليمنية</footer>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script src="search-engine.js"></script>
+<script>
+/* ===== State ===== */
+var db = null;
+var currentLaw = null;
+var currentArticle = null;
+var currentArticleIndex = -1;
+var currentSection = '';
+
+/* ===== URL Params ===== */
+function getParams(){
+  var p = new URLSearchParams(location.search);
+  return {
+    law: p.get('law') || '',
+    article: p.get('article') || '',
+    section: p.get('section') || ''
+  };
+}
+
+/* ===== Load Database ===== */
+async function loadDatabase(){
+  var r = await fetch('database.json');
+  db = await r.json();
+}
+
+/* ===== Find Law by Slug ===== */
+function findLaw(slug, section){
+  var laws = db.laws || {};
+  if(section && laws[section]){
+    for(var i = 0; i < laws[section].length; i++){
+      if(laws[section][i].slug === slug) return { law: laws[section][i], section: section };
+    }
+  }
+  var sections = Object.keys(laws);
+  for(var s = 0; s < sections.length; s++){
+    var items = laws[sections[s]] || [];
+    for(var i = 0; i < items.length; i++){
+      if(items[i].slug === slug) return { law: items[i], section: sections[s] };
+    }
+  }
+  return null;
+}
+
+/* ===== Find Article Index ===== */
+function findArticleIndex(law, articleNum){
+  var articles = law.articles || [];
+  var norm = LawbookSearch.normalizeArticleNumber(articleNum);
+  for(var i = 0; i < articles.length; i++){
+    if(LawbookSearch.normalizeArticleNumber(articles[i].number) === norm) return i;
+  }
+  return -1;
+}
+
+/* ===== Section Labels ===== */
+var SECTION_LABELS = {
+  'civil':'الدعاوى المدنية','personal-status':'الأحوال الشخصية','litigation-procedures':'إجراءات التقاضي',
+  'criminal':'الجرائم الجنائية','labor':'العمل','yemeni-laws':'القوانين اليمنية',
+  'legal-procedure-deadlines':'مواعيد الإجراءات القانونية','urgent':'الدعاوى المستعجلة','commercial':'الدعاوى التجارية'
+};
+
+/* ===== Render Breadcrumb ===== */
+function renderBreadcrumb(law, articleNum, section){
+  document.getElementById('bcSection').textContent = SECTION_LABELS[section] || 'القوانين';
+  document.getElementById('bcSection').href = 'laws.html?section=' + encodeURIComponent(section);
+  document.getElementById('bcLaw').textContent = law.title;
+  document.getElementById('bcLaw').href = 'viewer.html?type=law&section=' + encodeURIComponent(section) + '&slug=' + encodeURIComponent(law.slug);
+  document.getElementById('bcArticle').textContent = 'المادة (' + articleNum + ')';
+  document.getElementById('backLink').href = 'laws.html?section=' + encodeURIComponent(section);
+}
+
+/* ===== Render Article Hero ===== */
+function renderArticleHero(law, article, articleNum){
+  document.title = 'المادة (' + articleNum + ') — ' + law.title + ' | لوبوك';
+  document.getElementById('articleNumBg').textContent = articleNum;
+  document.getElementById('lawTag').href = 'viewer.html?type=law&section=' + encodeURIComponent(currentSection) + '&slug=' + encodeURIComponent(law.slug);
+  document.getElementById('lawTagName').textContent = law.title;
+  document.getElementById('articleTitleLabel').textContent = 'المادة (' + articleNum + ') من ' + law.title;
+  document.getElementById('articleText').textContent = article.text || 'لا يوجد نص متاح لهذه المادة.';
+
+  /* Actions */
+  var actionsHtml = '';
+  actionsHtml += '<button class="article-action-btn primary" onclick="copyArticleText()">📋 نسخ النص</button>';
+  actionsHtml += '<button class="article-action-btn" onclick="printArticle()">🖨️ طباعة</button>';
+  actionsHtml += '<a class="article-action-btn" href="' + law.url + '">📘 عرض القانون كاملاً</a>';
+  actionsHtml += '<button class="article-action-btn" onclick="shareArticle()">📤 مشاركة</button>';
+  document.getElementById('articleActions').innerHTML = actionsHtml;
+}
+
+/* ===== Render Prev/Next Navigation ===== */
+function renderNavigation(law, currentIndex){
+  var articles = law.articles || [];
+  var html = '';
+
+  /* Previous */
+  if(currentIndex > 0){
+    var prev = articles[currentIndex - 1];
+    html += '<a href="article.html?law=' + encodeURIComponent(law.slug) + '&article=' + encodeURIComponent(prev.number) + '&section=' + encodeURIComponent(currentSection) + '" class="article-nav-card prev">';
+    html += '<div class="article-nav-label">→ المادة السابقة</div>';
+    html += '<div class="article-nav-num">' + esc(prev.number) + '</div>';
+    html += '<div class="article-nav-preview">' + esc(truncate(prev.text, 100)) + '</div>';
+    html += '</a>';
+  } else {
+    html += '<div class="article-nav-card disabled prev"><div class="article-nav-label">→ المادة السابقة</div><div class="article-nav-num">—</div></div>';
+  }
+
+  /* Next */
+  if(currentIndex < articles.length - 1){
+    var next = articles[currentIndex + 1];
+    html += '<a href="article.html?law=' + encodeURIComponent(law.slug) + '&article=' + encodeURIComponent(next.number) + '&section=' + encodeURIComponent(currentSection) + '" class="article-nav-card next">';
+    html += '<div class="article-nav-label">المادة التالية ←</div>';
+    html += '<div class="article-nav-num">' + esc(next.number) + '</div>';
+    html += '<div class="article-nav-preview">' + esc(truncate(next.text, 100)) + '</div>';
+    html += '</a>';
+  } else {
+    html += '<div class="article-nav-card disabled next"><div class="article-nav-label">المادة التالية ←</div><div class="article-nav-num">—</div></div>';
+  }
+
+  document.getElementById('topNav').innerHTML = html;
+  document.getElementById('bottomNav').innerHTML = html;
+}
+
+/* ===== Render Law Info ===== */
+function renderLawInfo(law, section){
+  var card = document.getElementById('lawInfoCard');
+  var artCount = (law.articles || []).length;
+  var desc = law.description || '';
+
+  var html = '<div class="law-info-icon">📘</div>';
+  html += '<div class="law-info-body">';
+  html += '<h4>' + esc(law.title) + '</h4>';
+  html += '<p>' + esc(truncate(desc, 200)) + '</p>';
+  html += '<p style="margin-top:6px;font-size:12px;color:var(--text-tertiary)">القسم: ' + esc(SECTION_LABELS[section] || section) + ' • ' + artCount + ' مادة</p>';
+  html += '<a class="law-link" href="' + law.url + '">عرض القانون كاملاً ←</a>';
+  html += '</div>';
+  card.innerHTML = html;
+}
+
+/* ===== Find Related Articles ===== */
+function findRelatedArticles(currentLaw, currentArticleText, currentArticleNum, currentSection){
+  /* Extract keywords from current article */
+  var keywords = extractKeywords(currentArticleText);
+  var results = [];
+  var seen = {};
+  var currentNorm = LawbookSearch.normalizeArticleNumber(currentArticleNum);
+
+  var laws = db.laws || {};
+  var sections = Object.keys(laws);
+
+  for(var s = 0; s < sections.length; s++){
+    var items = laws[sections[s]] || [];
+    for(var l = 0; l < items.length; l++){
+      var law = items[l];
+      var articles = law.articles || [];
+      for(var a = 0; a < articles.length; a++){
+        var art = articles[a];
+        var artNum = LawbookSearch.normalizeArticleNumber(art.number);
+        /* Skip self */
+        if(law.slug === currentLaw.slug && artNum === currentNorm) continue;
+        var artText = art.text || '';
+        var score = scoreRelatedness(keywords, artText, law.title, currentLaw.title);
+        if(score > 0){
+          var key = law.slug + ':' + artNum;
+          if(!seen[key]){
+            seen[key] = true;
+            results.push({
+              lawSlug: law.slug,
+              lawTitle: law.title,
+              section: sections[s],
+              articleNum: art.number,
+              articleText: artText,
+              score: score,
+              url: 'article.html?law=' + encodeURIComponent(law.slug) + '&article=' + encodeURIComponent(art.number) + '&section=' + encodeURIComponent(sections[s])
+            });
+          }
+        }
+      }
+    }
+  }
+
+  results.sort(function(a, b){ return b.score - a.score; });
+  return results.slice(0, 8);
+}
+
+function extractKeywords(text){
+  var normalized = LawbookSearch.normalizeArabic(text);
+  var words = normalized.split(' ').filter(function(w){ return w.length > 3; });
+  /* Remove common stop words */
+  var stops = {'من','الى','على','في','عن','مع','هذا','هذه','ذلك','التي','الذي','التي','كان','يكون','اما','ان','اذا','فان','ولم','وقد','او','لا','ما','كل','بعض','بين','غير','حتى','بعد','قبل','عند','لدى','دون','خلال'};
+  var unique = {};
+  var result = [];
+  for(var i = 0; i < words.length; i++){
+    if(!stops[words[i]] && !unique[words[i]]){
+      unique[words[i]] = true;
+      result.push(words[i]);
+    }
+  }
+  return result.slice(0, 15);
+}
+
+function scoreRelatedness(keywords, articleText, lawTitle, currentLawTitle){
+  var norm = LawbookSearch.normalizeArabic(articleText);
+  var score = 0;
+  var matched = 0;
+
+  for(var i = 0; i < keywords.length; i++){
+    if(norm.indexOf(keywords[i]) !== -1){
+      matched++;
+      score += 10;
+    }
+  }
+
+  /* Same law bonus */
+  if(lawTitle === currentLawTitle) score += 5;
+
+  /* Same section bonus */
+  /* Minimum threshold */
+  if(matched < 2) return 0;
+
+  return score;
+}
+
+/* ===== Render Related Articles ===== */
+function renderRelated(related){
+  var grid = document.getElementById('relatedGrid');
+  if(!related.length){
+    grid.innerHTML = '<div class="empty-section">لا توجد مواد مرتبطة حالياً</div>';
+    return;
+  }
+  var html = '';
+  for(var i = 0; i < related.length; i++){
+    var r = related[i];
+    html += '<a href="' + r.url + '" class="related-card">';
+    html += '<div class="related-card-law">' + esc(r.lawTitle) + '</div>';
+    html += '<div class="related-card-num">مادة (' + esc(r.articleNum) + ')</div>';
+    html += '<div class="related-card-text">' + esc(truncate(r.articleText, 150)) + '</div>';
+    html += '</a>';
+  }
+  grid.innerHTML = html;
+}
+
+/* ===== Render Explanation ===== */
+function renderExplanation(law){
+  var content = law.content || [];
+  var el = document.getElementById('explanationContent');
+
+  if(!content.length){
+    el.innerHTML = '<div class="empty-section">لا يوجد شرح إضافي لهذا القانون</div>';
+    return;
+  }
+
+  var html = '';
+  for(var i = 0; i < content.length; i++){
+    if(!content[i] || content[i].trim().length < 20) continue;
+    html += '<div class="explanation-block">' + esc(content[i]) + '</div>';
+  }
+  el.innerHTML = html || '<div class="empty-section">لا يوجد شرح متاح</div>';
+}
+
+/* ===== Utility Functions ===== */
+function esc(s){ return (s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]; }); }
+function truncate(text, limit){
+  var s = String(text||'').replace(/\s+/g, ' ').trim();
+  return s.length <= limit ? s : s.slice(0, limit).trim() + '...';
+}
+
+/* ===== Copy Article Text ===== */
+function copyArticleText(){
+  var text = document.getElementById('articleText').textContent;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(function(){
+      alert('تم نسخ نص المادة');
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert('تم نسخ نص المادة');
+  }
+}
+
+/* ===== Print Article ===== */
+function printArticle(){
+  window.print();
+}
+
+/* ===== Share Article ===== */
+function shareArticle(){
+  var url = window.location.href;
+  var title = document.title;
+  if(navigator.share){
+    navigator.share({ title: title, url: url });
+  } else {
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(url);
+      alert('تم نسخ رابط المادة');
+    }
+  }
+}
+
+/* ===== Main Init ===== */
+async function init(){
+  var params = getParams();
+
+  if(!params.law || !params.article){
+    document.getElementById('loadingState').innerHTML = '<div class="empty-state">لم يتم تحديد المادة المطلوبة. <a href="index.html" style="color:var(--blue-500)">العودة للرئيسية</a></div>';
+    return;
+  }
+
+  try {
+    await loadDatabase();
+
+    var result = findLaw(params.law, params.section);
+    if(!result){
+      document.getElementById('loadingState').innerHTML = '<div class="empty-state">القانون غير موجود. <a href="laws.html" style="color:var(--blue-500)">تصفح القوانين</a></div>';
+      return;
+    }
+
+    currentLaw = result.law;
+    currentSection = result.section;
+
+    var articleIndex = findArticleIndex(currentLaw, params.article);
+    if(articleIndex === -1){
+      document.getElementById('loadingState').innerHTML = '<div class="empty-state">المادة (' + esc(params.article) + ') غير موجودة في هذا القانون. <a href="' + currentLaw.url + '" style="color:var(--blue-500)">عرض القانون</a></div>';
+      return;
+    }
+
+    currentArticleIndex = articleIndex;
+    currentArticle = currentLaw.articles[articleIndex];
+    var articleNum = currentArticle.number;
+
+    /* Show content */
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('articleContent').style.display = 'block';
+
+    /* Render all sections */
+    renderBreadcrumb(currentLaw, articleNum, currentSection);
+    renderArticleHero(currentLaw, currentArticle, articleNum);
+    renderNavigation(currentLaw, articleIndex);
+    renderLawInfo(currentLaw, currentSection);
+
+    /* Find and render related articles */
+    var related = findRelatedArticles(currentLaw, currentArticle.text || '', articleNum, currentSection);
+    renderRelated(related);
+
+    /* Render explanation */
+    renderExplanation(currentLaw);
+
+    /* Update document title */
+    document.title = 'المادة (' + articleNum + ') — ' + currentLaw.title + ' | لوبوك';
+
+  } catch(e){
+    console.error('Error:', e);
+    document.getElementById('loadingState').innerHTML = '<div class="empty-state">حدث خطأ أثناء التحميل. يرجى المحاولة لاحقاً.</div>';
+  }
+}
+
+/* Scroll to top */
+var stb = document.getElementById('scrollTop');
+window.addEventListener('scroll', function(){ stb.classList.toggle('visible', window.scrollY > 300); }, {passive:true});
+
+/* Go! */
+init();
+</script>
+</body>
+</html>
