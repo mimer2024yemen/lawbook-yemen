@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>المستشار القانوني اليمني | لوبوك</title>
+<meta name="description" content="مستشار قانوني ذكي يجيب على أسئلتك القانونية بناءً على قوانين يمنية حقيقية — مجاني بالكامل">
+<meta name="theme-color" content="#0a1628">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>LB</text></svg>">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ===== Advisor Chat Styles ===== */
+.advisor-page { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+
+/* Top Bar */
+.advisor-topbar {
+  background: var(--navy-900);
+  border-bottom: 2px solid var(--gold-400);
+  padding: var(--sp-3) var(--sp-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-shrink: 0;
+}
+.advisor-topbar-left { display: flex; align-items: center; gap: var(--sp-3); }
+.advisor-avatar {
+  width: 44px; height: 44px;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-200));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: var(--shadow-gold);
+}
+.advisor-topbar-info h2 { color: #fff; font-size: 16px; font-weight: 700; line-height: 1.2; }
+.advisor-topbar-info p { color: var(--gold-300); font-size: 11px; font-weight: 500; }
+.advisor-topbar-actions { display: flex; gap: var(--sp-2); }
+.advisor-topbar-btn {
+  padding: 8px 14px;
+  border-radius: var(--r-sm);
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.1);
+  color: rgba(255,255,255,.6);
+  font-size: 12px;
+  font-weight: 600;
+  transition: all var(--duration-fast);
+  font-family: var(--font);
+}
+.advisor-topbar-btn:hover { background: rgba(255,255,255,.15); color: #fff; }
+
+/* Chat Container */
+.chat-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-5) var(--sp-4);
+  scroll-behavior: smooth;
+}
+.chat-inner { max-width: 860px; margin: 0 auto; }
+
+/* Welcome Screen */
+.welcome-screen {
+  text-align: center;
+  padding: var(--sp-10) var(--sp-4);
+}
+.welcome-icon {
+  width: 80px; height: 80px;
+  border-radius: var(--r-xl);
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-200));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  margin: 0 auto var(--sp-5);
+  box-shadow: var(--shadow-gold);
+}
+.welcome-title { font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin-bottom: var(--sp-2); }
+.welcome-subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: var(--sp-8); max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.8; }
+
+/* Quick Questions */
+.quick-questions { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--sp-3); margin-bottom: var(--sp-6); }
+.quick-q {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--r-md);
+  padding: var(--sp-4);
+  text-align: right;
+  cursor: pointer;
+  transition: all var(--duration-fast);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+}
+.quick-q:hover { border-color: var(--gold-400); box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+.quick-q .q-icon { font-size: 18px; flex-shrink: 0; }
+
+/* Chat Messages */
+.message { margin-bottom: var(--sp-4); display: flex; gap: var(--sp-3); }
+.message.user { flex-direction: row-reverse; }
+.message-avatar {
+  width: 36px; height: 36px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.message.ai .message-avatar { background: linear-gradient(135deg, var(--gold-400), var(--gold-200)); box-shadow: var(--shadow-xs); }
+.message.user .message-avatar { background: var(--navy-800); color: #fff; }
+.message-bubble {
+  max-width: 85%;
+  padding: var(--sp-4) var(--sp-5);
+  border-radius: var(--r-lg);
+  font-size: 14px;
+  line-height: 1.9;
+}
+.message.ai .message-bubble {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-xs);
+  color: var(--text-primary);
+}
+.message.user .message-bubble {
+  background: var(--navy-800);
+  color: #fff;
+  border: 1px solid var(--navy-700);
+}
+
+/* Response Sections */
+.advisor-summary { font-weight: 600; margin-bottom: var(--sp-4); font-size: 15px; }
+.advisor-section { margin-top: var(--sp-5); }
+.advisor-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy-600);
+  margin-bottom: var(--sp-3);
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--border-light);
+}
+.advisor-law-text {
+  background: var(--bg);
+  border-radius: var(--r-md);
+  padding: var(--sp-4);
+  margin-bottom: var(--sp-3);
+  border-right: 3px solid var(--gold-400);
+}
+.advisor-law-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--sp-2); flex-wrap: wrap; gap: var(--sp-2); }
+.advisor-law-name { font-size: 12px; font-weight: 700; color: var(--navy-600); }
+.advisor-article-link {
+  font-size: 12px;
+  color: var(--blue-500);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 2px 10px;
+  background: var(--blue-100);
+  border-radius: var(--r-full);
+  transition: background var(--duration-fast);
+}
+.advisor-article-link:hover { background: var(--blue-400); color: #fff; }
+.advisor-law-body { font-size: 14px; color: var(--text-primary); line-height: 2; }
+.advisor-analysis { font-size: 14px; color: var(--text-secondary); line-height: 1.9; background: var(--bg); padding: var(--sp-4); border-radius: var(--r-md); }
+.advisor-related-list { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.advisor-related-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--r-full);
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+  transition: all var(--duration-fast);
+}
+.advisor-related-item:hover { border-color: var(--gold-400); color: var(--gold-600); }
+.advisor-related-law { font-weight: 600; }
+.advisor-related-num { color: var(--blue-500); font-weight: 700; }
+
+.advisor-sources {
+  margin-top: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--green-100);
+  border-radius: var(--r-md);
+  border: 1px solid #bbf7d0;
+}
+.advisor-sources-title { font-size: 12px; font-weight: 700; color: var(--green-600); margin-bottom: var(--sp-2); }
+.advisor-source-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #166534; margin-bottom: 2px; }
+.advisor-source-icon { font-size: 14px; }
+
+.advisor-disclaimer {
+  margin-top: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--amber-100);
+  border-radius: var(--r-md);
+  font-size: 12px;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  line-height: 1.8;
+}
+
+/* Typing Indicator */
+.typing-indicator { display: flex; align-items: center; gap: 4px; padding: var(--sp-3) var(--sp-4); }
+.typing-dot {
+  width: 8px; height: 8px;
+  background: var(--text-tertiary);
+  border-radius: 50%;
+  animation: typingBounce 1.4s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: .2s; }
+.typing-dot:nth-child(3) { animation-delay: .4s; }
+@keyframes typingBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-8px)} }
+
+/* Input Area */
+.input-area {
+  background: var(--surface);
+  border-top: 1px solid var(--border-light);
+  padding: var(--sp-4) var(--sp-5);
+  flex-shrink: 0;
+}
+.input-inner { max-width: 860px; margin: 0 auto; }
+.input-box {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  background: var(--bg);
+  border: 2px solid var(--border-light);
+  border-radius: var(--r-xl);
+  padding: var(--sp-2) var(--sp-3);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+.input-box:focus-within { border-color: var(--gold-400); box-shadow: 0 0 0 4px rgba(212,168,67,.1); background: var(--surface); }
+.chat-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  font-family: var(--font);
+  padding: 10px 4px;
+  outline: none;
+  direction: rtl;
+  color: var(--text-primary);
+}
+.chat-input::placeholder { color: var(--text-tertiary); }
+.send-btn {
+  width: 44px; height: 44px;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-300));
+  color: var(--navy-900);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  transition: all var(--duration-fast);
+  box-shadow: var(--shadow-gold);
+  flex-shrink: 0;
+}
+.send-btn:hover { background: var(--gold-300); transform: scale(1.05); }
+.send-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.input-hint { text-align: center; margin-top: var(--sp-2); font-size: 11px; color: var(--text-tertiary); }
+
+/* API Key Modal */
+.api-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+}
+.api-modal-overlay.show { display: flex; }
+.api-modal {
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  padding: var(--sp-8);
+  max-width: 480px;
+  width: 100%;
+  box-shadow: var(--shadow-xl);
+}
+.api-modal h3 { font-size: 18px; font-weight: 700; margin-bottom: var(--sp-2); }
+.api-modal p { font-size: 14px; color: var(--text-secondary); margin-bottom: var(--sp-5); line-height: 1.8; }
+.api-modal input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--r-md);
+  font-size: 14px;
+  font-family: var(--font);
+  direction: ltr;
+  margin-bottom: var(--sp-4);
+}
+.api-modal input:focus { border-color: var(--blue-500); outline: none; box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+.api-modal-actions { display: flex; gap: var(--sp-3); justify-content: flex-end; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .advisor-topbar { padding: var(--sp-3) var(--sp-4); }
+  .advisor-topbar-btn { display: none; }
+  .chat-container { padding: var(--sp-4) var(--sp-3); }
+  .message-bubble { max-width: 92%; padding: var(--sp-3) var(--sp-4); }
+  .quick-questions { grid-template-columns: 1fr; }
+  .input-area { padding: var(--sp-3) var(--sp-4); }
+  .welcome-title { font-size: 1.3rem; }
+}
+@media (max-width: 480px) {
+  .advisor-topbar-info h2 { font-size: 14px; }
+  .message-bubble { font-size: 13px; }
+  .quick-q { font-size: 12px; padding: var(--sp-3); }
+}
+</style>
+</head>
+<body>
+
+<div class="advisor-page">
+  <!-- Top Bar -->
+  <div class="advisor-topbar">
+    <div class="advisor-topbar-left">
+      <div class="advisor-avatar">⚖️</div>
+      <div class="advisor-topbar-info">
+        <h2>المستشار القانوني اليمني</h2>
+        <p id="statusText">متصل • يعمل بدون إنترنت</p>
+      </div>
+    </div>
+    <div class="advisor-topbar-actions">
+      <button class="advisor-topbar-btn" onclick="clearChat()">🗑️ محادثة جديدة</button>
+      <button class="advisor-topbar-btn" onclick="showApiModal()">⚙️ إعدادات</button>
+      <a href="index.html" class="advisor-topbar-btn">🏠 الرئيسية</a>
+    </div>
+  </div>
+
+  <!-- Chat Container -->
+  <div class="chat-container" id="chatContainer">
+    <div class="chat-inner" id="chatInner">
+      <!-- Welcome Screen -->
+      <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-icon">⚖️</div>
+        <h1 class="welcome-title">المستشار القانوني اليمني</h1>
+        <p class="welcome-subtitle">
+          اسألني أي سؤال قانوني باللهجة اليمنية أو العربية الفصحى.
+          سأبحث في أكثر من 12,000 مادة قانونية يمنية لأجيبك بدقة.
+        </p>
+        <div class="quick-questions">
+          <div class="quick-q" onclick="askQuick(this)"><span class="q-icon">💬</span> هل يحق للمؤجر طرد المستأجر قبل انتهاء العقد؟</div>
+          <div class="quick-q" onclick="askQuick(this)"><span class="q-icon">💬</span> ما عقوبة السرقة في القانون اليمني؟</div>
+          <div class="quick-q" onclick="askQuick(this)"><span class="q-icon">💬</span> كيف أرفع دعوى مدنية في اليمن؟</div>
+          <div class="quick-q" onclick="askQuick(this)"><span class="q-icon">💬</span> ما حكم الشيك بدون رصيد؟</div>
+          <div class="quick-q" onclick="askQuick(this)"><span class="q-icon">💬</span> ما حقوق الزوجة في النفقة؟</div>
+          <div class="quick-q" onclick="askQuick(this)"><span class="q-icon">💬</span> كيف يتم تقسيم الميراث في اليمن؟</div>
+        </div>
+      </div>
+      <!-- Messages will be appended here -->
+    </div>
+  </div>
+
+  <!-- Input Area -->
+  <div class="input-area">
+    <div class="input-inner">
+      <div class="input-box">
+        <textarea class="chat-input" id="chatInput" placeholder="اسأل سؤالك القانوني هنا..." rows="1"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="إرسال">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+      <div class="input-hint">يبحث في 12,868+ مادة قانونية يمنية • اضغط Enter للإرسال</div>
+    </div>
+  </div>
+</div>
+
+<!-- API Key Modal -->
+<div class="api-modal-overlay" id="apiModal">
+  <div class="api-modal">
+    <h3>⚙️ إعدادات الذكاء الاصطناعي</h3>
+    <p>
+      المستشار يعمل مجاناً تماماً باستخدام قاعدة بيانات الموقع.
+      يمكنك اختيارياً إدخال مفتاح API لتحسين الإجابات:
+    </p>
+    <input type="password" id="apiKeyInput" placeholder="sk-... (اختياري — اتركه فارغاً للعمل المجاني)">
+    <p style="font-size:12px;color:var(--text-tertiary)">
+      💡 بدون مفتاح API: يعمل النظام باستخدام RAG فقط (مجاني بالكامل).
+      <br>مع مفتاح API: إجابات محسّنة بالذكاء الاصطناعي.
+    </p>
+    <div class="api-modal-actions">
+      <button class="btn btn-outline" onclick="closeApiModal()">إلغاء</button>
+      <button class="btn btn-gold" onclick="saveApiKey()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<script src="search-engine.js"></script>
+<script src="legal-rag.js"></script>
+<script src="legal-ai.js"></script>
+<script>
+/* ===== State ===== */
+var searchIndex = [];
+var ragIndex = [];
+var isLoading = false;
+var messageCount = 0;
+
+/* ===== Initialize ===== */
+async function init(){
+  try {
+    var r1 = await fetch('catalog.json');
+    var catalog = await r1.json();
+    var r2 = await fetch('database.json');
+    var database = await r2.json();
+
+    searchIndex = LawbookSearch.buildIndex(catalog, database);
+    ragIndex = LegalRAG.buildSearchIndex(database);
+
+    /* Update status */
+    var api = LegalAI.getApiKey();
+    document.getElementById('statusText').textContent = api
+      ? 'متصل • محسّن بالذكاء الاصطناعي'
+      : 'متصل • يعمل مجاناً بدون API';
+
+  } catch(e){
+    console.error('Init error:', e);
+    document.getElementById('statusText').textContent = 'خطأ في التحميل';
+  }
+}
+
+/* ===== Send Message ===== */
+function sendMessage(){
+  var input = document.getElementById('chatInput');
+  var query = input.value.trim();
+  if(!query || isLoading) return;
+
+  /* Hide welcome screen */
+  document.getElementById('welcomeScreen').style.display = 'none';
+
+  /* Add user message */
+  addMessage(query, 'user');
+  input.value = '';
+  input.style.height = 'auto';
+  messageCount++;
+
+  /* Show typing indicator */
+  showTyping();
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  /* Process query */
+  setTimeout(function(){
+    processQuery(query);
+  }, 300);
+}
+
+/* ===== Process Query ===== */
+function processQuery(query){
+  /* RAG search */
+  var queryType = LegalRAG.detectQueryType(query);
+  var results = LegalRAG.search(query, ragIndex, 10);
+  var ragResponse = LegalRAG.generateResponse(query, results, queryType);
+
+  /* Try AI enhancement */
+  LegalAI.generateAIResponse(query, ragResponse, function(aiResult){
+    hideTyping();
+    isLoading = false;
+    document.getElementById('sendBtn').disabled = false;
+
+    if(aiResult.enhanced && aiResult.text){
+      /* AI-enhanced response */
+      addMessage(aiResult.text, 'ai', true);
+    } else {
+      /* Template-based response */
+      var html = LegalRAG.formatResponse(ragResponse);
+      addMessage(html, 'ai', true);
+    }
+
+    messageCount++;
+    scrollToBottom();
+  });
+}
+
+/* ===== Add Message ===== */
+function addMessage(content, type, isHtml){
+  var chatInner = document.getElementById('chatInner');
+  var msg = document.createElement('div');
+  msg.className = 'message ' + type;
+
+  var avatar = document.createElement('div');
+  avatar.className = 'message-avatar';
+  avatar.textContent = type === 'ai' ? '⚖️' : '👤';
+
+  var bubble = document.createElement('div');
+  bubble.className = 'message-bubble';
+  if(isHtml){
+    bubble.innerHTML = content;
+  } else {
+    bubble.textContent = content;
+  }
+
+  msg.appendChild(avatar);
+  msg.appendChild(bubble);
+  chatInner.appendChild(msg);
+  scrollToBottom();
+}
+
+/* ===== Typing Indicator ===== */
+function showTyping(){
+  var chatInner = document.getElementById('chatInner');
+  var typing = document.createElement('div');
+  typing.className = 'message ai';
+  typing.id = 'typingMsg';
+  typing.innerHTML = '<div class="message-avatar">⚖️</div><div class="message-bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>';
+  chatInner.appendChild(typing);
+  scrollToBottom();
+}
+
+function hideTyping(){
+  var el = document.getElementById('typingMsg');
+  if(el) el.remove();
+}
+
+/* ===== Quick Questions ===== */
+function askQuick(el){
+  var text = el.textContent.replace(/^[💬❓]+/, '').trim();
+  document.getElementById('chatInput').value = text;
+  sendMessage();
+}
+
+/* ===== Clear Chat ===== */
+function clearChat(){
+  var chatInner = document.getElementById('chatInner');
+  chatInner.innerHTML = '';
+  document.getElementById('welcomeScreen').style.display = 'block';
+  chatInner.appendChild(document.getElementById('welcomeScreen'));
+  messageCount = 0;
+  LegalAI.clearHistory();
+}
+
+/* ===== API Modal ===== */
+function showApiModal(){
+  document.getElementById('apiModal').classList.add('show');
+  document.getElementById('apiKeyInput').value = LegalAI.getApiKey();
+}
+
+function closeApiModal(){
+  document.getElementById('apiModal').classList.remove('show');
+}
+
+function saveApiKey(){
+  var key = document.getElementById('apiKeyInput').value.trim();
+  LegalAI.setApiKey(key);
+  document.getElementById('statusText').textContent = key
+    ? 'متصل • محسّن بالذكاء الاصطناعي'
+    : 'متصل • يعمل مجاناً بدون API';
+  closeApiModal();
+}
+
+/* ===== Scroll ===== */
+function scrollToBottom(){
+  var container = document.getElementById('chatContainer');
+  setTimeout(function(){ container.scrollTop = container.scrollHeight; }, 50);
+}
+
+/* ===== Auto-resize Textarea ===== */
+var chatInput = document.getElementById('chatInput');
+chatInput.addEventListener('input', function(){
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+/* Enter to send */
+chatInput.addEventListener('keydown', function(e){
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+/* Close modal on outside click */
+document.getElementById('apiModal').addEventListener('click', function(e){
+  if(e.target === this) closeApiModal();
+});
+
+/* ===== Init ===== */
+init();
+</script>
+</body>
+</html>
