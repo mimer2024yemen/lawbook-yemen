@@ -10,7 +10,7 @@
   /* ===== Supabase Configuration ===== */
   var CONFIG = {
     SUPABASE_URL: 'https://ocucwsjzrqrnivgytapk.supabase.co',
-    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jdWN3c2p6cnFybml2Z3l0YXBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2MDYwMjAsImV4cCI6MjA5OTE4MjAyMH0.DfxsE1LzQaV1NFeNudzkDBEijm1fI-K_Snzn_I6UjMY',
+    SUPABASE_ANON_KEY: 'sb_publishable_HnV9aGkOJnjQmUQFA5gy5w_k3Eoolc3',
     TABLES: {
       users: 'admin_users',
       knowledge: 'knowledge_base',
