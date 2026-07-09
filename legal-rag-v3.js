@@ -1,5 +1,5 @@
 /**
- * Lawbook Yemen — Legal RAG Engine v3 (Production Quality)
+ * المستشار اليمني القانوني — محرك RAG القانوني v3
  * BM25 + N-gram + Semantic synonym expansion + Re-ranking
  * Verified: all features tested and working
  */

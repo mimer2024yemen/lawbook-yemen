@@ -1,5 +1,5 @@
 /**
- * Lawbook Yemen — Conversational Legal Response Engine v2
+ * المستشار اليمني القانوني — محرك الاستجابة الحوارية v2
  * Generates natural, lawyer-like responses from RAG context
  * Verified: all features tested
  */

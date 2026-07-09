@@ -1,5 +1,5 @@
 /**
- * Lawbook Yemen — Advanced Legal Search Engine
+ * المستشار اليمني القانوني — محرك البحث القانوني المتقدم
  * Supports: article numbers, law names, penalties, courts, years, case types
  * Features: smart normalization, fuzzy matching, live suggestions, highlighting
  */
