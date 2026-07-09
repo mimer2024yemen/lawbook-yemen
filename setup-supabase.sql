@@ -1,10 +1,11 @@
--- المستشار اليمني القانوني — One-Click Supabase Setup
--- Run this ONCE in Supabase SQL Editor to activate everything
+-- المستشار اليمني القانوني — Complete Supabase Setup
+-- Creates tables + indexes + RLS + policies + permissions + seed data
+-- Run this ONCE in Supabase SQL Editor
 
--- 1. Enable required extensions
-CREATE EXTENSION IF NOT EXISTS pg_trgm;
+-- ============================================
+-- STEP 1: Create Tables
+-- ============================================
 
--- 2. Create tables (IF NOT EXISTS for safety)
 CREATE TABLE IF NOT EXISTS admin_users (
   id BIGSERIAL PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -84,15 +85,23 @@ CREATE TABLE IF NOT EXISTS uploaded_files (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 3. Create indexes
+-- ============================================
+-- STEP 2: Create Indexes
+-- ============================================
+
 CREATE INDEX IF NOT EXISTS idx_analytics_type ON site_analytics(type);
 CREATE INDEX IF NOT EXISTS idx_analytics_created ON site_analytics(created_at);
 CREATE INDEX IF NOT EXISTS idx_knowledge_status ON knowledge_base(status);
 CREATE INDEX IF NOT EXISTS idx_knowledge_workflow ON knowledge_base(workflow);
+CREATE INDEX IF NOT EXISTS idx_knowledge_section ON knowledge_base(section);
 CREATE INDEX IF NOT EXISTS idx_audit_user ON audit_log(user_name);
+CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_log(action);
 CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_log(created_at);
 
--- 4. Enable RLS on all tables
+-- ============================================
+-- STEP 3: Enable RLS
+-- ============================================
+
 ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE knowledge_base ENABLE ROW LEVEL SECURITY;
 ALTER TABLE site_analytics ENABLE ROW LEVEL SECURITY;
@@ -100,7 +109,10 @@ ALTER TABLE audit_log ENABLE ROW LEVEL SECURITY;
 ALTER TABLE advisor_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE uploaded_files ENABLE ROW LEVEL SECURITY;
 
--- 5. Drop existing policies (if any) to avoid conflicts
+-- ============================================
+-- STEP 4: Drop old policies (safe)
+-- ============================================
+
 DO $$ DECLARE r RECORD;
 BEGIN
   FOR r IN (SELECT schemaname, tablename, policyname FROM pg_policies WHERE schemaname = 'public')
@@ -109,7 +121,10 @@ BEGIN
   END LOOP;
 END $$;
 
--- 6. Create RLS policies
+-- ============================================
+-- STEP 5: Create RLS Policies
+-- ============================================
+
 -- admin_users
 CREATE POLICY "admin_users_select" ON admin_users FOR SELECT USING (auth.role() = 'authenticated');
 CREATE POLICY "admin_users_insert" ON admin_users FOR INSERT WITH CHECK (auth.role() = 'authenticated');
@@ -138,7 +153,10 @@ CREATE POLICY "settings_update" ON advisor_settings FOR UPDATE USING (auth.role(
 CREATE POLICY "files_select" ON uploaded_files FOR SELECT USING (auth.role() = 'authenticated');
 CREATE POLICY "files_insert" ON uploaded_files FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
--- 7. Grant permissions to PostgREST roles
+-- ============================================
+-- STEP 6: Grant Permissions to PostgREST
+-- ============================================
+
 GRANT SELECT, INSERT, UPDATE, DELETE ON admin_users TO authenticated;
 GRANT SELECT ON admin_users TO anon;
 
@@ -158,8 +176,11 @@ GRANT SELECT, INSERT ON uploaded_files TO authenticated;
 
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO authenticated;
 
--- 8. Insert default admin user profile
--- (The auth user must be created separately via Supabase Dashboard)
+-- ============================================
+-- STEP 7: Seed Data
+-- ============================================
+
+-- Admin user profile (auth user already created)
 INSERT INTO admin_users (user_id, username, name, role, permissions, active)
 VALUES (
   '52eb0fd5-a478-4e3d-a995-2f29c14742c1',
@@ -172,9 +193,10 @@ VALUES (
   user_id = EXCLUDED.user_id,
   role = EXCLUDED.role,
   permissions = EXCLUDED.permissions,
-  active = EXCLUDED.active;
+  active = EXCLUDED.active,
+  updated_at = NOW();
 
--- 9. Insert default settings
+-- Default settings
 INSERT INTO advisor_settings (key, value) VALUES ('main', '{
   "advisorName": "المستشار اليمني القانوني",
   "advisorPersonality": "مستشار قانوني يمني خبير، يجيب بدقة ووضوح، يلتزم بالقانون اليمني النافذ",
@@ -187,5 +209,8 @@ INSERT INTO advisor_settings (key, value) VALUES ('main', '{
   "showSources": true
 }'::jsonb) ON CONFLICT (key) DO NOTHING;
 
--- 10. Refresh PostgREST schema cache
+-- ============================================
+-- STEP 8: Refresh PostgREST Schema Cache
+-- ============================================
+
 NOTIFY pgrst, 'reload schema';
