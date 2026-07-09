@@ -144,6 +144,9 @@
       <div class="sb-item" onclick="nav('upload')"><span class="ic">📤</span>رفع ملفات</div>
       <div class="sb-item" onclick="nav('workflow')"><span class="ic">🔄</span>دورة الاعتماد</div>
       <div class="sb-item" onclick="nav('improve')"><span class="ic">🧠</span>فرص التحسين</div>
+      <div class="sb-section">البيانات</div>
+      <div class="sb-item" onclick="nav('laws')"><span class="ic">⚖️</span>القوانين</div>
+      <div class="sb-item" onclick="nav('articles')"><span class="ic">📜</span>المواد القانونية</div>
       <div class="sb-section">النظام</div>
       <div class="sb-item" onclick="nav('settings')"><span class="ic">⚙️</span>إعدادات المستشار</div>
       <div class="sb-item" onclick="nav('users')"><span class="ic">👥</span>المستخدمون</div>
@@ -251,7 +254,7 @@ async function nav(section){
   cur=section;
   document.querySelectorAll('.sb-item').forEach(function(i){i.classList.remove('active');});
   if(event&&event.target) event.target.closest('.sb-item').classList.add('active');
-  var titles={dashboard:'لوحة التحكم',analytics:'الإحصائيات',knowledge:'قاعدة المعرفة',upload:'رفع ملفات',workflow:'دورة الاعتماد',improve:'فرص التحسين',settings:'إعدادات المستشار',users:'المستخدمون',audit:'سجل العمليات'};
+  var titles={dashboard:'لوحة التحكم',analytics:'الإحصائيات',knowledge:'قاعدة المعرفة',upload:'رفع ملفات',workflow:'دورة الاعتماد',improve:'فرص التحسين',settings:'إعدادات المستشار',users:'المستخدمون',audit:'سجل العمليات',laws:'القوانين',articles:'المواد القانونية'};
   document.getElementById('secTitle').textContent=titles[section]||section;
   var c=document.getElementById('content');
   switch(section){
@@ -264,6 +267,8 @@ async function nav(section){
     case 'settings': await renderSettings(c); break;
     case 'users': await renderUsers(c); break;
     case 'audit': await renderAudit(c); break;
+    case 'laws': await renderLaws(c); break;
+    case 'articles': await renderArticles(c); break;
   }
 }
 
@@ -544,6 +549,48 @@ async function updateBadge(){
     var b=document.getElementById('pendingBadge');
     if(b) b.textContent=(items&&items.length)||'';
   }catch(e){}
+}
+
+/* ===== Laws ===== */
+async function renderLaws(c){
+  if(!useBackend){ c.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-tertiary)">يتطلب Supabase. <a href="migrate.html" style="color:var(--blue-500)">نقل البيانات</a></div>'; return; }
+  var laws = await Backend.getLaws();
+  var sections = {};
+  laws.forEach(function(l){ if(!sections[l.section]) sections[l.section]=[]; sections[l.section].push(l); });
+  
+  c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="font-size:15px;font-weight:700">القوانين ('+laws.length+')</h2><div style="display:flex;gap:8px"><a href="migrate.html" class="kb" style="background:var(--blue-500);color:#fff;font-size:12px">📦 نقل البيانات</a></div></div>';
+  
+  var html='';
+  Object.keys(sections).sort().forEach(function(sec){
+    html+='<h3 style="font-size:13px;font-weight:700;margin:16px 0 8px;color:var(--text-secondary)">'+esc(sec)+' ('+sections[sec].length+')</h3>';
+    html+='<table class="dt"><tr><th>العنوان</th><th>المواد</th><th>القسم</th><th>الحالة</th></tr>';
+    sections[sec].forEach(function(l){
+      html+='<tr><td>'+esc(l.title)+'</td><td>'+l.article_count+'</td><td>'+esc(l.section)+'</td><td>'+(l.status==='active'?'✅':'⚠️')+'</td></tr>';
+    });
+    html+='</table>';
+  });
+  c.innerHTML+=html || '<div style="text-align:center;padding:40px;color:var(--text-tertiary)">لا قوانين. <a href="migrate.html" style="color:var(--blue-500)">نقل البيانات من JSON</a></div>';
+}
+
+/* ===== Articles ===== */
+async function renderArticles(c){
+  if(!useBackend){ c.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-tertiary)">يتطلب Supabase</div>'; return; }
+  
+  c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="font-size:15px;font-weight:700">المواد القانونية</h2><div style="display:flex;gap:8px"><input type="text" id="artSearch" class="fi" style="width:250px" placeholder="بحث في المواد..."><button class="kb primary" onclick="searchArt()">بحث</button></div></div><div id="artList"></div>';
+}
+
+async function searchArt(){
+  var q = document.getElementById('artSearch').value.trim();
+  if(!q) return;
+  var results = await Backend.searchArticles(q, 30);
+  var el = document.getElementById('artList');
+  if(!results.length){ el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-tertiary)">لا نتائج</div>'; return; }
+  var html='<table class="dt"><tr><th>المادة</th><th>القانون</th><th>النص</th></tr>';
+  results.forEach(function(r){
+    html+='<tr><td>'+esc(r.article_number)+'</td><td>'+esc(r.law_slug)+'</td><td>'+esc((r.article_text||'').slice(0,150))+'</td></tr>';
+  });
+  html+='</table>';
+  el.innerHTML=html;
 }
 
 /* ===== Init ===== */

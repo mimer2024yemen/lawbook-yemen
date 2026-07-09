@@ -430,6 +430,98 @@
     return suggestions;
   }
 
+  /* ===== Laws Operations ===== */
+  async function getLaws(section){
+    if(!supabase) return [];
+    try {
+      var query = supabase.from('laws').select('*').order('title');
+      if(section) query = query.eq('section', section);
+      var result = await query;
+      return result.data || [];
+    } catch(e){ return []; }
+  }
+
+  async function getLawBySlug(slug){
+    if(!supabase) return null;
+    try {
+      var result = await supabase.from('laws').select('*').eq('slug', slug).single();
+      return result.data;
+    } catch(e){ return null; }
+  }
+
+  async function getLawArticles(lawSlug, limit){
+    if(!supabase) return [];
+    try {
+      var query = supabase.from('law_articles').select('*').eq('law_slug', lawSlug).order('article_number');
+      if(limit) query = query.limit(limit);
+      var result = await query;
+      return result.data || [];
+    } catch(e){ return []; }
+  }
+
+  async function searchArticles(query, limit){
+    if(!supabase) return [];
+    try {
+      var result = await supabase.from('law_articles')
+        .select('*')
+        .or('article_text.ilike.%'+query+'%,law_slug.ilike.%'+query+'%')
+        .limit(limit || 20);
+      return result.data || [];
+    } catch(e){ return []; }
+  }
+
+  async function addLaw(lawData){
+    if(!supabase) return null;
+    try {
+      var result = await supabase.from('laws').upsert(lawData, {onConflict:'slug'}).select();
+      return result.data ? result.data[0] : null;
+    } catch(e){ return null; }
+  }
+
+  async function addArticle(articleData){
+    if(!supabase) return null;
+    try {
+      var result = await supabase.from('law_articles').insert(articleData).select();
+      return result.data ? result.data[0] : null;
+    } catch(e){ return null; }
+  }
+
+  async function deleteLaw(slug){
+    if(!supabase) return false;
+    try {
+      await supabase.from('law_articles').delete().eq('law_slug', slug);
+      await supabase.from('laws').delete().eq('slug', slug);
+      return true;
+    } catch(e){ return false; }
+  }
+
+  async function deleteArticle(id){
+    if(!supabase) return false;
+    try {
+      await supabase.from('law_articles').delete().eq('id', id);
+      return true;
+    } catch(e){ return false; }
+  }
+
+  /* ===== Contracts & Posts ===== */
+  async function getContracts(category){
+    if(!supabase) return [];
+    try {
+      var query = supabase.from('contracts').select('*').order('title');
+      if(category) query = query.eq('category', category);
+      var result = await query;
+      return result.data || [];
+    } catch(e){ return []; }
+  }
+
+  async function getPosts(){
+    if(!supabase) return [];
+    try {
+      var result = await supabase.from('posts').select('*').order('title');
+      return result.data || [];
+    } catch(e){ return []; }
+  }
+
   /* ===== Initialize ===== */
   async function initialize(){
     var loaded = await initSupabase();
@@ -482,6 +574,18 @@
     updateUser: updateUser,
     // Improvement
     getImprovementSuggestions: getImprovementSuggestions,
+    // Laws
+    getLaws: getLaws,
+    getLawBySlug: getLawBySlug,
+    getLawArticles: getLawArticles,
+    searchArticles: searchArticles,
+    addLaw: addLaw,
+    addArticle: addArticle,
+    deleteLaw: deleteLaw,
+    deleteArticle: deleteArticle,
+    // Contracts & Posts
+    getContracts: getContracts,
+    getPosts: getPosts,
     // Config
     CONFIG: CONFIG
   };

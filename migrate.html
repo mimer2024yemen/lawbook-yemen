@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نقل البيانات إلى Supabase | المستشار اليمني القانوني</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+body{font-family:Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text-primary);padding:20px;max-width:900px;margin:0 auto}
+h1{font-size:1.5rem;margin-bottom:20px}
+.log{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:16px;font-family:monospace;font-size:13px;max-height:500px;overflow-y:auto;line-height:1.8}
+.log-ok{color:var(--green-600)}.log-err{color:var(--red-600)}.log-info{color:var(--blue-600)}
+.btn{padding:12px 24px;border-radius:8px;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin:8px 4px}
+.btn-primary{background:var(--gold-400);color:var(--navy-900)}
+.btn-danger{background:var(--red-500);color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:16px 0}
+.stat{background:var(--surface);border:1px solid var(--border-light);border-radius:8px;padding:12px;text-align:center}
+.stat-num{font-size:1.5rem;font-weight:800;color:var(--gold-500)}
+.stat-label{font-size:11px;color:var(--text-tertiary)}
+.progress{height:8px;background:var(--border-light);border-radius:4px;margin:12px 0;overflow:hidden}
+.progress-bar{height:100%;background:var(--gold-400);border-radius:4px;transition:width .3s;width:0}
+</style>
+</head>
+<body>
+<h1>📦 نقل قاعدة البيانات القانونية إلى Supabase</h1>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num" id="sLaws">-</div><div class="stat-label">قوانين</div></div>
+  <div class="stat"><div class="stat-num" id="sArticles">-</div><div class="stat-label">مواد</div></div>
+  <div class="stat"><div class="stat-num" id="sContracts">-</div><div class="stat-label">عقود</div></div>
+  <div class="stat"><div class="stat-num" id="sPosts">-</div><div class="stat-label">مقالات</div></div>
+  <div class="stat"><div class="stat-num" id="sMigrated">0</div><div class="stat-label">تم نقله</div></div>
+  <div class="stat"><div class="stat-num" id="sErrors">0</div><div class="stat-label">أخطاء</div></div>
+</div>
+
+<div class="progress"><div class="progress-bar" id="progress"></div></div>
+
+<button class="btn btn-primary" id="btnStart" onclick="startMigration()">🚀 بدء النقل</button>
+<button class="btn btn-danger" id="btnStop" onclick="stopMigration()" disabled>⛔ إيقاف</button>
+
+<div class="log" id="log"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+var SB_URL = 'https://ocucwsjzrqrnivgytapk.supabase.co';
+var SB_KEY = 'sb_publishable_HnV9aGkOJnjQmUQFA5gy5w_k3Eoolc3';
+var supabase = window.supabase.createClient(SB_URL, SB_KEY);
+var running = false;
+var totalMigrated = 0;
+var totalErrors = 0;
+
+function log(msg, type){
+  var el = document.getElementById('log');
+  var cls = {ok:'log-ok', err:'log-err', info:'log-info'}[type] || '';
+  el.innerHTML += '<div class="' + cls + '">' + msg + '</div>';
+  el.scrollTop = el.scrollHeight;
+}
+
+function updateStats(){
+  document.getElementById('sMigrated').textContent = totalMigrated;
+  document.getElementById('sErrors').textContent = totalErrors;
+}
+
+function setProgress(pct){
+  document.getElementById('progress').style.width = pct + '%';
+}
+
+async function startMigration(){
+  running = true;
+  document.getElementById('btnStart').disabled = true;
+  document.getElementById('btnStop').disabled = false;
+  totalMigrated = 0;
+  totalErrors = 0;
+
+  log('🚀 بدء النقل...', 'info');
+
+  // Load JSON data
+  log('📥 تحميل catalog.json...', 'info');
+  var catResp = await fetch('catalog.json');
+  var catalog = await catResp.json();
+
+  log('📥 تحميل database.json...', 'info');
+  var dbResp = await fetch('database.json');
+  var database = await dbResp.json();
+
+  var stats = catalog.stats || {};
+  document.getElementById('sLaws').textContent = stats.laws || 0;
+  document.getElementById('sArticles').textContent = stats.articles || 0;
+  document.getElementById('sContracts').textContent = stats.contracts || 0;
+  document.getElementById('sPosts').textContent = stats.posts || 0;
+
+  var totalItems = (stats.laws || 0) + (stats.articles || 0) + (stats.contracts || 0) + (stats.posts || 0);
+  var done = 0;
+
+  // 1. Migrate Laws
+  log('📋 نقل القوانين...', 'info');
+  var sections = Object.keys(database.laws || {});
+  for(var s = 0; s < sections.length; s++){
+    if(!running) break;
+    var section = sections[s];
+    var laws = database.laws[section] || [];
+    for(var l = 0; l < laws.length; l++){
+      if(!running) break;
+      var law = laws[l];
+      try {
+        await supabase.from('laws').upsert({
+          slug: law.slug,
+          title: law.title || '',
+          description: (law.description || '').slice(0, 500),
+          section: section,
+          section_label: law.sectionLabel || section,
+          law_number: law.lawNumber || '',
+          law_year: law.lawYear || '',
+          source_url: law.sourceUrl || law.source_url || '',
+          article_count: (law.articles || []).length,
+          content_preview: (law.content || []).join(' ').slice(0, 1000),
+          status: 'active'
+        }, { onConflict: 'slug' });
+        totalMigrated++;
+        done++;
+      } catch(e){
+        totalErrors++;
+        log('❌ خطأ في قانون: ' + (law.title||'') + ' — ' + e.message, 'err');
+      }
+      if(done % 50 === 0){
+        setProgress(done / totalItems * 100);
+        updateStats();
+        log('✅ ' + done + '/' + totalItems, 'ok');
+      }
+    }
+  }
+  log('✅ القوانين: تم نقل ' + sections.length + ' قسم', 'ok');
+
+  // 2. Migrate Articles (batched)
+  log('📜 نقل المواد القانونية...', 'info');
+  var batchSize = 100;
+  for(var s = 0; s < sections.length; s++){
+    if(!running) break;
+    var section = sections[s];
+    var laws = database.laws[section] || [];
+    for(var l = 0; l < laws.length; l++){
+      if(!running) break;
+      var law = laws[l];
+      var articles = law.articles || [];
+      var batch = [];
+      for(var a = 0; a < articles.length; a++){
+        if(!running) break;
+        var art = articles[a];
+        batch.push({
+          law_slug: law.slug,
+          article_number: art.number || '',
+          article_text: (art.text || '').slice(0, 2000),
+          section: section,
+          normalized_text: (art.text || '').slice(0, 500)
+        });
+
+        if(batch.length >= batchSize){
+          try {
+            await supabase.from('law_articles').insert(batch);
+            totalMigrated += batch.length;
+            done += batch.length;
+          } catch(e){
+            totalErrors++;
+            log('❌ خطأ في دفعة مواد: ' + e.message, 'err');
+          }
+          batch = [];
+          if(done % 500 === 0){
+            setProgress(done / totalItems * 100);
+            updateStats();
+            log('✅ ' + done + '/' + totalItems + ' مادة', 'ok');
+          }
+        }
+      }
+      // Flush remaining
+      if(batch.length > 0 && running){
+        try {
+          await supabase.from('law_articles').insert(batch);
+          totalMigrated += batch.length;
+          done += batch.length;
+        } catch(e){
+          totalErrors++;
+          log('❌ خطأ في دفعة مواد أخيرة: ' + e.message, 'err');
+        }
+      }
+    }
+  }
+  log('✅ المواد القانونية: تم النقل', 'ok');
+
+  // 3. Migrate Contracts
+  log('📝 نقل العقود...', 'info');
+  var contracts = catalog.contracts || [];
+  var cBatch = [];
+  for(var c = 0; c < contracts.length; c++){
+    if(!running) break;
+    var contract = contracts[c];
+    cBatch.push({
+      slug: contract.slug || '',
+      title: contract.title || '',
+      description: (contract.description || '').slice(0, 500),
+      category: contract.category || '',
+      content_preview: (contract.searchText || '').slice(0, 1000),
+      status: 'active'
+    });
+    if(cBatch.length >= 50){
+      try {
+        await supabase.from('contracts').upsert(cBatch, { onConflict: 'slug' });
+        totalMigrated += cBatch.length;
+        done += cBatch.length;
+      } catch(e){
+        totalErrors++;
+        log('❌ خطأ في عقود: ' + e.message, 'err');
+      }
+      cBatch = [];
+    }
+  }
+  if(cBatch.length > 0 && running){
+    try {
+      await supabase.from('contracts').upsert(cBatch, { onConflict: 'slug' });
+      totalMigrated += cBatch.length;
+    } catch(e){
+      totalErrors++;
+    }
+  }
+  log('✅ العقود: تم النقل', 'ok');
+
+  // 4. Migrate Posts
+  log('📰 نقل المقالات...', 'info');
+  var posts = catalog.posts || [];
+  var pBatch = [];
+  for(var p = 0; p < posts.length; p++){
+    if(!running) break;
+    var post = posts[p];
+    pBatch.push({
+      slug: post.slug || '',
+      title: post.title || '',
+      description: (post.description || '').slice(0, 500),
+      content_preview: (post.searchText || '').slice(0, 1000),
+      status: 'active'
+    });
+  }
+  if(pBatch.length > 0 && running){
+    try {
+      await supabase.from('posts').upsert(pBatch, { onConflict: 'slug' });
+      totalMigrated += pBatch.length;
+    } catch(e){
+      totalErrors++;
+      log('❌ خطأ في مقالات: ' + e.message, 'err');
+    }
+  }
+  log('✅ المقالات: تم النقل', 'ok');
+
+  // Done
+  setProgress(100);
+  updateStats();
+  log('', '');
+  log('═══════════════════════════════', 'info');
+  log('✅ تم النقل بنجاح!', 'ok');
+  log('   القوانين: ' + (stats.laws||0), 'ok');
+  log('   المواد: ' + (stats.articles||0), 'ok');
+  log('   العقود: ' + (stats.contracts||0), 'ok');
+  log('   المقالات: ' + (stats.posts||0), 'ok');
+  log('   الأخطاء: ' + totalErrors, totalErrors > 0 ? 'err' : 'ok');
+  log('═══════════════════════════════', 'info');
+
+  running = false;
+  document.getElementById('btnStart').disabled = false;
+  document.getElementById('btnStop').disabled = true;
+}
+
+function stopMigration(){
+  running = false;
+  log('⛔ تم إيقاف النقل', 'err');
+  document.getElementById('btnStart').disabled = false;
+  document.getElementById('btnStop').disabled = true;
+}
+</script>
+</body>
+</html>
