@@ -12,6 +12,8 @@
 <meta property="og:url" content="https://mimer2024yemen.github.io/lawbook-yemen/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>م.ق</text></svg>">
 <link rel="stylesheet" href="styles.css">
+<link rel="manifest" href="manifest.json">
+<script src="app.js"></script>
 </head>
 <body>
 
@@ -303,18 +305,24 @@ var librarySections = [
   {key:'yemeni-laws',name:'القوانين اليمنية',desc:'القوانين اليمنية النافذة كاملة: المدني، الجزائي، المرافعات، المرور',icon:'🏛️',color:'navy'}
 ];
 
-/* ===== Data Loading ===== */
+/* ===== Progressive Data Loading ===== */
 async function loadAll(){
   try{
-    var r1 = await fetch('catalog.json');
-    catalog = await r1.json();
-    var r2 = await fetch('database.json');
-    database = await r2.json();
-    searchIndex = LawbookSearch.buildIndex(catalog, database);
+    /* Phase 1: Load catalog (1.7MB) — gives us stats, sections, laws, contracts */
+    catalog = await App.loadCatalog();
+    searchIndex = LawbookSearch.buildIndex(catalog);
     renderStats();
     renderLibrary();
     renderLaws();
     renderContracts();
+
+    /* Phase 2: Load database (9.3MB) in background — only needed for search */
+    App.loadDatabase().then(function(db){
+      database = db;
+      /* Rebuild search index with full database for article-level search */
+      searchIndex = LawbookSearch.buildIndex(catalog, database);
+    }).catch(function(){});
+
   }catch(e){
     console.error('Load error:', e);
     document.getElementById('libraryGrid').innerHTML = '<div class="empty-state">تعذر تحميل الفهرس.</div>';

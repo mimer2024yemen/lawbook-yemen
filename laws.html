@@ -8,6 +8,8 @@
 <meta name="theme-color" content="#0a1628">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>م.ق</text></svg>">
 <link rel="stylesheet" href="styles.css">
+<link rel="manifest" href="manifest.json">
+<script src="app.js"></script>
 </head>
 <body>
 <nav class="navbar"><div class="navbar-inner"><a href="index.html" class="brand"><div class="brand-icon">م.ق</div><div class="brand-text"><div class="brand-name">المستشار اليمني القانوني</div></div></a><a href="advisor.html" class="back-btn" style="margin-left:8px">⚖️ المستشار</a><a href="index.html" class="back-btn">← الرئيسية</a></div></nav>
@@ -34,13 +36,13 @@ var catalog=null, fullDB=null, currentSection='all', lawSearchIndex=[];
 var sectionTabs=[{k:'all',n:'الكل'},{k:'personal-status',n:'الأحوال الشخصية'},{k:'civil',n:'المدني'},{k:'commercial',n:'التجاري'},{k:'criminal',n:'الجنائي'},{k:'labor',n:'العمل'},{k:'litigation-procedures',n:'التقاضي'},{k:'yemeni-laws',n:'القوانين'}];
 
 async function loadCatalog(){
-  var r=await fetch('catalog.json'); catalog=await r.json();
+  catalog=await App.loadCatalog();
   lawSearchIndex=LawbookSearch.buildIndex(catalog).filter(function(i){return i.type==='law'||i.type==='article';});
   var p=new URLSearchParams(location.search);
   if(p.get('section')) currentSection=p.get('section');
   renderTabs(); renderLaws();
 }
-async function ensureFullDB(){ if(fullDB) return fullDB; var r=await fetch('database.json'); fullDB=await r.json(); return fullDB; }
+async function ensureFullDB(){ if(fullDB) return fullDB; fullDB=await App.loadDatabase(); return fullDB; }
 function updateUrl(){ var u=new URL(location.href); if(currentSection&&currentSection!=='all') u.searchParams.set('section',currentSection); else u.searchParams.delete('section'); history.replaceState(null,'',u.toString()); }
 function renderTabs(){ var h=''; for(var i=0;i<sectionTabs.length;i++) h+='<button class="tab'+(sectionTabs[i].k===currentSection?' active':'')+'" onclick="setSection(\''+sectionTabs[i].k+'\')">'+sectionTabs[i].n+'</button>'; document.getElementById('tabs').innerHTML=h; }
 function setSection(s){ currentSection=s; updateUrl(); renderTabs(); renderLaws(); }
