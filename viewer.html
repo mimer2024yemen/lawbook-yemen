@@ -4,67 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>عرض المحتوى | لوبوك</title>
+<meta name="theme-color" content="#0c1a3a">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>LB</text></svg>">
-<style>
-:root{--font:Tahoma,Arial,sans-serif;--navy:#0c1a3a;--blue:#1e40af;--gold:#d4a843;--bg:#f4f6fa;--card:#fff;--text:#1a1f2e;--text2:#5a6178;--text3:#8b92a5;--border:#e5e8f0;--shadow:0 10px 30px rgba(12,26,58,.08);--r:14px}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.95}
-.navbar{background:var(--navy);position:sticky;top:0;z-index:10;border-bottom:3px solid var(--gold)}
-.navbar-inner{max-width:1100px;margin:0 auto;padding:0 20px;height:62px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
-.brand-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#f5c563);display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:800}
-.brand-name{font-size:20px;font-weight:800}
-.back-btn{color:#fff;text-decoration:none;background:rgba(255,255,255,.08);padding:8px 14px;border-radius:10px;font-size:13px}
-.wrap{max-width:1100px;margin:0 auto;padding:24px 16px 40px}
-.hero{background:linear-gradient(135deg,#fff,#f8fbff);border:1px solid var(--border);border-radius:20px;padding:24px;box-shadow:var(--shadow);margin-bottom:18px}
-.badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
-.badge-blue{background:rgba(30,64,175,.08);color:var(--blue)}
-.badge-gold{background:rgba(212,168,67,.14);color:#8a6700}
-.hero h1{font-size:clamp(1.4rem,2vw,2.2rem);line-height:1.5;margin-bottom:10px;color:var(--navy)}
-.hero p{color:var(--text2);font-size:15px}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;border:none;text-decoration:none;cursor:pointer;font-family:var(--font);font-weight:700;font-size:14px}
-.btn-gold{background:var(--gold);color:var(--navy)}
-.btn-blue{background:var(--blue);color:#fff}
-.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text)}
-.layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px;align-items:start}
-.main-card,.side-card{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}
-.main-card{padding:24px}
-.side-card{padding:18px;position:sticky;top:82px}
-.side-card h3{font-size:16px;color:var(--navy);margin-bottom:10px}
-.side-card a{display:block;padding:10px 12px;border-radius:12px;text-decoration:none;color:var(--text);background:#f8fafc;margin-bottom:8px;border:1px solid transparent}
-.side-card a:hover{border-color:var(--gold);background:#fff}
-.content-block{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid #eef2f7}
-.content-block:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
-.content-block p{font-size:16px;color:var(--text);white-space:pre-wrap}
-.articles{display:grid;gap:12px}
-.article-card{padding:14px 16px;border-radius:14px;background:#fafcff;border:1px solid #e9eef7}
-.article-card h4{font-size:15px;color:var(--navy);margin-bottom:6px}
-.article-card p{font-size:14px;color:var(--text2)}
-.empty{padding:60px 20px;text-align:center;color:var(--text3)}
-.footer{max-width:1100px;margin:0 auto 24px;padding:0 16px;color:var(--text3);font-size:12px;text-align:center}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.side-card{position:static}.navbar-inner{height:auto;padding:12px 16px;flex-wrap:wrap}.brand-name{font-size:18px}}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
 <nav class="navbar">
   <div class="navbar-inner">
-    <a href="index.html" class="brand"><div class="brand-icon">LB</div><div class="brand-name">لوبوك</div></a>
+    <a href="index.html" class="brand">
+      <div class="brand-icon">LB</div>
+      <div><div class="brand-name">لوبوك</div></div>
+    </a>
     <a id="backLink" href="index.html" class="back-btn">&#8594; رجوع</a>
   </div>
 </nav>
-<div class="wrap">
-  <section class="hero">
+
+<div class="viewer-wrap">
+  <section class="viewer-hero">
     <div class="badges" id="badges"></div>
     <h1 id="title">جاري التحميل...</h1>
     <p id="description">يتم تجهيز المحتوى المحلي من مكتبة الموقع.</p>
     <div class="actions">
-      <button class="btn btn-gold" onclick="window.print()">&#128424; طباعة / PDF</button>
-      <button class="btn btn-outline" onclick="downloadTXT()">&#128196; تنزيل نص</button>
-      <a class="btn btn-blue" id="homeBtn" href="index.html">الرئيسية</a>
+      <button class="btn btn-gold" onclick="window.print()" style="padding:10px 16px;font-size:14px">&#128424; طباعة / PDF</button>
+      <button class="btn btn-outline" onclick="downloadTXT()" style="padding:10px 16px;font-size:14px;border:1px solid var(--border)">&#128196; تنزيل نص</button>
+      <a class="btn btn-blue" id="homeBtn" href="index.html" style="padding:10px 16px;font-size:14px">الرئيسية</a>
     </div>
   </section>
+
   <div class="layout">
     <article class="main-card" id="contentArea"><div class="empty">جاري تحميل المحتوى...</div></article>
     <aside class="side-card">
@@ -73,7 +40,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
     </aside>
   </div>
 </div>
-<div class="footer">جميع المواد المعروضة هنا تُفتح محليًا داخل موقع لوبوك دون تحويل المستخدم إلى موقع خارجي.</div>
+
+<footer class="footer-simple">جميع المواد المعروضة هنا تُفتح محليًا داخل موقع لوبوك دون تحويل المستخدم إلى موقع خارجي.</footer>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="العودة للأعلى">&#8593;</button>
+
 <script>
 var currentItem=null;
 var typeLabels={law:'قانون',contract:'عقد',post:'مقال'};
@@ -131,7 +102,7 @@ function renderItem(type,section,item){
     html+='<div class="articles">';
     for(var i=0;i<item.articles.length;i++){
       var a=item.articles[i];
-      html+='<div class="article-card"><h4>مادة ('+esc(a.number||String(i+1))+')</h4><p>'+esc(a.text||'')+'</p></div>';
+      html+='<div class="article-card-sm"><h4>مادة ('+esc(a.number||String(i+1))+')</h4><p>'+esc(a.text||'')+'</p></div>';
     }
     html+='</div>';
   }
@@ -192,6 +163,12 @@ function downloadTXT(){
   a.click();
   setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
 }
+
+var scrollTopBtn = document.getElementById('scrollTop');
+window.addEventListener('scroll', function(){
+  scrollTopBtn.classList.toggle('visible', window.scrollY > 300);
+}, {passive: true});
+
 load();
 </script>
 </body>
