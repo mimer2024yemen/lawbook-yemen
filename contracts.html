@@ -11,234 +11,174 @@
 body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.7}
 .navbar{background:var(--navy);position:sticky;top:0;z-index:100;border-bottom:3px solid var(--gold)}
 .navbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:60px}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
-.brand-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),#f5c563);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--navy)}
-.brand-name{font-size:20px;font-weight:700}
-.back-btn{color:rgba(255,255,255,.7);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px}
-.back-btn:hover{color:#fff;background:rgba(255,255,255,.08)}
-.container{max-width:1200px;margin:0 auto;padding:0 20px}
-.page-head{text-align:center;padding:40px 0 20px}
-.page-head h1{font-size:2rem;font-weight:700;margin-bottom:6px}
-.page-head p{color:var(--text2);font-size:15px}
-.tabs{display:flex;gap:6px;margin:16px 0;flex-wrap:wrap;justify-content:center}
-.tab{padding:7px 14px;border-radius:8px;background:var(--card);border:1px solid var(--border);cursor:pointer;font-family:var(--font);font-size:13px;transition:all .15s;color:var(--text2)}
-.tab:hover,.tab.active{background:var(--gold);color:var(--navy);border-color:var(--gold)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin:20px 0;padding-bottom:40px}
-.card{background:var(--card);border-radius:var(--r);padding:20px;border:1px solid var(--border);transition:all .15s}
-.card:hover{border-color:var(--gold);box-shadow:var(--shadow-md)}
-.card h4{font-size:16px;font-weight:600;margin-bottom:8px}
-.card p{font-size:13px;color:var(--text2);line-height:1.7}
-.card-actions{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;text-decoration:none;border:none}
-.btn-gold{background:var(--gold);color:var(--navy)}
-.btn-gold:hover{box-shadow:0 4px 12px rgba(212,168,67,.3)}
-.btn-blue{background:var(--blue);color:#fff}
-.btn-green{background:#16a34a;color:#fff}
-.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2)}
-.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
-.footer{background:var(--navy);color:rgba(255,255,255,.5);text-align:center;padding:24px;font-size:12px}
-/* Responsive */
-@media(max-width:1024px){
-  .grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
-}
-
-@media(max-width:768px){
-  .navbar-inner{height:56px}
-  .page-head{padding:30px 0 16px}
-  .page-head h1{font-size:1.6rem}
-  .tabs{gap:4px}
-  .tab{padding:6px 10px;font-size:12px}
-  .grid{grid-template-columns:1fr;gap:12px}
-  .card{padding:14px}
-  .card h4{font-size:14px}
-  .card p{font-size:12px}
-  .card-actions{flex-wrap:wrap;gap:6px}
-  .card-actions .btn{flex:1;justify-content:center;font-size:11px;padding:6px 10px}
-}
-
-@media(max-width:480px){
-  .container{padding:0 12px}
-  .page-head h1{font-size:1.4rem}
-  .tabs{flex-wrap:wrap;justify-content:center}
-  .tab{font-size:11px;padding:5px 8px}
-}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}.brand-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),#f5c563);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--navy)}.brand-name{font-size:20px;font-weight:700}
+.back-btn{color:rgba(255,255,255,.7);text-decoration:none;font-size:13px;display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px}.back-btn:hover{color:#fff;background:rgba(255,255,255,.08)}
+.container{max-width:1200px;margin:0 auto;padding:0 20px}.page-head{text-align:center;padding:40px 0 20px}.page-head h1{font-size:2rem;font-weight:700;margin-bottom:6px}.page-head p{color:var(--text2);font-size:15px}
+.toolbar{background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow-md);border-radius:18px;padding:16px;margin-bottom:18px}
+.search-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.search-box{flex:1;min-width:260px}.search-box input{width:100%;padding:12px 18px;border-radius:var(--r);border:1px solid var(--border);background:var(--card);font-size:14px;font-family:var(--font);outline:none;direction:rtl}.search-box input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,168,67,.08)}
+.summary{margin-top:10px;font-size:13px;color:var(--text2)}
+.tabs{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap;justify-content:center}.tab{padding:7px 14px;border-radius:8px;background:var(--card);border:1px solid var(--border);cursor:pointer;font-family:var(--font);font-size:13px;transition:all .15s;color:var(--text2)}.tab:hover,.tab.active{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin:20px 0;padding-bottom:40px}.card{background:var(--card);border-radius:var(--r);padding:20px;border:1px solid var(--border);transition:all .15s}.card:hover{border-color:var(--gold);box-shadow:var(--shadow-md)}.card h4{font-size:16px;font-weight:700;margin-bottom:8px;line-height:1.6}.card p{font-size:13px;color:var(--text2);line-height:1.8}.card-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.card-meta span{background:#fff7e6;color:#936700;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700}.card-actions{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;text-decoration:none;border:none}.btn-gold{background:var(--gold);color:var(--navy)}.btn-blue{background:var(--blue);color:#fff}.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text2)}.btn-outline:hover{border-color:var(--gold);color:#946c00}
+.empty{background:var(--card);border:1px dashed var(--border);border-radius:18px;padding:36px;text-align:center;color:var(--text3)}.footer{background:var(--navy);color:rgba(255,255,255,.5);text-align:center;padding:24px;font-size:12px}
+@media(max-width:768px){.navbar-inner{height:56px}.page-head{padding:30px 0 16px}.page-head h1{font-size:1.6rem}.tabs{gap:4px}.tab{padding:6px 10px;font-size:12px}.grid{grid-template-columns:1fr;gap:12px}.card{padding:14px}.card h4{font-size:14px}.card p{font-size:12px}.card-actions{flex-wrap:wrap;gap:6px}.card-actions .btn{flex:1;justify-content:center;font-size:11px;padding:6px 10px}}
+@media(max-width:480px){.container{padding:0 12px}.page-head h1{font-size:1.4rem}.tab{font-size:11px;padding:5px 8px}}
 </style>
 </head>
 <body>
 <nav class="navbar"><div class="navbar-inner"><a href="index.html" class="brand"><div class="brand-icon">LB</div><div class="brand-name">لوبوك</div></a><a href="index.html" class="back-btn">&#8594; الرئيسية</a></div></nav>
 <div class="container">
-<div class="page-head"><h1>نماذج العقود</h1><p>نماذج عقود قانونية احترافية جاهزة للتحميل</p></div>
-<div class="tabs" id="tabs"></div>
-<div class="grid" id="grid"></div>
+  <div class="page-head"><h1>نماذج العقود</h1><p>بحث ذكي وفرز أسرع داخل نماذج العقود القانونية</p></div>
+  <div class="toolbar">
+    <div class="search-row">
+      <div class="search-box"><input type="text" id="searchInput" placeholder="ابحث في العقود... مثل: بيع، إيجار، شركة، وكالة"></div>
+      <a href="index.html" class="btn btn-outline">&#127968; الرئيسية</a>
+    </div>
+    <div class="summary" id="resultSummary">جاري تحميل العقود...</div>
+    <div class="tabs" id="tabs"></div>
+  </div>
+  <div class="grid" id="grid"><div class="empty">جاري تحميل البيانات...</div></div>
 </div>
-<footer class="footer">&copy; 2024 لوبوك - المكتبة القانونية اليمنية</footer>
-
+<footer class="footer">&copy; 2026 لوبوك - المكتبة القانونية اليمنية</footer>
+<script src="search-utils.js"></script>
 <script>
-var db=null;
-var cat='all';
+var catalog = null;
+var fullDB = null;
+var currentCategory = 'الكل';
+var currentContracts = [];
+var contractSearchIndex = [];
 
-async function loadDB(){
-  var r=await fetch('database.json');
-  db=await r.json();
-  var p=new URLSearchParams(location.search);
-  if(p.get('category'))cat=decodeURIComponent(p.get('category'));
+async function loadCatalog(){
+  var r = await fetch('catalog.json');
+  catalog = await r.json();
+  contractSearchIndex = LawbookSearch.buildIndex(catalog).filter(function(item){ return item.type === 'contract'; });
+  var p = new URLSearchParams(location.search);
+  if(p.get('category')) currentCategory = decodeURIComponent(p.get('category'));
   renderTabs();
   renderContracts();
 }
 
-function getCats(){
-  var c={'الكل':[]};
-  for(var i=0;i<db.contracts.length;i++){
-    var x=db.contracts[i];
-    var t=x.title||x.slug||'';
-    var k='أخرى';
-    if(t.indexOf('بيع')!==-1)k='بيع';
-    else if(t.indexOf('إيجار')!==-1||t.indexOf('سكن')!==-1)k='إيجار';
-    else if(t.indexOf('شركة')!==-1)k='شركة';
-    else if(t.indexOf('وكالة')!==-1)k='وكالة';
-    else if(t.indexOf('قرض')!==-1)k='قرض';
-    else if(t.indexOf('تنازل')!==-1)k='تنازل';
-    else if(t.indexOf('إقرار')!==-1)k='إقرار';
-    else if(t.indexOf('كفالة')!==-1)k='كفالة';
-    if(!c[k])c[k]=[];
-    c[k].push(x);
-    c['الكل'].push(x);
+async function ensureFullDB(){
+  if(fullDB) return fullDB;
+  var r = await fetch('database.json');
+  fullDB = await r.json();
+  return fullDB;
+}
+
+function groupedContracts(){
+  var groups = {'الكل':[]};
+  for(var i=0;i<catalog.contracts.length;i++){
+    var x = catalog.contracts[i];
+    var c = x.category || 'أخرى';
+    if(!groups[c]) groups[c] = [];
+    groups[c].push(x);
+    groups['الكل'].push(x);
   }
-  return c;
+  return groups;
 }
 
 function renderTabs(){
-  var c=getCats();
-  var html='';
-  var keys=Object.keys(c);
-  for(var i=0;i<keys.length;i++){
-    var k=keys[i];
-    html+='<button class="tab'+(k===cat?' active':'')+'" onclick="setCat(\''+k+'\')">'+k+' ('+c[k].length+')</button>';
-  }
-  document.getElementById('tabs').innerHTML=html;
+  var groups = groupedContracts();
+  var html = '';
+  Object.keys(groups).sort(function(a,b){
+    if(a === 'الكل') return -1;
+    if(b === 'الكل') return 1;
+    return groups[b].length - groups[a].length || a.localeCompare(b,'ar');
+  }).forEach(function(name){
+    html += '<button class="tab'+(name===currentCategory?' active':'')+'" onclick="setCategory(\''+name+'\')">'+name+' ('+groups[name].length+')</button>';
+  });
+  document.getElementById('tabs').innerHTML = html;
 }
 
-function setCat(k){cat=k;renderTabs();renderContracts();}
+function updateUrl(){
+  var url = new URL(location.href);
+  if(currentCategory && currentCategory !== 'الكل') url.searchParams.set('category', currentCategory); else url.searchParams.delete('category');
+  history.replaceState(null, '', url.toString());
+}
+
+function setCategory(name){
+  currentCategory = name;
+  updateUrl();
+  renderTabs();
+  renderContracts();
+}
 
 function renderContracts(){
-  var grid=document.getElementById('grid');
-  var c=getCats();
-  var contracts=cat==='الكل'?db.contracts:(c[cat]||[]);
-  
-  var html='';
+  if(!catalog) return;
+  var q = document.getElementById('searchInput').value.trim();
+  var contracts;
+  if(q){
+    contracts = LawbookSearch.search(catalog, q, {types:['contract'], limit:500, index: contractSearchIndex}).map(function(x){ return x.item; });
+  }else{
+    contracts = catalog.contracts.slice();
+  }
+  if(currentCategory !== 'الكل') contracts = contracts.filter(function(item){ return (item.category || 'أخرى') === currentCategory; });
+  contracts.sort(function(a,b){ return a.title.localeCompare(b.title,'ar'); });
+  currentContracts = contracts;
+  document.getElementById('resultSummary').textContent = q
+    ? 'تم العثور على ' + Number(contracts.length).toLocaleString('en-US') + ' نتيجة داخل العقود.'
+    : 'يعرض التصنيف الحالي ' + Number(contracts.length).toLocaleString('en-US') + ' عقدًا.';
+
+  var html = '';
   for(var i=0;i<contracts.length;i++){
-    var x=contracts[i];
-    var desc='';
-    if(x.content&&x.content.length>0){
-      desc=x.content[0];
-      if(desc.length>120)desc=desc.substring(0,120)+'...';
-    }
-    html+='<div class="card">';
-    html+='<h4>'+(x.title||x.slug||'عقد')+'</h4>';
-    html+='<p>'+desc+'</p>';
-    html+='<div class="card-actions">';
-    html+='<button class="btn btn-gold" onclick="downloadPDF('+i+')">&#128190; تحميل PDF</button>';
-    html+='<button class="btn btn-blue" onclick="viewContract('+i+')">&#128065; عرض</button>';
-    html+='<button class="btn btn-outline" onclick="downloadTXT('+i+')">&#128196; نص</button>';
-    html+='</div></div>';
+    var x = contracts[i];
+    html += '<div class="card">';
+    html += '<div class="card-meta"><span>'+LawbookSearch.escapeHtml(x.category || 'أخرى')+'</span></div>';
+    html += '<h4>'+LawbookSearch.escapeHtml(x.title || x.slug || 'عقد')+'</h4>';
+    html += '<p>'+LawbookSearch.escapeHtml(x.description || '')+'</p>';
+    html += '<div class="card-actions">';
+    html += '<button class="btn btn-gold" onclick="downloadPDF('+i+')">&#128190; PDF</button>';
+    html += '<a class="btn btn-blue" href="'+x.url+'">&#128065; عرض</a>';
+    html += '<button class="btn btn-outline" onclick="downloadTXT('+i+')">&#128196; نص</button>';
+    html += '</div></div>';
   }
-  grid.innerHTML=html||'<div style="text-align:center;padding:40px;color:var(--text3)">لا توجد عقود</div>';
+  document.getElementById('grid').innerHTML = html || '<div class="empty">لا توجد نتائج مطابقة.</div>';
 }
 
-function getContracts(){
-  var c=getCats();
-  return cat==='الكل'?db.contracts:(c[cat]||[]);
+document.getElementById('searchInput').addEventListener('input', renderContracts);
+
+function findContract(slug){
+  var arr = (fullDB && fullDB.contracts) || [];
+  for(var i=0;i<arr.length;i++) if(arr[i].slug === slug) return arr[i];
+  return null;
 }
 
-function viewContract(i){
-  var contracts=getContracts();
-  var x=contracts[i];
-  if(!x)return;
-  
-  var content='';
-  if(x.content){
-    for(var j=0;j<x.content.length;j++){
-      content+='<p style="margin-bottom:12px;line-height:2">'+x.content[j]+'</p>';
-    }
-  }
-  
-  var win=window.open('','_blank');
-  win.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>'+(x.title||'عقد')+'</title>');
-  win.document.write('<style>body{font-family:Tahoma,Arial,sans-serif;max-width:800px;margin:40px auto;padding:20px;line-height:2;color:#1a1f2e}h1{text-align:center;color:#0c1a3a;font-size:24px;margin-bottom:24px;padding-bottom:16px;border-bottom:3px solid #d4a843}p{margin-bottom:12px;font-size:15px}.footer{text-align:center;margin-top:40px;padding-top:16px;border-top:1px solid #e5e8f0;color:#8b92a5;font-size:12px}</style>');
-  win.document.write('</head><body>');
-  win.document.write('<h1>'+x.title+'</h1>');
-  win.document.write(content);
-  win.document.write('<div class="footer">لوبوك - المكتبة القانونية اليمنية</div>');
-  win.document.write('</body></html>');
-  win.document.close();
+async function downloadTXT(index){
+  try{
+    await ensureFullDB();
+    var item = currentContracts[index];
+    var x = item && findContract(item.slug);
+    if(!x) return;
+    var text=(x.title||'عقد')+'\n==================================================\n\n';
+    if(x.content){ for(var j=0;j<x.content.length;j++) text += x.content[j]+'\n\n'; }
+    text+='==================================================\nلوبوك - المكتبة القانونية اليمنية\n';
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));
+    a.download=(x.title||'contract')+'.txt';
+    a.click();
+  }catch(error){ console.error(error); alert('تعذر تنزيل النص الآن.'); }
 }
 
-function downloadTXT(i){
-  var contracts=getContracts();
-  var x=contracts[i];
-  if(!x)return;
-  
-  var text=(x.title||'عقد')+'\n';
-  text+='==================================================\n\n';
-  if(x.content){
-    for(var j=0;j<x.content.length;j++){
-      text+=x.content[j]+'\n\n';
-    }
-  }
-  text+='\n==================================================\n';
-  text+='لوبوك - المكتبة القانونية اليمنية\n';
-  
-  var a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'}));
-  a.download=(x.title||'contract')+'.txt';
-  a.click();
+async function downloadPDF(index){
+  try{
+    await ensureFullDB();
+    var item = currentContracts[index];
+    var x = item && findContract(item.slug);
+    if(!x) return;
+    var title = x.title || 'عقد';
+    var content = '';
+    if(x.content){ for(var j=0;j<x.content.length;j++) content += '<div style="margin-bottom:10px;line-height:2;font-size:14px">'+x.content[j]+'</div>'; }
+    var pdfHtml='<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>'+title+'</title><style>@page{size:Letter;margin:.55in .39in}body{font-family:Tahoma,Arial,sans-serif;margin:0;padding:0;background:#fff}@media screen{body{background:#e5e7eb}.page{width:min(8.5in,calc(100vw - 40px));min-height:11in;margin:20px auto;background:#fff;padding:.5in;box-shadow:0 10px 40px rgba(0,0,0,.15)}}@media print{.page{width:100%;padding:0;margin:0;box-shadow:none}}.header{text-align:center;padding-bottom:12px;border-bottom:2px solid #d4a843;margin-bottom:20px}.header h2{font-size:16px;color:#0c1a3a;margin:0 0 4px;font-weight:700}.header p{font-size:11px;color:#8b92a5;margin:0}.title{text-align:center;font-size:22px;font-weight:900;color:#0b225a;margin-bottom:20px;line-height:1.5}.content{direction:rtl;text-align:right}.footer{text-align:center;padding-top:12px;border-top:1px solid #d6c288;margin-top:30px;font-size:10px;color:#8b92a5}</style></head><body><div class="page"><div class="header"><h2>لوبوك - المكتبة القانونية اليمنية</h2><p>lawbook yemen</p></div><div class="title">'+title+'</div><div class="content">'+content+'</div><div class="footer">تم تجهيز النسخة للطباعة من لوبوك | '+new Date().toLocaleDateString('ar')+'</div></div></body></html>';
+    var win = window.open('', '_blank');
+    win.document.write(pdfHtml); win.document.close();
+    setTimeout(function(){ win.print(); }, 500);
+  }catch(error){ console.error(error); alert('تعذر تجهيز ملف الطباعة الآن.'); }
 }
 
-function downloadPDF(i){
-  var contracts=getContracts();
-  var x=contracts[i];
-  if(!x)return;
-  
-  var title=x.title||'عقد';
-  var content='';
-  if(x.content){
-    for(var j=0;j<x.content.length;j++){
-      content+='<div style="margin-bottom:10px;line-height:2;font-size:14px">'+x.content[j]+'</div>';
-    }
-  }
-  
-  // Generate professional PDF like original website
-  var pdfHtml='<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>'+title+'</title>';
-  pdfHtml+='<style>';
-  pdfHtml+='@page{size:Letter;margin:0.55in 0.39in}';
-  pdfHtml+='body{font-family:Tahoma,Arial,sans-serif;margin:0;padding:0;background:#fff}';
-  pdfHtml+='@media screen{body{background:#e5e7eb}.page{width:min(8.5in,calc(100vw - 40px));min-height:11in;margin:20px auto;background:#fff;padding:0.5in;box-shadow:0 10px 40px rgba(0,0,0,.15)}}';
-  pdfHtml+='@media print{.page{width:100%;padding:0;margin:0;box-shadow:none}}';
-  pdfHtml+='.header{text-align:center;padding-bottom:12px;border-bottom:2px solid #d4a843;margin-bottom:20px}';
-  pdfHtml+='.header h2{font-size:16px;color:#0c1a3a;margin:0 0 4px;font-weight:700}';
-  pdfHtml+='.header p{font-size:11px;color:#8b92a5;margin:0}';
-  pdfHtml+='.title{text-align:center;font-size:22px;font-weight:900;color:#0b225a;margin-bottom:20px;line-height:1.5}';
-  pdfHtml+='.content{direction:rtl;text-align:right}';
-  pdfHtml+='.footer{text-align:center;padding-top:12px;border-top:1px solid #d6c288;margin-top:30px;font-size:10px;color:#8b92a5}';
-  pdfHtml+='</style></head><body>';
-  pdfHtml+='<div class="page">';
-  pdfHtml+='<div class="header"><h2>لوبوك - المكتبة القانونية اليمنية</h2><p>www.lawbook-ye.com</p></div>';
-  pdfHtml+='<div class="title">'+title+'</div>';
-  pdfHtml+='<div class="content">'+content+'</div>';
-  pdfHtml+='<div class="footer">تم تحميل هذا المحرر من لوبوك - المكتبة القانونية اليمنية | '+new Date().toLocaleDateString('ar')+'</div>';
-  pdfHtml+='</div></body></html>';
-  
-  var win=window.open('','_blank');
-  win.document.write(pdfHtml);
-  win.document.close();
-  
-  // Auto print after load
-  setTimeout(function(){
-    win.print();
-  },500);
-}
-
-loadDB();
+loadCatalog().catch(function(error){
+  console.error(error);
+  document.getElementById('grid').innerHTML = '<div class="empty">تعذر تحميل البيانات.</div>';
+  document.getElementById('resultSummary').textContent = 'حدث خطأ أثناء التحميل.';
+});
 </script>
 </body>
 </html>
