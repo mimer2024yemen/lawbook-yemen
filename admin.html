@@ -287,7 +287,22 @@ function chart(id,data,key,color){
 
 /* ===== Dashboard ===== */
 async function renderDashboard(c){
-  var d = useBackend ? await Backend.getDashboardData() : await AdminEngine.getDashboardData();
+  var d;
+  if(useBackend){
+    d = await Backend.getDashboardData();
+    // Also get real counts from Supabase
+    try {
+      var lawsCount = await Backend.dbCount('laws');
+      var articlesCount = await Backend.dbCount('law_articles');
+      d.lawsInDB = lawsCount;
+      d.articlesInDB = articlesCount;
+    } catch(e){}
+  } else {
+    d = await AdminEngine.getDashboardData();
+  }
+  var extraCards = '';
+  if(d.lawsInDB !== undefined) extraCards += dc('⚖️','n',d.lawsInDB,'قانون في Supabase');
+  if(d.articlesInDB !== undefined) extraCards += dc('📜','g',d.articlesInDB,'مادة في Supabase');
   c.innerHTML='<div class="dg">'+
     dc('📊','b',d.todayPageviews,'زيارات اليوم')+
     dc('🔍','g',d.todaySearches,'بحث اليوم')+
@@ -296,7 +311,8 @@ async function renderDashboard(c){
     dc('✅','gr',d.successRate+'%','نسبة النجاح')+
     dc('❌','r',d.totalNoResults,'بدون إجابة')+
     dc('👥','n',d.userCount,'المستخدمون')+
-    dc('📚','g',d.knowledgeCount,'معرف')+
+    dc('📚','g',d.knowledgeCount,'معرفة')+
+    extraCards+
     '</div>'+
     '<div class="ch"><div class="ch-title">الزيارات خلال 14 يوم</div><div class="ch-bars" id="chVisit"></div></div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'+
@@ -553,44 +569,84 @@ async function updateBadge(){
 
 /* ===== Laws ===== */
 async function renderLaws(c){
-  if(!useBackend){ c.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-tertiary)">يتطلب Supabase. <a href="migrate.html" style="color:var(--blue-500)">نقل البيانات</a></div>'; return; }
+  if(!useBackend){ c.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-tertiary)">يتطلب Supabase</div>'; return; }
   var laws = await Backend.getLaws();
   var sections = {};
   laws.forEach(function(l){ if(!sections[l.section]) sections[l.section]=[]; sections[l.section].push(l); });
   
-  c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="font-size:15px;font-weight:700">القوانين ('+laws.length+')</h2><div style="display:flex;gap:8px"><a href="migrate.html" class="kb" style="background:var(--blue-500);color:#fff;font-size:12px">📦 نقل البيانات</a></div></div>';
+  c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="font-size:15px;font-weight:700">القوانين ('+laws.length+')</h2><div style="display:flex;gap:8px"><button class="kb primary" onclick="showAddLaw()">➕ إضافة قانون</button></div></div><div id="lawsList"></div><div id="addLawForm" style="display:none;max-width:500px;margin-top:16px"></div>';
   
   var html='';
   Object.keys(sections).sort().forEach(function(sec){
-    html+='<h3 style="font-size:13px;font-weight:700;margin:16px 0 8px;color:var(--text-secondary)">'+esc(sec)+' ('+sections[sec].length+')</h3>';
-    html+='<table class="dt"><tr><th>العنوان</th><th>المواد</th><th>القسم</th><th>الحالة</th></tr>';
+    html+='<h3 style="font-size:13px;font-weight:700;margin:16px 0 8px">'+esc(sec)+' ('+sections[sec].length+')</h3>';
+    html+='<table class="dt"><tr><th>العنوان</th><th>المواد</th><th>القسم</th><th>الحالة</th><th>إجراء</th></tr>';
     sections[sec].forEach(function(l){
-      html+='<tr><td>'+esc(l.title)+'</td><td>'+l.article_count+'</td><td>'+esc(l.section)+'</td><td>'+(l.status==='active'?'✅':'⚠️')+'</td></tr>';
+      html+='<tr><td>'+esc(l.title)+'</td><td>'+l.article_count+'</td><td>'+esc(l.section)+'</td><td>'+(l.status==='active'?'✅':'⚠️')+'</td><td><button class="kb reject" style="font-size:11px;padding:4px 10px" onclick="deleteLaw(\''+esc(l.slug)+'\')">حذف</button></td></tr>';
     });
     html+='</table>';
   });
-  c.innerHTML+=html || '<div style="text-align:center;padding:40px;color:var(--text-tertiary)">لا قوانين. <a href="migrate.html" style="color:var(--blue-500)">نقل البيانات من JSON</a></div>';
+  document.getElementById('lawsList').innerHTML=html||'<div style="text-align:center;padding:20px;color:var(--text-tertiary)">لا قوانين</div>';
+}
+
+function showAddLaw(){
+  document.getElementById('addLawForm').style.display='block';
+  document.getElementById('addLawForm').innerHTML='<h3 style="font-size:14px;font-weight:700;margin-bottom:12px">إضافة قانون جديد</h3>'+
+    '<div class="fg"><label class="fl">عنوان القانون</label><input type="text" id="nlTitle" class="fi"></div>'+
+    '<div class="fg"><label class="fl">الSlug</label><input type="text" id="nlSlug" class="fi" placeholder="law-slug"></div>'+
+    '<div class="fg"><label class="fl">القسم</label><select id="nlSection" class="fi"><option value="yemeni-laws">القوانين اليمنية</option><option value="civil">المدني</option><option value="criminal">الجزائي</option><option value="personal-status">الأحوال الشخصية</option><option value="commercial">التجاري</option><option value="labor">العمل</option><option value="litigation-procedures">التقاضي</option></select></div>'+
+    '<div class="fg"><label class="fl">الوصف</label><textarea id="nlDesc" class="fi fa"></textarea></div>'+
+    '<button class="kb approve" onclick="addNewLaw()">إضافة</button> <button class="kb" onclick="document.getElementById(\'addLawForm\').style.display=\'none\'">إلغاء</button>';
+}
+
+async function addNewLaw(){
+  var data={
+    title:document.getElementById('nlTitle').value,
+    slug:document.getElementById('nlSlug').value||document.getElementById('nlTitle').value.replace(/\s+/g,'-'),
+    section:document.getElementById('nlSection').value,
+    description:document.getElementById('nlDesc').value,
+    status:'active',article_count:0
+  };
+  await Backend.addLaw(data);
+  await Backend.logAudit('add_law',(await Backend.getUser()||{}).email||'admin',{title:data.title});
+  alert('تمت الإضافة');nav('laws');
+}
+
+async function deleteLaw(slug){
+  if(!confirm('هل أنت متأكد من حذف هذا القانون وجميع مواده؟')) return;
+  await Backend.deleteLaw(slug);
+  await Backend.logAudit('delete_law',(await Backend.getUser()||{}).email||'admin',{slug:slug});
+  alert('تم الحذف');nav('laws');
 }
 
 /* ===== Articles ===== */
 async function renderArticles(c){
   if(!useBackend){ c.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-tertiary)">يتطلب Supabase</div>'; return; }
   
-  c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="font-size:15px;font-weight:700">المواد القانونية</h2><div style="display:flex;gap:8px"><input type="text" id="artSearch" class="fi" style="width:250px" placeholder="بحث في المواد..."><button class="kb primary" onclick="searchArt()">بحث</button></div></div><div id="artList"></div>';
+  c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="font-size:15px;font-weight:700">المواد القانونية</h2><div style="display:flex;gap:8px"><input type="text" id="artSearch" class="fi" style="width:250px" placeholder="بحث... مثال: مادة 1256، نفقة، طلاق"><button class="kb primary" onclick="searchArt()">🔍 بحث</button></div></div><div id="artList"></div>';
+  
+  // Auto-search on Enter
+  document.getElementById('artSearch').addEventListener('keydown',function(e){if(e.key==='Enter')searchArt();});
 }
 
 async function searchArt(){
   var q = document.getElementById('artSearch').value.trim();
   if(!q) return;
-  var results = await Backend.searchArticles(q, 30);
+  var results = await Backend.searchArticles(q, 50);
   var el = document.getElementById('artList');
   if(!results.length){ el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-tertiary)">لا نتائج</div>'; return; }
-  var html='<table class="dt"><tr><th>المادة</th><th>القانون</th><th>النص</th></tr>';
+  var html='<p style="font-size:12px;color:var(--text-tertiary);margin-bottom:8px">'+results.length+' نتيجة</p>';
+  html+='<table class="dt"><tr><th>المادة</th><th>القانون</th><th>القسم</th><th>النص</th><th>إجراء</th></tr>';
   results.forEach(function(r){
-    html+='<tr><td>'+esc(r.article_number)+'</td><td>'+esc(r.law_slug)+'</td><td>'+esc((r.article_text||'').slice(0,150))+'</td></tr>';
+    html+='<tr><td style="font-weight:700">'+esc(r.article_number)+'</td><td>'+esc(r.law_slug)+'</td><td>'+esc(r.section)+'</td><td style="font-size:12px">'+esc((r.article_text||'').slice(0,120))+'</td><td><button class="kb reject" style="font-size:11px;padding:3px 8px" onclick="deleteArticle('+r.id+')">حذف</button></td></tr>';
   });
   html+='</table>';
   el.innerHTML=html;
+}
+
+async function deleteArticle(id){
+  if(!confirm('هل أنت متأكد؟')) return;
+  await Backend.deleteArticle(id);
+  alert('تم الحذف');searchArt();
 }
 
 /* ===== Init ===== */
