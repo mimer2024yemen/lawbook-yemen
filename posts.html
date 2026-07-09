@@ -4,95 +4,52 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>المقالات القانونية | لوبوك</title>
-<meta name="theme-color" content="#0c1a3a">
+<meta name="theme-color" content="#0a1628">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>LB</text></svg>">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-<nav class="navbar">
-  <div class="navbar-inner">
-    <a href="index.html" class="brand">
-      <div class="brand-icon">LB</div>
-      <div><div class="brand-name">لوبوك</div></div>
-    </a>
-    <a href="index.html" class="back-btn">&#8594; الرئيسية</a>
-  </div>
-</nav>
+<nav class="navbar"><div class="navbar-inner"><a href="index.html" class="brand"><div class="brand-icon">LB</div><div class="brand-text"><div class="brand-name">لوبوك</div></div></a><a href="index.html" class="back-btn">← الرئيسية</a></div></nav>
 
 <div class="container">
-  <div class="page-head">
-    <h1>المقالات القانونية</h1>
-    <p>مقالات قانونية توعوية وشروحات عملية مع بحث أسرع</p>
-  </div>
-
+  <div class="page-header"><h1>المقالات القانونية</h1><p>مقالات توعوية وشروحات عملية مع بحث أسرع</p></div>
   <div class="toolbar">
     <div class="search-row">
-      <div class="search-box"><input type="text" id="searchInput" placeholder="ابحث في المقالات... مثل: شريك، عقد البيع، الحيازة"></div>
-      <a href="index.html" class="btn btn-outline">&#127968; الرئيسية</a>
+      <div class="search-field"><span class="field-icon icon icon-sm"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></span><input type="text" id="searchInput" placeholder="ابحث في المقالات..."></div>
+      <a href="index.html" class="btn btn-outline">🏠 الرئيسية</a>
     </div>
-    <div class="summary" id="resultSummary">جاري تحميل المقالات...</div>
+    <div class="summary" id="resultSummary">جاري التحميل...</div>
   </div>
-
-  <div class="grid" id="grid"><div class="empty">جاري تحميل المقالات...</div></div>
+  <div class="grid" id="grid"><div class="empty-state">جاري التحميل...</div></div>
 </div>
 
-<footer class="footer-simple">&copy; 2026 لوبوك - المكتبة القانونية اليمنية</footer>
+<footer class="footer-simple">&copy; 2026 لوبوك — المكتبة القانونية اليمنية</footer>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="العودة للأعلى">&#8593;</button>
-
-<script src="search-utils.js"></script>
+<script src="search-engine.js"></script>
 <script>
-var catalog = null;
-var currentPosts = [];
-var postSearchIndex = [];
-
-async function loadCatalog(){
-  var r = await fetch('catalog.json');
-  catalog = await r.json();
-  postSearchIndex = LawbookSearch.buildIndex(catalog).filter(function(item){ return item.type === 'post'; });
-  renderPosts();
-}
-
+var catalog=null, postSearchIndex=[];
+async function loadCatalog(){ var r=await fetch('catalog.json'); catalog=await r.json(); postSearchIndex=LawbookSearch.buildIndex(catalog).filter(function(i){return i.type==='post';}); renderPosts(); }
 function renderPosts(){
   if(!catalog) return;
-  var q = document.getElementById('searchInput').value.trim();
-  var posts;
-  if(q){
-    posts = LawbookSearch.search(catalog, q, {types:['post'], limit:200, index: postSearchIndex}).map(function(x){ return x.item; });
-  }else{
-    posts = catalog.posts.slice();
-  }
-  currentPosts = posts;
-  document.getElementById('resultSummary').textContent = q
-    ? 'تم العثور على ' + Number(posts.length).toLocaleString('en-US') + ' مقالة.'
-    : 'عدد المقالات المتاحة: ' + Number(posts.length).toLocaleString('en-US');
-
-  var html = '';
+  var q=document.getElementById('searchInput').value.trim(),posts;
+  if(q){ posts=LawbookSearch.search(postSearchIndex,q,{types:['post'],limit:200}).map(function(x){return x.item;}); }
+  else{ posts=catalog.posts.slice(); }
+  document.getElementById('resultSummary').textContent=q?'تم العثور على '+posts.length.toLocaleString('en-US')+' مقالة':'عدد المقالات: '+posts.length.toLocaleString('en-US');
+  var h='';
   for(var i=0;i<posts.length;i++){
-    var p = posts[i];
-    html += '<a href="'+p.url+'" class="article-card">';
-    html += '<span class="article-badge">مقال قانوني</span>';
-    html += '<h3>'+LawbookSearch.escapeHtml(p.title)+'</h3>';
-    html += '<p>'+LawbookSearch.escapeHtml(p.description || '')+'</p>';
-    html += '<div class="article-meta"><span>لوبوك</span><span>عرض داخل الموقع</span></div>';
-    html += '</a>';
+    var p=posts[i];
+    h+='<a href="'+p.url+'" class="article-card"><span class="tag" style="margin-bottom:10px;display:inline-block">مقال قانوني</span>';
+    h+='<h3>'+LawbookSearch.highlightText(p.title,q)+'</h3>';
+    h+='<p>'+LawbookSearch.escapeHtml(p.description||'')+'</p>';
+    h+='<div class="card-meta-bottom"><span>لوبوك</span><span>عرض داخل الموقع</span></div></a>';
   }
-  document.getElementById('grid').innerHTML = html || '<div class="empty">لا توجد نتائج مطابقة.</div>';
+  document.getElementById('grid').innerHTML=h||'<div class="empty-state">لا توجد نتائج.</div>';
 }
-
-document.getElementById('searchInput').addEventListener('input', renderPosts);
-
-var scrollTopBtn = document.getElementById('scrollTop');
-window.addEventListener('scroll', function(){
-  scrollTopBtn.classList.toggle('visible', window.scrollY > 300);
-}, {passive: true});
-
-loadCatalog().catch(function(error){
-  console.error(error);
-  document.getElementById('grid').innerHTML = '<div class="empty">تعذر تحميل المقالات.</div>';
-  document.getElementById('resultSummary').textContent = 'حدث خطأ أثناء التحميل.';
-});
+document.getElementById('searchInput').addEventListener('input',renderPosts);
+var stb=document.getElementById('scrollTop');
+window.addEventListener('scroll',function(){stb.classList.toggle('visible',window.scrollY>300);},{passive:true});
+loadCatalog().catch(function(e){console.error(e);document.getElementById('grid').innerHTML='<div class="empty-state">تعذر التحميل.</div>';});
 </script>
 </body>
 </html>

@@ -4,181 +4,79 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>القوانين | لوبوك</title>
-<meta name="theme-color" content="#0c1a3a">
+<meta name="theme-color" content="#0a1628">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>LB</text></svg>">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-<nav class="navbar">
-  <div class="navbar-inner">
-    <a href="index.html" class="brand">
-      <div class="brand-icon">LB</div>
-      <div><div class="brand-name">لوبوك</div></div>
-    </a>
-    <a href="index.html" class="back-btn">&#8594; الرئيسية</a>
-  </div>
-</nav>
+<nav class="navbar"><div class="navbar-inner"><a href="index.html" class="brand"><div class="brand-icon">LB</div><div class="brand-text"><div class="brand-name">لوبوك</div></div></a><a href="index.html" class="back-btn">← الرئيسية</a></div></nav>
 
 <div class="container">
-  <div class="page-head">
-    <h1>القوانين اليمنية</h1>
-    <p>بحث ذكي داخل القوانين والدعاوى مع ترتيب حسب الصلة</p>
-  </div>
-
+  <div class="page-header"><h1>القوانين اليمنية</h1><p>بحث ذكي داخل القوانين والدعاوى مع ترتيب حسب الصلة</p></div>
   <div class="toolbar">
     <div class="search-row">
-      <div class="search-box"><input type="text" id="searchInput" placeholder="ابحث في القوانين... مثل: نفقة، فسخ، تجاري، شفعة"></div>
-      <a href="index.html" class="btn btn-outline">&#127968; الرئيسية</a>
+      <div class="search-field"><span class="field-icon icon icon-sm"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></span><input type="text" id="searchInput" placeholder="ابحث... مثال: نفقة، فسخ، مادة 43"></div>
+      <a href="index.html" class="btn btn-outline">🏠 الرئيسية</a>
     </div>
-    <div class="summary" id="resultSummary">جاري تحميل القوانين...</div>
+    <div class="summary" id="resultSummary">جاري التحميل...</div>
     <div class="tabs" id="tabs"></div>
   </div>
-
-  <div class="grid" id="grid"><div class="empty">جاري تحميل البيانات...</div></div>
+  <div class="grid" id="grid"><div class="empty-state">جاري التحميل...</div></div>
 </div>
 
-<footer class="footer-simple">&copy; 2026 لوبوك - المكتبة القانونية اليمنية</footer>
+<footer class="footer-simple">&copy; 2026 لوبوك — المكتبة القانونية اليمنية</footer>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
-<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="العودة للأعلى">&#8593;</button>
-
-<script src="search-utils.js"></script>
+<script src="search-engine.js"></script>
 <script>
-var catalog = null;
-var fullDB = null;
-var currentSection = 'all';
-var currentLaws = [];
-var lawSearchIndex = [];
-
-var sectionTabs = [
-  {k:'all',n:'الكل'},
-  {k:'personal-status',n:'الأحوال الشخصية'},
-  {k:'civil',n:'المدني'},
-  {k:'commercial',n:'التجاري'},
-  {k:'criminal',n:'الجنائي'},
-  {k:'labor',n:'العمل'},
-  {k:'litigation-procedures',n:'التقاضي'},
-  {k:'yemeni-laws',n:'القوانين'}
-];
+var catalog=null, fullDB=null, currentSection='all', lawSearchIndex=[];
+var sectionTabs=[{k:'all',n:'الكل'},{k:'personal-status',n:'الأحوال الشخصية'},{k:'civil',n:'المدني'},{k:'commercial',n:'التجاري'},{k:'criminal',n:'الجنائي'},{k:'labor',n:'العمل'},{k:'litigation-procedures',n:'التقاضي'},{k:'yemeni-laws',n:'القوانين'}];
 
 async function loadCatalog(){
-  var r = await fetch('catalog.json');
-  catalog = await r.json();
-  lawSearchIndex = LawbookSearch.buildIndex(catalog).filter(function(item){ return item.type === 'law'; });
-  var p = new URLSearchParams(location.search);
-  if(p.get('section')) currentSection = p.get('section');
-  renderTabs();
-  renderLaws();
+  var r=await fetch('catalog.json'); catalog=await r.json();
+  lawSearchIndex=LawbookSearch.buildIndex(catalog).filter(function(i){return i.type==='law'||i.type==='article';});
+  var p=new URLSearchParams(location.search);
+  if(p.get('section')) currentSection=p.get('section');
+  renderTabs(); renderLaws();
 }
-
-async function ensureFullDB(){
-  if(fullDB) return fullDB;
-  var r = await fetch('database.json');
-  fullDB = await r.json();
-  return fullDB;
-}
-
-function updateUrl(){
-  var url = new URL(location.href);
-  if(currentSection && currentSection !== 'all') url.searchParams.set('section', currentSection); else url.searchParams.delete('section');
-  history.replaceState(null, '', url.toString());
-}
-
-function renderTabs(){
-  var html = '';
-  for(var i=0;i<sectionTabs.length;i++){
-    html += '<button class="tab'+(sectionTabs[i].k===currentSection?' active':'')+'" onclick="setSection(\''+sectionTabs[i].k+'\')">'+sectionTabs[i].n+'</button>';
-  }
-  document.getElementById('tabs').innerHTML = html;
-}
-
-function setSection(section){
-  currentSection = section;
-  updateUrl();
-  renderTabs();
-  renderLaws();
-}
+async function ensureFullDB(){ if(fullDB) return fullDB; var r=await fetch('database.json'); fullDB=await r.json(); return fullDB; }
+function updateUrl(){ var u=new URL(location.href); if(currentSection&&currentSection!=='all') u.searchParams.set('section',currentSection); else u.searchParams.delete('section'); history.replaceState(null,'',u.toString()); }
+function renderTabs(){ var h=''; for(var i=0;i<sectionTabs.length;i++) h+='<button class="tab'+(sectionTabs[i].k===currentSection?' active':'')+'" onclick="setSection(\''+sectionTabs[i].k+'\')">'+sectionTabs[i].n+'</button>'; document.getElementById('tabs').innerHTML=h; }
+function setSection(s){ currentSection=s; updateUrl(); renderTabs(); renderLaws(); }
 
 function renderLaws(){
   if(!catalog) return;
-  var q = document.getElementById('searchInput').value.trim();
-  var laws;
-  if(q){
-    laws = LawbookSearch.search(catalog, q, {types:['law'], section: currentSection==='all' ? '' : currentSection, limit: 500, index: lawSearchIndex});
-  }else{
-    laws = LawbookSearch.flattenLaws(catalog, currentSection).sort(function(a,b){ return (b.articleCount||0) - (a.articleCount||0) || a.title.localeCompare(b.title,'ar'); }).map(function(item){
-      return {item:item, url:item.url, title:item.title, description:item.description, sectionLabel:item.sectionLabel, articleCount:item.articleCount, snippet:item.description};
-    });
-  }
-
-  currentLaws = laws;
-  document.getElementById('resultSummary').textContent = q
-    ? 'تم العثور على ' + Number(laws.length).toLocaleString('en-US') + ' نتيجة مرتبة حسب الصلة.'
-    : 'يعرض القسم الحالي ' + Number(laws.length).toLocaleString('en-US') + ' عنصرًا قانونيًا.';
-
-  var html = '';
+  var q=document.getElementById('searchInput').value.trim(), laws;
+  if(q){ laws=LawbookSearch.search(lawSearchIndex,q,{types:['law','article'],section:currentSection==='all'?'':currentSection,limit:500}); }
+  else{ laws=LawbookSearch.flattenLaws(catalog,currentSection).sort(function(a,b){return(b.articleCount||0)-(a.articleCount||0)||a.title.localeCompare(b.title,'ar');}).map(function(i){return{item:i,url:i.url,title:i.title,description:i.description,sectionLabel:i.sectionLabel,articleCount:i.articleCount,snippet:i.description};}); }
+  document.getElementById('resultSummary').textContent=q?'تم العثور على '+Number(laws.length).toLocaleString('en-US')+' نتيجة':'يعرض '+Number(laws.length).toLocaleString('en-US')+' عنصرًا قانونيًا';
+  var h='';
   for(var i=0;i<laws.length;i++){
-    var x = laws[i];
-    var law = x.item;
-    html += '<div class="law-card">';
-    html += '<div class="law-icon">&#9876;</div>';
-    html += '<div class="law-info">';
-    html += '<div class="meta"><span>'+LawbookSearch.escapeHtml(law.sectionLabel || x.sectionLabel || '')+'</span>' + ((law.articleCount||x.articleCount)?'<span>'+Number(law.articleCount||x.articleCount).toLocaleString('en-US')+' مادة</span>':'') + '</div>';
-    html += '<h4>'+LawbookSearch.escapeHtml(law.title)+'</h4>';
-    html += '<p>'+LawbookSearch.escapeHtml(x.snippet || law.description || '')+'</p>';
-    html += '</div>';
-    html += '<div class="law-actions">';
-    html += '<button class="btn btn-gold" onclick="downloadPDF(\''+law.section+'\',\''+law.slug+'\')">&#128190; PDF</button>';
-    html += '<a class="btn btn-blue" href="'+law.url+'">&#128065; عرض</a>';
-    html += '</div></div>';
+    var x=laws[i], l=x.item||x;
+    h+='<div class="law-card"><div class="law-card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM6 20V4h5v7h7v9H6z"/></svg></div>';
+    h+='<div class="law-card-body"><div class="tags"><span class="tag">'+LawbookSearch.escapeHtml(l.sectionLabel||x.sectionLabel||'')+'</span>';
+    if(l.articleCount||x.articleCount) h+='<span class="tag">'+Number(l.articleCount||x.articleCount).toLocaleString('en-US')+' مادة</span>';
+    h+='</div><h4>'+LawbookSearch.escapeHtml(l.title)+'</h4>';
+    h+='<p>'+LawbookSearch.highlightText(x.snippet||l.description||'',q)+'</p></div>';
+    h+='<div class="law-card-actions"><button class="btn btn-gold" onclick="downloadPDF(\''+l.section+'\',\''+l.slug+'\')">📄 PDF</button>';
+    h+='<a class="btn btn-blue" href="'+l.url+'">👁️ عرض</a></div></div>';
   }
-  document.getElementById('grid').innerHTML = html || '<div class="empty">لا توجد نتائج مطابقة.</div>';
+  document.getElementById('grid').innerHTML=h||'<div class="empty-state">لا توجد نتائج.</div>';
 }
-
-function filterLaws(){ renderLaws(); }
-document.getElementById('searchInput').addEventListener('input', filterLaws);
-
-function findLaw(section, slug){
-  var arr = (((fullDB || {}).laws || {})[section] || []);
-  for(var i=0;i<arr.length;i++) if(arr[i].slug === slug) return arr[i];
-  return null;
+document.getElementById('searchInput').addEventListener('input',renderLaws);
+function findLaw(s,slug){ var a=(((fullDB||{}).laws||{})[s]||[]); for(var i=0;i<a.length;i++) if(a[i].slug===slug) return a[i]; return null; }
+async function downloadPDF(s,slug){
+  try{ await ensureFullDB(); var l=findLaw(s,slug);
+  if(!l){window.location.href='viewer.html?type=law&section='+encodeURIComponent(s)+'+'&slug='+encodeURIComponent(slug);return;}
+  var t=l.title||'قانون',c='';
+  if(l.articles&&l.articles.length){for(var i=0;i<l.articles.length;i++){var a=l.articles[i];c+='<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #e5e8f0"><strong style="color:#0b225a">مادة ('+(a.number||'')+')</strong> '+(a.text||'')+'</div>';}}
+  else if(l.content){for(var j=0;j<l.content.length;j++) c+='<div style="margin-bottom:10px;line-height:2;font-size:14px">'+l.content[j]+'</div>';}
+  var w=window.open('','_blank'); w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>'+t+'</title><style>@page{size:Letter;margin:.55in .39in}body{font-family:Tahoma,Arial,sans-serif;margin:0;background:#fff}@media screen{body{background:#e5e7eb}.page{width:min(8.5in,calc(100vw - 40px));min-height:11in;margin:20px auto;background:#fff;padding:.5in;box-shadow:0 10px 40px rgba(0,0,0,.15)}}@media print{.page{width:100%;padding:0;box-shadow:none}}.header{text-align:center;padding-bottom:12px;border-bottom:2px solid #d4a843;margin-bottom:20px}.header h2{font-size:16px;color:#0c1a3a;margin:0 0 4px}.header p{font-size:11px;color:#8b92a5;margin:0}.title{text-align:center;font-size:22px;font-weight:900;color:#0b225a;margin-bottom:20px}.content{direction:rtl;text-align:right}.footer{text-align:center;padding-top:12px;border-top:1px solid #d6c288;margin-top:30px;font-size:10px;color:#8b92a5}</style></head><body><div class="page"><div class="header"><h2>لوبوك - المكتبة القانونية اليمنية</h2><p>lawbook yemen</p></div><div class="title">'+t+'</div><div class="content">'+c+'</div><div class="footer">تم تجهيز النسخة للطباعة من لوبوك | '+new Date().toLocaleDateString('ar')+'</div></div></body></html>'); w.document.close(); setTimeout(function(){w.print();},500);
+  }catch(e){console.error(e);alert('تعذر تجهيز ملف الطباعة.');}
 }
-
-async function downloadPDF(section, slug){
-  try{
-    await ensureFullDB();
-    var law = findLaw(section, slug);
-    if(!law){ window.location.href = 'viewer.html?type=law&section='+encodeURIComponent(section)+'&slug='+encodeURIComponent(slug); return; }
-    var title = law.title || 'قانون';
-    var content = '';
-    if(law.articles && law.articles.length){
-      for(var i=0;i<law.articles.length;i++){
-        var a = law.articles[i];
-        content += '<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #e5e8f0"><strong style="color:#0b225a">مادة ('+(a.number||'')+')</strong> <span>'+(a.text||'')+'</span></div>';
-      }
-    }else if(law.content){
-      for(var j=0;j<law.content.length;j++) content += '<div style="margin-bottom:10px;line-height:2;font-size:14px">'+law.content[j]+'</div>';
-    }
-    var pdfHtml='<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>'+title+'</title><style>@page{size:Letter;margin:.55in .39in}body{font-family:Tahoma,Arial,sans-serif;margin:0;padding:0;background:#fff}@media screen{body{background:#e5e7eb}.page{width:min(8.5in,calc(100vw - 40px));min-height:11in;margin:20px auto;background:#fff;padding:.5in;box-shadow:0 10px 40px rgba(0,0,0,.15)}}@media print{.page{width:100%;padding:0;margin:0;box-shadow:none}}.header{text-align:center;padding-bottom:12px;border-bottom:2px solid #d4a843;margin-bottom:20px}.header h2{font-size:16px;color:#0c1a3a;margin:0 0 4px;font-weight:700}.header p{font-size:11px;color:#8b92a5;margin:0}.title{text-align:center;font-size:22px;font-weight:900;color:#0b225a;margin-bottom:20px;line-height:1.5}.content{direction:rtl;text-align:right}.footer{text-align:center;padding-top:12px;border-top:1px solid #d6c288;margin-top:30px;font-size:10px;color:#8b92a5}</style></head><body><div class="page"><div class="header"><h2>لوبوك - المكتبة القانونية اليمنية</h2><p>lawbook yemen</p></div><div class="title">'+title+'</div><div class="content">'+content+'</div><div class="footer">تم تجهيز النسخة للطباعة من لوبوك | '+new Date().toLocaleDateString('ar')+'</div></div></body></html>';
-    var win = window.open('', '_blank');
-    win.document.write(pdfHtml); win.document.close();
-    setTimeout(function(){ win.print(); }, 500);
-  }catch(error){
-    console.error(error);
-    alert('تعذر تجهيز ملف الطباعة الآن.');
-  }
-}
-
-var scrollTopBtn = document.getElementById('scrollTop');
-window.addEventListener('scroll', function(){
-  scrollTopBtn.classList.toggle('visible', window.scrollY > 300);
-}, {passive: true});
-
-loadCatalog().catch(function(error){
-  console.error(error);
-  document.getElementById('grid').innerHTML = '<div class="empty">تعذر تحميل البيانات.</div>';
-  document.getElementById('resultSummary').textContent = 'حدث خطأ أثناء التحميل.';
-});
+var stb=document.getElementById('scrollTop');
+window.addEventListener('scroll',function(){stb.classList.toggle('visible',window.scrollY>300);},{passive:true});
+loadCatalog().catch(function(e){console.error(e);document.getElementById('grid').innerHTML='<div class="empty-state">تعذر التحميل.</div>';});
 </script>
 </body>
 </html>

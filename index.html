@@ -2,119 +2,228 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>لوبوك | المكتبة القانونية اليمنية</title>
-<meta name="description" content="لوبوك - المكتبة القانونية اليمنية الشاملة مع بحث ذكي في القوانين والعقود والمقالات القانونية.">
-<meta name="theme-color" content="#0c1a3a">
+<meta name="description" content="لوبوك - المكتبة القانونية اليمنية الشاملة. بحث ذكي في القوانين اليمنية والعقود والمقالات القانونية. ابحث برقم المادة أو اسم القانون أو الكلمة المفتاحية.">
+<meta name="theme-color" content="#0a1628">
+<meta property="og:title" content="لوبوك | المكتبة القانونية اليمنية">
+<meta property="og:description" content="مكتبة قانونية يمنية شاملة مع بحث ذكي متقدم">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mimer2024yemen.github.io/lawbook-yemen/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>LB</text></svg>">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+<!-- ===== Navbar ===== -->
 <nav class="navbar">
   <div class="navbar-inner">
     <a href="#" class="brand">
       <div class="brand-icon">LB</div>
-      <div><div class="brand-name">لوبوك</div><span class="brand-tag">المكتبة القانونية اليمنية</span></div>
+      <div class="brand-text">
+        <div class="brand-name">لوبوك</div>
+        <span class="brand-tag">المكتبة القانونية اليمنية</span>
+      </div>
     </a>
     <div class="nav-links" id="navLinks">
-      <a href="#library" class="nav-link active">فهرس المكتبة</a>
-      <a href="#laws" class="nav-link">القوانين</a>
-      <a href="#contracts" class="nav-link">العقود</a>
-      <a href="posts.html" class="nav-link">المقالات</a>
-      <a href="services.html" class="nav-link">الخدمات</a>
-      <a href="#contact" class="nav-link nav-cta">استشارة قانونية</a>
+      <a href="#library" class="nav-link active">
+        <span class="icon icon-sm"><svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg></span>
+        فهرس المكتبة
+      </a>
+      <a href="#laws" class="nav-link">
+        <span class="icon icon-sm"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM6 20V4h5v7h7v9H6z"/></svg></span>
+        القوانين
+      </a>
+      <a href="#contracts" class="nav-link">
+        <span class="icon icon-sm"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg></span>
+        العقود
+      </a>
+      <a href="posts.html" class="nav-link">
+        <span class="icon icon-sm"><svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></span>
+        المقالات
+      </a>
+      <a href="services.html" class="nav-link">
+        <span class="icon icon-sm"><svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 0h-4V4h4v2z"/></svg></span>
+        الخدمات
+      </a>
+      <a href="#contact" class="nav-link nav-cta">
+        <span class="icon icon-sm"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></span>
+        استشارة قانونية
+      </a>
     </div>
-    <button class="menu-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="القائمة">&#9776;</button>
+    <button class="menu-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="القائمة">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    </button>
   </div>
 </nav>
 
+<!-- ===== Hero Section ===== -->
 <section class="hero">
   <div class="hero-content">
-    <div class="hero-badge">بحث قانوني عربي ذكي داخل الموقع</div>
-    <h1>فهرس <em>المكتبة القانونية</em><br>اليمنية</h1>
-    <p>ابحث بسرعة في القوانين والدعاوى والعقود والمقالات القانونية، مع ترتيب ذكي للنتائج ودعم أفضل لصيغ الكتابة العربية المختلفة.</p>
-    <div class="search-wrap">
-      <input type="text" class="search-input" id="heroSearch" placeholder="ابحث داخل المكتبة القانونية... مثل: فسخ النكاح، بيع، دعوى مدنية" autocomplete="off">
-      <button class="search-btn" type="button" onclick="doSearch()" aria-label="بحث">&#128269;</button>
-      <div class="search-results" id="searchResults"></div>
-      <div class="search-hint">استخدم الأسهم للتنقل و Enter لفتح أفضل نتيجة</div>
+    <div class="hero-badge">
+      <span class="icon icon-sm"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></span>
+      بحث قانوني ذكي متقدم — ابحث برقم المادة أو اسم القانون أو الكلمة
     </div>
+    <h1>الموسوعة القانونية <em>اليمنية</em> الشاملة</h1>
+    <p>ابحث في أكثر من 12,000 مادة قانونية و272 قانون و72 عقد — مع دعم البحث برقم المادة، اسم القانون، المحكمة، العقوبة، ونوع القضية</p>
+
+    <!-- Professional Search Box -->
+    <div class="search-container">
+      <div class="search-box-pro">
+        <span class="search-icon-left icon icon-md"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></span>
+        <input type="text" class="search-input-pro" id="heroSearch" placeholder="ابحث قانونياً... مثال: مادة 1256، فسخ النكاح، سرقة، محكمة تجارية، عقوبة سجن" autocomplete="off">
+        <button class="search-submit-btn" type="button" onclick="doSearch()">بحث</button>
+      </div>
+
+      <!-- Search Intent Indicator -->
+      <div class="search-intent" id="searchIntent">
+        <span class="intent-icon" id="intentIcon"></span>
+        <span id="intentText"></span>
+      </div>
+
+      <!-- Spell Correction -->
+      <div class="spell-correction" id="spellCorrection">
+        <span>🔍</span>
+        <span>هل تقصد: <strong id="correctionText"></strong>؟</span>
+      </div>
+
+      <!-- Suggestions Dropdown -->
+      <div class="search-suggestions" id="searchSuggestions">
+        <div id="suggestionsContent"></div>
+        <div class="suggestion-footer">
+          <span>⏎</span>
+          <span>اضغط Enter للبحث الكامل • ↑↓ للتنقل</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Chips -->
+    <div class="search-filters">
+      <button class="filter-chip active" data-filter="all">الكل</button>
+      <button class="filter-chip" data-filter="article">أرقام المواد</button>
+      <button class="filter-chip" data-filter="law">القوانين</button>
+      <button class="filter-chip" data-filter="contract">العقود</button>
+      <button class="filter-chip" data-filter="post">المقالات</button>
+    </div>
+
+    <!-- Hero Stats -->
     <div class="hero-stats">
       <div class="hero-stat"><div class="hero-stat-num" id="lawsCount">...</div><div class="hero-stat-label">قانون ودعوى</div></div>
       <div class="hero-stat"><div class="hero-stat-num" id="articlesCount">...</div><div class="hero-stat-label">مادة قانونية</div></div>
-      <div class="hero-stat"><div class="hero-stat-num" id="contractsCount">...</div><div class="hero-stat-label">عقد</div></div>
-      <div class="hero-stat"><div class="hero-stat-num" id="postsCount">...</div><div class="hero-stat-label">مقال</div></div>
+      <div class="hero-stat"><div class="hero-stat-num" id="contractsCount">...</div><div class="hero-stat-label">عقد قانوني</div></div>
+      <div class="hero-stat"><div class="hero-stat-num" id="postsCount">...</div><div class="hero-stat-label">مقال قانوني</div></div>
     </div>
   </div>
 </section>
 
+<!-- Full Search Results (shown when searching) -->
+<section class="section search-results-full" id="searchResultsSection">
+  <div class="container">
+    <div class="results-header">
+      <div class="results-count" id="resultsCount"></div>
+      <div class="results-filters" id="resultsFilters"></div>
+    </div>
+    <div id="searchResultsList"></div>
+  </div>
+</section>
+
+<!-- ===== Library Sections ===== -->
 <section class="section" id="library">
   <div class="container">
-    <div class="section-head">
-      <div class="section-label">فهرس المكتبة القانونية</div>
+    <div class="section-header">
+      <div class="section-badge">
+        <span class="icon icon-sm"><svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg></span>
+        فهرس المكتبة
+      </div>
       <h2 class="section-title">أقسام المكتبة القانونية اليمنية</h2>
-      <p class="section-desc">تصفح الأقسام الرئيسية أو ابدأ بالبحث المباشر من الأعلى.</p>
+      <p class="section-desc">تصفح الأقسام الرئيسية أو ابدأ بالبحث المتقدم من الأعلى</p>
     </div>
-    <div class="library-grid" id="libraryGrid"><div class="loading-card">جاري تجهيز الفهرس...</div></div>
+    <div class="card-grid" id="libraryGrid"><div class="empty-state">جاري تجهيز الفهرس...</div></div>
   </div>
 </section>
 
+<!-- ===== Laws Section ===== -->
 <section class="section" id="laws">
   <div class="container">
-    <div class="section-head">
-      <div class="section-label">القوانين</div>
+    <div class="section-header">
+      <div class="section-badge">
+        <span class="icon icon-sm"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM6 20V4h5v7h7v9H6z"/></svg></span>
+        القوانين
+      </div>
       <h2 class="section-title">أحدث المواد والقوانين المتاحة</h2>
-      <p class="section-desc">عرض سريع لأهم القوانين والدعاوى داخل الموقع.</p>
+      <p class="section-desc">عرض سريع لأهم القوانين والدعاوى داخل الموقع</p>
     </div>
-    <div class="laws-list" id="lawsList"><div class="loading-card">جاري تحميل القوانين...</div></div>
+    <div class="law-list" id="lawsList"><div class="empty-state">جاري تحميل القوانين...</div></div>
   </div>
 </section>
 
+<!-- ===== Contracts Section ===== -->
 <section class="section" id="contracts">
   <div class="container">
-    <div class="section-head">
-      <div class="section-label">العقود</div>
-      <h2 class="section-title">تصنيفات العقود</h2>
-      <p class="section-desc">وصول سريع إلى نماذج العقود الأكثر استخدامًا.</p>
+    <div class="section-header">
+      <div class="section-badge">
+        <span class="icon icon-sm"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg></span>
+        العقود
+      </div>
+      <h2 class="section-title">تصنيفات العقود القانونية</h2>
+      <p class="section-desc">وصول سريع إلى نماذج العقود الأكثر استخداماً</p>
     </div>
-    <div class="contracts-grid" id="contractsGrid"><div class="loading-card">جاري تحميل العقود...</div></div>
+    <div class="contract-grid" id="contractsGrid"><div class="empty-state">جاري تحميل العقود...</div></div>
   </div>
 </section>
 
-<section class="features-section">
-  <div class="section-head" style="margin-bottom:28px">
-    <div class="section-label" style="background:rgba(212,168,67,.12);color:var(--gold)">لماذا لوبوك؟</div>
-    <h2 class="section-title" style="color:white">مميزات النسخة المطورة</h2>
+<!-- ===== Features Section ===== -->
+<section class="features-band">
+  <div class="section-header" style="margin-bottom:32px">
+    <div class="section-badge" style="background:rgba(212,168,67,.12);color:var(--gold-300)">لماذا لوبوك؟</div>
+    <h2 class="section-title" style="color:white">مميزات المنصة القانونية</h2>
   </div>
-  <div class="features-grid">
-    <div class="feature"><div class="feature-icon">&#128270;</div><h3>بحث ذكي فعلي</h3><p>مطابقة أقوى للكلمات العربية مع ترتيب النتائج حسب الصلة والعنوان والمحتوى.</p></div>
-    <div class="feature"><div class="feature-icon">&#9881;</div><h3>أسرع في التصفح</h3><p>فهرس بحث أخف وأسرع من قاعدة البيانات الكاملة لتقليل زمن التحميل.</p></div>
-    <div class="feature"><div class="feature-icon">&#128221;</div><h3>نتائج أوضح</h3><p>إظهار نوع النتيجة والقسم وعدد المواد مع مقتطف مفيد قبل الفتح.</p></div>
-    <div class="feature"><div class="feature-icon">&#128241;</div><h3>أفضل على الجوال</h3><p>تجربة استخدام محسنة على الهاتف مع تنقل بالأسهم ولوحة المفاتيح.</p></div>
+  <div class="features-grid-inner">
+    <div class="feature-card">
+      <div class="feature-card-icon">🔍</div>
+      <h3>بحث ذكي متقدم</h3>
+      <p>ابحث برقم المادة، اسم القانون، المحكمة، العقوبة، السنة، أو أي كلمة في النص القانوني</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">⚡</div>
+      <h3>نتائج فورية</h3>
+      <p>اقتراحات أثناء الكتابة مع تمييز الكلمات المطابقة وتصحيح الإملاء تلقائياً</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">📋</div>
+      <h3>مواد مفصّلة</h3>
+      <p>كل قانون يعرض بنصوص مواده الكاملة مع إمكانية البحث داخل المادة المحددة</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-card-icon">📱</div>
+      <h3>تصميم متجاوب</h3>
+      <p>تجربة مثالية على الهاتف والتابلت والحاسوب مع دعم كامل للغة العربية RTL</p>
+    </div>
   </div>
 </section>
 
+<!-- ===== Share Section ===== -->
 <section class="section">
   <div class="container">
-    <div class="section-head">
-      <div class="section-label">شاركنا</div>
-      <h2 class="section-title">شارك الموقع</h2>
-      <p class="section-desc">ساعدنا في نشر الوعي القانوني</p>
+    <div class="section-header">
+      <div class="section-badge">شاركنا</div>
+      <h2 class="section-title">انشر الوعي القانوني</h2>
+      <p class="section-desc">ساعدنا في إيصال المعلومة القانونية لكل محتاج</p>
     </div>
-    <div class="share-buttons">
-      <a href="https://www.facebook.com/sharer/sharer.php?u=https://mimer2024yemen.github.io/lawbook-yemen/" target="_blank" rel="noopener" class="share-btn facebook">&#120143; فيسبوك</a>
-      <a href="https://twitter.com/intent/tweet?url=https://mimer2024yemen.github.io/lawbook-yemen/&text=لوبوك - المكتبة القانونية اليمنية" target="_blank" rel="noopener" class="share-btn twitter">&#120143; تويتر</a>
-      <a href="https://wa.me/?text=https://mimer2024yemen.github.io/lawbook-yemen/" target="_blank" rel="noopener" class="share-btn whatsapp">&#128172; واتساب</a>
-      <a href="https://t.me/share/url?url=https://mimer2024yemen.github.io/lawbook-yemen/" target="_blank" rel="noopener" class="share-btn telegram">&#128172; تلغرام</a>
+    <div class="share-row">
+      <a href="https://www.facebook.com/sharer/sharer.php?u=https://mimer2024yemen.github.io/lawbook-yemen/" target="_blank" rel="noopener" class="share-btn facebook">فيسبوك</a>
+      <a href="https://twitter.com/intent/tweet?url=https://mimer2024yemen.github.io/lawbook-yemen/&text=لوبوك - المكتبة القانونية اليمنية" target="_blank" rel="noopener" class="share-btn twitter">تويتر</a>
+      <a href="https://wa.me/?text=https://mimer2024yemen.github.io/lawbook-yemen/" target="_blank" rel="noopener" class="share-btn whatsapp">واتساب</a>
+      <a href="https://t.me/share/url?url=https://mimer2024yemen.github.io/lawbook-yemen/" target="_blank" rel="noopener" class="share-btn telegram">تلغرام</a>
     </div>
   </div>
 </section>
 
+<!-- ===== Contact Section ===== -->
 <section class="section" id="contact">
   <div class="container">
-    <div class="section-head">
-      <div class="section-label">تواصل معنا</div>
+    <div class="section-header">
+      <div class="section-badge">تواصل معنا</div>
       <h2 class="section-title">استشارة قانونية</h2>
     </div>
     <div style="text-align:center">
@@ -123,230 +232,379 @@
   </div>
 </section>
 
+<!-- ===== Footer ===== -->
 <footer class="footer">
   <div class="footer-grid">
-    <div class="footer-col"><h4>لوبوك</h4><p style="font-size:13px;line-height:1.8;color:rgba(255,255,255,.5)">المكتبة القانونية اليمنية الشاملة.</p></div>
-    <div class="footer-col"><h4>روابط سريعة</h4><a href="#library">فهرس المكتبة</a><a href="#laws">القوانين</a><a href="#contracts">العقود</a><a href="posts.html">المقالات</a><a href="services.html">الخدمات</a></div>
-    <div class="footer-col"><h4>قانوني</h4><a href="about.html">حول الموقع</a><a href="privacy.html">سياسة الخصوصية</a><a href="terms.html">الشروط والأحكام</a><a href="disclaimer.html">إخلاء المسؤولية</a></div>
-    <div class="footer-col"><h4>تواصل معنا</h4><a href="mailto:info@lawbook-ye.com">info@lawbook-ye.com</a><a href="https://wa.me/967777777777">+967 777 777 777</a><a href="sitemap.xml">خريطة الموقع</a></div>
+    <div class="footer-col">
+      <h4>لوبوك</h4>
+      <p>المكتبة القانونية اليمنية الشاملة — أكثر من 12,000 مادة قانونية للباحثين والمحامين والمواطنين.</p>
+    </div>
+    <div class="footer-col">
+      <h4>روابط سريعة</h4>
+      <a href="#library">فهرس المكتبة</a>
+      <a href="#laws">القوانين</a>
+      <a href="#contracts">العقود</a>
+      <a href="posts.html">المقالات</a>
+      <a href="services.html">الخدمات</a>
+    </div>
+    <div class="footer-col">
+      <h4>قانوني</h4>
+      <a href="about.html">حول الموقع</a>
+      <a href="privacy.html">سياسة الخصوصية</a>
+      <a href="terms.html">الشروط والأحكام</a>
+      <a href="disclaimer.html">إخلاء المسؤولية</a>
+    </div>
+    <div class="footer-col">
+      <h4>تواصل معنا</h4>
+      <a href="mailto:info@lawbook-ye.com">info@lawbook-ye.com</a>
+      <a href="https://wa.me/967777777777">+967 777 777 777</a>
+      <a href="sitemap.xml">خريطة الموقع</a>
+    </div>
   </div>
-  <div class="footer-bottom"><div>&copy; 2026 لوبوك - المكتبة القانونية اليمنية</div></div>
+  <div class="footer-bottom">
+    <div>&copy; 2026 لوبوك — المكتبة القانونية اليمنية</div>
+    <div>صُنع بـ ❤️ للمجتمع اليمني</div>
+  </div>
 </footer>
 
-<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="العودة للأعلى">&#8593;</button>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="العودة للأعلى">↑</button>
 
-<script src="search-utils.js"></script>
+<script src="search-engine.js"></script>
 <script>
+/* ===== State ===== */
 var catalog = null;
+var database = null;
 var searchIndex = [];
-var searchCache = {};
-var currentSearchResults = [];
-var activeSearchIndex = -1;
+var currentFilter = 'all';
+var currentResults = [];
+var activeSuggestionIndex = -1;
+var searchDebounceTimer = null;
 
+/* ===== Library Sections Config ===== */
 var librarySections = [
-  {key:'litigation-procedures',name:'إجراءات التقاضي',desc:'فتح إجراءات التقاضي',icon:'&#128203;',color:'blue'},
-  {key:'legal-procedure-deadlines',name:'مواعيد الإجراءات القانونية',desc:'فتح مواعيد الإجراءات',icon:'&#128197;',color:'gold'},
-  {key:'civil',name:'الدعاوى المدنية',desc:'فتح الدعاوى المدنية',icon:'&#9878;',color:'navy'},
-  {key:'urgent',name:'الدعاوى المستعجلة',desc:'فتح الدعاوى المستعجلة',icon:'&#9889;',color:'red'},
-  {key:'commercial',name:'الدعاوى التجارية',desc:'فتح الدعاوى التجارية',icon:'&#127978;',color:'gold'},
-  {key:'personal-status',name:'الأحوال الشخصية',desc:'فتح الأحوال الشخصية',icon:'&#128101;',color:'blue'},
-  {key:'criminal',name:'الجرائم الجنائية',desc:'فتح الجرائم الجنائية',icon:'&#9876;',color:'red'},
-  {key:'labor',name:'قانون العمل والدعاوى العمالية',desc:'فتح الدعاوى العمالية',icon:'&#128119;',color:'green'},
-  {key:'yemeni-laws',name:'القوانين اليمنية',desc:'فتح القوانين اليمنية',icon:'&#127963;',color:'navy'}
+  {key:'litigation-procedures',name:'إجراءات التقاضي',desc:'دليلك لإجراءات رفع الدعاوى والتقاضي أمام المحاكم اليمنية',icon:'📋',color:'blue'},
+  {key:'legal-procedure-deadlines',name:'مواعيد الإجراءات القانونية',desc:'المواعيد القانونية للطعون وال슝عات والدعاوى المختلفة',icon:'📅',color:'gold'},
+  {key:'civil',name:'الدعاوى المدنية',desc:'الشفعة، الإخلاء، التعويض، فسخ العقود والمطالبات المدنية',icon:'⚖️',color:'navy'},
+  {key:'urgent',name:'الدعاوى المستعجلة',desc:'القضايا المستعجلة التي لا تحتمل التأخير والأوامر الوقتية',icon:'⚡',color:'red'},
+  {key:'commercial',name:'الدعاوى التجارية',desc:'المنازعات التجارية ودعاوى الإفلاس والشركات والعلامات التجارية',icon:'💼',color:'gold'},
+  {key:'personal-status',name:'الأحوال الشخصية',desc:'الزواج والطلاق والنفقة والحضانة والميراث والوصايا',icon:'👨‍👩‍👧‍👦',color:'blue'},
+  {key:'criminal',name:'الجرائم الجنائية',desc:'القتل والسرقة والاحتيال والجرائم الإلكترونية والعقوبات',icon:'🔒',color:'red'},
+  {key:'labor',name:'قانون العمل والدعاوى العمالية',desc:'حقوق العمال والموظفين ودعوى الفصل التعسفي والنفقة',icon:'👷',color:'green'},
+  {key:'yemeni-laws',name:'القوانين اليمنية',desc:'القوانين اليمنية النافذة كاملة: المدني، الجزائي، المرافعات، المرور',icon:'🏛️',color:'navy'}
 ];
 
-async function loadCatalog(){
+/* ===== Data Loading ===== */
+async function loadAll(){
   try{
-    var response = await fetch('catalog.json');
-    catalog = await response.json();
-    searchIndex = LawbookSearch.buildIndex(catalog);
+    var r1 = await fetch('catalog.json');
+    catalog = await r1.json();
+    var r2 = await fetch('database.json');
+    database = await r2.json();
+    searchIndex = LawbookSearch.buildIndex(catalog, database);
     renderStats();
     renderLibrary();
     renderLaws();
     renderContracts();
-  }catch(error){
-    console.error('Catalog load error:', error);
-    document.getElementById('libraryGrid').innerHTML = '<div class="empty-card">تعذر تحميل الفهرس. يرجى إعادة المحاولة.</div>';
-    document.getElementById('lawsList').innerHTML = '<div class="empty-card">تعذر تحميل القوانين.</div>';
-    document.getElementById('contractsGrid').innerHTML = '<div class="empty-card">تعذر تحميل العقود.</div>';
+  }catch(e){
+    console.error('Load error:', e);
+    document.getElementById('libraryGrid').innerHTML = '<div class="empty-state">تعذر تحميل الفهرس.</div>';
   }
 }
 
-function formatNumber(value){
-  return Number(value || 0).toLocaleString('en-US');
-}
+function formatNumber(v){ return Number(v||0).toLocaleString('en-US'); }
 
 function renderStats(){
-  var stats = catalog.stats || {};
-  document.getElementById('lawsCount').textContent = formatNumber(stats.laws);
-  document.getElementById('articlesCount').textContent = formatNumber(stats.articles);
-  document.getElementById('contractsCount').textContent = formatNumber(stats.contracts);
-  document.getElementById('postsCount').textContent = formatNumber(stats.posts);
+  var s = catalog.stats || {};
+  document.getElementById('lawsCount').textContent = formatNumber(s.laws);
+  document.getElementById('articlesCount').textContent = formatNumber(s.articles);
+  document.getElementById('contractsCount').textContent = formatNumber(s.contracts);
+  document.getElementById('postsCount').textContent = formatNumber(s.posts);
 }
 
 function renderLibrary(){
   var html = '';
   for(var i=0;i<librarySections.length;i++){
-    var section = librarySections[i];
-    var count = ((catalog.laws || {})[section.key] || []).length;
-    html += '<a href="laws.html?section='+section.key+'" class="library-card">';
-    html += '<div class="library-card-icon '+section.color+'">'+section.icon+'</div>';
-    html += '<h3>'+section.name+'</h3>';
-    html += '<p>'+section.desc+'</p>';
-    html += '<div class="library-card-footer"><span>'+formatNumber(count)+' عنصر</span><span class="library-card-arrow">&#8592;</span></div>';
+    var sec = librarySections[i];
+    var count = ((catalog.laws||{})[sec.key]||[]).length;
+    html += '<a href="laws.html?section='+sec.key+'" class="lib-card">';
+    html += '<div class="lib-card-icon '+sec.color+'">'+sec.icon+'</div>';
+    html += '<h3>'+sec.name+'</h3>';
+    html += '<p>'+sec.desc+'</p>';
+    html += '<div class="lib-card-footer"><span>'+formatNumber(count)+' عنصر</span><span class="lib-card-arrow">←</span></div>';
     html += '</a>';
   }
   document.getElementById('libraryGrid').innerHTML = html;
 }
 
 function renderLaws(){
-  var items = LawbookSearch.flattenLaws(catalog).sort(function(a,b){ return (b.articleCount||0)-(a.articleCount||0) || a.title.localeCompare(b.title,'ar'); }).slice(0,20);
+  var items = LawbookSearch.flattenLaws(catalog).sort(function(a,b){return (b.articleCount||0)-(a.articleCount||0)||a.title.localeCompare(b.title,'ar');}).slice(0,20);
   var html = '';
   for(var i=0;i<items.length;i++){
-    var law = items[i];
-    html += '<a href="'+law.url+'" class="law-item">';
-    html += '<div class="law-item-icon">&#9876;</div>';
-    html += '<div class="law-item-info"><h4>'+LawbookSearch.escapeHtml(law.title)+'</h4><p>'+LawbookSearch.escapeHtml(law.description)+'</p></div>';
-    if(law.articleCount){ html += '<span class="law-item-badge">'+formatNumber(law.articleCount)+' مادة</span>'; }
+    var l = items[i];
+    html += '<a href="'+l.url+'" class="law-row">';
+    html += '<div class="law-row-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM6 20V4h5v7h7v9H6z"/></svg></div>';
+    html += '<div class="law-row-info"><h4>'+LawbookSearch.escapeHtml(l.title)+'</h4><p>'+LawbookSearch.escapeHtml(l.description)+'</p></div>';
+    if(l.articleCount) html += '<span class="law-row-badge">'+formatNumber(l.articleCount)+' مادة</span>';
     html += '</a>';
   }
-  document.getElementById('lawsList').innerHTML = html || '<div class="empty-card">لا توجد بيانات قانونية.</div>';
+  document.getElementById('lawsList').innerHTML = html || '<div class="empty-state">لا توجد بيانات.</div>';
 }
 
 function renderContracts(){
   var groups = {};
   for(var i=0;i<catalog.contracts.length;i++){
-    var item = catalog.contracts[i];
-    var category = item.category || 'أخرى';
-    if(!groups[category]) groups[category] = [];
-    groups[category].push(item);
+    var c = catalog.contracts[i];
+    var cat = c.category || 'أخرى';
+    if(!groups[cat]) groups[cat] = [];
+    groups[cat].push(c);
   }
   var html = '';
-  Object.keys(groups).sort(function(a,b){ return groups[b].length - groups[a].length || a.localeCompare(b, 'ar'); }).forEach(function(category){
-    html += '<a href="contracts.html?category='+encodeURIComponent(category)+'" class="contract-item">';
-    html += '<h4>'+LawbookSearch.escapeHtml(category)+'</h4>';
-    html += '<p>نماذج عقود '+LawbookSearch.escapeHtml(category)+' قانونية جاهزة للتصفح والطباعة.</p>';
-    html += '<div class="meta"><span>'+formatNumber(groups[category].length)+' عقد</span><span style="color:var(--gold)">&#8592;</span></div>';
+  Object.keys(groups).sort(function(a,b){return groups[b].length-groups[a].length||a.localeCompare(b,'ar');}).forEach(function(cat){
+    html += '<a href="contracts.html?category='+encodeURIComponent(cat)+'" class="contract-card">';
+    html += '<h4>'+LawbookSearch.escapeHtml(cat)+'</h4>';
+    html += '<p>نماذج عقود '+LawbookSearch.escapeHtml(cat)+' قانونية جاهزة للتصفح والطباعة</p>';
+    html += '<div class="card-meta"><span>'+formatNumber(groups[cat].length)+' عقد</span><span style="color:var(--gold-400)">←</span></div>';
     html += '</a>';
   });
-  document.getElementById('contractsGrid').innerHTML = html || '<div class="empty-card">لا توجد عقود متاحة.</div>';
+  document.getElementById('contractsGrid').innerHTML = html || '<div class="empty-state">لا توجد عقود.</div>';
 }
 
-function renderResults(results){
-  var el = document.getElementById('searchResults');
-  if(!results.length){
-    el.innerHTML = '<div class="result-empty">لا توجد نتائج مطابقة</div>';
-    el.classList.add('show');
+/* ===== Search Engine Integration ===== */
+var searchBox = document.getElementById('heroSearch');
+var suggestionsEl = document.getElementById('searchSuggestions');
+var suggestionsContent = document.getElementById('suggestionsContent');
+var intentEl = document.getElementById('searchIntent');
+var intentIcon = document.getElementById('intentIcon');
+var intentText = document.getElementById('intentText');
+var spellEl = document.getElementById('spellCorrection');
+var correctionText = document.getElementById('correctionText');
+var resultsSection = document.getElementById('searchResultsSection');
+var resultsList = document.getElementById('searchResultsList');
+var resultsCount = document.getElementById('resultsCount');
+var resultsFilters = document.getElementById('resultsFilters');
+
+function handleSearchInput(){
+  var q = searchBox.value.trim();
+  if(q.length < 2){
+    hideSuggestions();
+    hideIntent();
+    hideSpellCorrection();
+    hideResults();
     return;
   }
+  /* Show intent */
+  showIntent(q);
+  /* Show spell correction */
+  showSpellCorrection(q);
+  /* Debounced suggestions */
+  clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = setTimeout(function(){ showSuggestions(q); }, 150);
+}
+
+function showIntent(q){
+  var intent = LawbookSearch.detectIntent(q);
+  var icons = {article_number:'📄',court:'🏛️',penalty:'🔒',general:'🔍'};
+  var labels = {
+    article_number: 'البحث عن رقم المادة: ' + (intent.articleNumber||''),
+    court: 'البحث في: ' + (intent.court||''),
+    penalty: 'البحث عن: ' + (intent.penalty||''),
+    general: ''
+  };
+  if(intent.type !== 'general'){
+    intentIcon.textContent = icons[intent.type]||'🔍';
+    intentText.textContent = labels[intent.type];
+    intentEl.classList.add('show');
+  } else {
+    hideIntent();
+  }
+}
+
+function hideIntent(){ intentEl.classList.remove('show'); }
+
+function showSpellCorrection(q){
+  var result = LawbookSearch.correctSpelling(q);
+  if(result.corrected && result.text !== LawbookSearch.normalizeArabic(q)){
+    correctionText.textContent = result.text;
+    spellEl.classList.add('show');
+    spellEl.onclick = function(){ searchBox.value = result.text; handleSearchInput(); doSearch(); };
+  } else {
+    hideSpellCorrection();
+  }
+}
+function hideSpellCorrection(){ spellEl.classList.remove('show'); }
+
+function showSuggestions(q){
+  if(!searchIndex.length) return;
+  var results = LawbookSearch.suggest(searchIndex, q, 6);
+  if(!results.length){ hideSuggestions(); return; }
   var html = '';
+  var typeIcons = {law:'📘',article:'📄',contract:'📝',post:'📰'};
+  var typeClasses = {law:'law',article:'article',contract:'contract',post:'post'};
   for(var i=0;i<results.length;i++){
-    var result = results[i];
-    html += '<a href="'+result.url+'" class="search-result-item'+(i===activeSearchIndex?' active':'')+'" data-index="'+i+'">';
-    html += '<div class="search-result-meta">';
-    html += '<span class="result-type '+result.type+'">'+result.typeLabel+'</span>';
-    if(result.sectionLabel){ html += '<span class="result-section">'+LawbookSearch.escapeHtml(result.sectionLabel)+'</span>'; }
-    if(result.articleCount){ html += '<span class="result-count">'+formatNumber(result.articleCount)+' مادة</span>'; }
-    html += '</div>';
-    html += '<span class="result-title">'+LawbookSearch.escapeHtml(result.title)+'</span>';
-    html += '<div class="result-snippet">'+LawbookSearch.escapeHtml(result.snippet || result.description || '')+'</div>';
-    html += '</a>';
+    var r = results[i];
+    html += '<a href="'+r.url+'" class="suggestion-item'+(i===activeSuggestionIndex?' active':'')+'" data-index="'+i+'">';
+    html += '<div class="suggestion-icon '+typeClasses[r.type]+'">'+(typeIcons[r.type]||'📄')+'</div>';
+    html += '<div class="suggestion-text">';
+    html += '<div class="suggestion-title">'+LawbookSearch.highlightText(r.title, q)+'</div>';
+    html += '<div class="suggestion-meta"><span>'+r.typeLabel+'</span>';
+    if(r.sectionLabel) html += '<span>• '+r.sectionLabel+'</span>';
+    if(r.articleNumber) html += '<span>• مادة '+r.articleNumber+'</span>';
+    html += '</div></div></a>';
   }
-  html += '<div class="result-footer">تم ترتيب النتائج حسب صلة العنوان والمحتوى بالبحث</div>';
-  el.innerHTML = html;
-  el.classList.add('show');
+  suggestionsContent.innerHTML = html;
+  suggestionsEl.classList.add('show');
+  activeSuggestionIndex = -1;
+  /* Click handler */
+  var items = suggestionsContent.querySelectorAll('.suggestion-item');
+  for(var j=0;j<items.length;j++){
+    items[j].addEventListener('click', function(e){
+      e.preventDefault();
+      window.location.href = this.getAttribute('href');
+    });
+  }
 }
 
-function handleSearch(value){
-  var resultsEl = document.getElementById('searchResults');
-  if(!catalog){
-    resultsEl.innerHTML = '<div class="result-loading">جاري تجهيز الفهرس...</div>';
-    resultsEl.classList.add('show');
-    return;
-  }
-  var query = (value || '').trim();
-  if(query.length < 2){
-    resultsEl.classList.remove('show');
-    currentSearchResults = [];
-    activeSearchIndex = -1;
-    return;
-  }
-  var key = LawbookSearch.normalizeArabic(query);
-  var results = searchCache[key];
-  if(!results){
-    results = LawbookSearch.search(catalog, query, {limit:8, index:searchIndex});
-    searchCache[key] = results;
-  }
-  currentSearchResults = results;
-  activeSearchIndex = results.length ? 0 : -1;
-  renderResults(results);
+function hideSuggestions(){ suggestionsEl.classList.remove('show'); activeSuggestionIndex = -1; }
+
+function updateSuggestionHighlight(){
+  var items = suggestionsContent.querySelectorAll('.suggestion-item');
+  for(var i=0;i<items.length;i++) items[i].classList.toggle('active', i===activeSuggestionIndex);
 }
 
-function openSearchResult(index){
-  if(index < 0 || index >= currentSearchResults.length) return;
-  window.location.href = currentSearchResults[index].url;
-}
-
-function updateActiveResult(){
-  var items = document.querySelectorAll('.search-result-item');
-  for(var i=0;i<items.length;i++) items[i].classList.toggle('active', i === activeSearchIndex);
-}
-
+/* Full Search */
 function doSearch(){
-  var input = document.getElementById('heroSearch');
-  if(!input.value.trim()) return;
-  handleSearch(input.value);
-  if(currentSearchResults.length) openSearchResult(activeSearchIndex > -1 ? activeSearchIndex : 0);
+  var q = searchBox.value.trim();
+  if(!q) return;
+  hideSuggestions();
+  var filterTypes = currentFilter === 'all' ? null : [currentFilter];
+  currentResults = LawbookSearch.search(searchIndex, q, {limit:50, types:filterTypes});
+  renderResults(q);
+  resultsSection.scrollIntoView({behavior:'smooth',block:'start'});
 }
+
+function renderResults(query){
+  if(!currentResults.length){
+    resultsList.innerHTML = '<div class="empty-state">لا توجد نتائج مطابقة. جرّب كلمات أخرى أو تحقق من الإملاء.</div>';
+    resultsCount.textContent = '0 نتيجة';
+    return;
+  }
+  resultsCount.textContent = formatNumber(currentResults.length) + ' نتيجة مطابقة';
+  var typeIcons = {law:'📘',article:'📄',contract:'📝',post:'📰'};
+  var typeClasses = {law:'law',article:'article',contract:'contract',post:'post'};
+  var html = '';
+  for(var i=0;i<currentResults.length;i++){
+    var r = currentResults[i];
+    html += '<a href="'+r.url+'" class="result-card">';
+    html += '<div class="result-card-header">';
+    html += '<div class="result-card-icon '+typeClasses[r.type]+'">'+(typeIcons[r.type]||'📄')+'</div>';
+    html += '<div class="result-card-body">';
+    html += '<div class="result-card-badges">';
+    html += '<span class="result-badge type">'+r.typeLabel+'</span>';
+    if(r.sectionLabel) html += '<span class="result-badge section">'+LawbookSearch.escapeHtml(r.sectionLabel)+'</span>';
+    if(r.articleCount) html += '<span class="result-badge count">'+formatNumber(r.articleCount)+' مادة</span>';
+    if(r.articleNumber) html += '<span class="result-badge count">مادة '+LawbookSearch.escapeHtml(r.articleNumber)+'</span>';
+    html += '</div>';
+    html += '<div class="result-card-title">'+LawbookSearch.highlightText(r.title, query)+'</div>';
+    html += '<div class="result-card-snippet">'+LawbookSearch.highlightText(r.snippet||r.description||'', query)+'</div>';
+    html += '</div></div></a>';
+  }
+  resultsList.innerHTML = html;
+  /* Render filter buttons */
+  renderResultFilters(query);
+}
+
+function renderResultFilters(query){
+  var types = {};
+  for(var i=0;i<currentResults.length;i++){
+    var t = currentResults[i].type;
+    types[t] = (types[t]||0)+1;
+  }
+  var labels = {law:'قوانين',article:'مواد',contract:'عقود',post:'مقالات'};
+  var html = '<button class="result-filter-btn active" onclick="filterResults(null,\''+query+'\')">الكل</button>';
+  Object.keys(types).forEach(function(t){
+    html += '<button class="result-filter-btn" onclick="filterResults(\''+t+'\',\''+query+'\')">'+labels[t]+' ('+types[t]+')</button>';
+  });
+  resultsFilters.innerHTML = html;
+}
+
+function filterResults(type, query){
+  searchBox.value = query;
+  currentFilter = type || 'all';
+  /* Update filter chip UI */
+  var chips = document.querySelectorAll('.filter-chip');
+  for(var c=0;c<chips.length;c++){
+    chips[c].classList.toggle('active', chips[c].getAttribute('data-filter')===currentFilter);
+  }
+  doSearch();
+}
+
+function hideResults(){ resultsSection.classList.remove('show'); }
+function showResults(){ resultsSection.classList.add('show'); }
+
+/* ===== Event Listeners ===== */
+searchBox.addEventListener('input', handleSearchInput);
+searchBox.addEventListener('focus', function(){ if(this.value.trim().length>=2) handleSearchInput(); });
+
+searchBox.addEventListener('keydown', function(e){
+  var items = suggestionsContent.querySelectorAll('.suggestion-item');
+  if(!items.length || !suggestionsEl.classList.contains('show')){
+    if(e.key==='Enter'){ e.preventDefault(); doSearch(); }
+    return;
+  }
+  if(e.key==='ArrowDown'){
+    e.preventDefault();
+    activeSuggestionIndex = Math.min(activeSuggestionIndex+1, items.length-1);
+    updateSuggestionHighlight();
+  } else if(e.key==='ArrowUp'){
+    e.preventDefault();
+    activeSuggestionIndex = Math.max(activeSuggestionIndex-1, -1);
+    updateSuggestionHighlight();
+  } else if(e.key==='Enter'){
+    e.preventDefault();
+    if(activeSuggestionIndex>=0 && activeSuggestionIndex<items.length){
+      window.location.href = items[activeSuggestionIndex].getAttribute('href');
+    } else {
+      doSearch();
+    }
+  } else if(e.key==='Escape'){
+    hideSuggestions();
+  }
+});
 
 document.addEventListener('click', function(e){
-  if(!e.target.closest('.search-wrap')) document.getElementById('searchResults').classList.remove('show');
+  if(!e.target.closest('.search-container')) hideSuggestions();
 });
 
-document.getElementById('searchResults').addEventListener('click', function(e){
-  var item = e.target.closest('.search-result-item');
-  if(!item) return;
-  e.preventDefault();
-  openSearchResult(Number(item.getAttribute('data-index')));
-});
+/* Filter Chips */
+var filterChips = document.querySelectorAll('.filter-chip');
+for(var fc=0;fc<filterChips.length;fc++){
+  filterChips[fc].addEventListener('click', function(){
+    for(var j=0;j<filterChips.length;j++) filterChips[j].classList.remove('active');
+    this.classList.add('active');
+    currentFilter = this.getAttribute('data-filter');
+    if(searchBox.value.trim().length>=2) doSearch();
+  });
+}
 
-document.getElementById('heroSearch').addEventListener('input', function(){ handleSearch(this.value); });
-document.getElementById('heroSearch').addEventListener('focus', function(){ handleSearch(this.value); });
-document.getElementById('heroSearch').addEventListener('keydown', function(e){
-  if(!currentSearchResults.length) return;
-  if(e.key === 'ArrowDown'){
+/* Nav Links */
+var navHashLinks = document.querySelectorAll('.nav-link[href^="#"]');
+for(var nl=0;nl<navHashLinks.length;nl++){
+  navHashLinks[nl].addEventListener('click', function(e){
     e.preventDefault();
-    activeSearchIndex = (activeSearchIndex + 1) % currentSearchResults.length;
-    updateActiveResult();
-  }else if(e.key === 'ArrowUp'){
-    e.preventDefault();
-    activeSearchIndex = activeSearchIndex <= 0 ? currentSearchResults.length - 1 : activeSearchIndex - 1;
-    updateActiveResult();
-  }else if(e.key === 'Enter'){
-    e.preventDefault();
-    openSearchResult(activeSearchIndex > -1 ? activeSearchIndex : 0);
-  }else if(e.key === 'Escape'){
-    document.getElementById('searchResults').classList.remove('show');
-  }
-});
-
-var navLinks = document.querySelectorAll('.nav-link[href^="#"]');
-for(var i=0;i<navLinks.length;i++){
-  navLinks[i].addEventListener('click', function(e){
-    e.preventDefault();
-    var target = document.querySelector(this.getAttribute('href'));
-    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    var t = document.querySelector(this.getAttribute('href'));
+    if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
     document.getElementById('navLinks').classList.remove('open');
   });
 }
 
-/* Scroll to top button */
+/* Scroll to Top */
 var scrollTopBtn = document.getElementById('scrollTop');
 window.addEventListener('scroll', function(){
-  scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
-}, {passive: true});
+  scrollTopBtn.classList.toggle('visible', window.scrollY>400);
+}, {passive:true});
 
-loadCatalog();
+/* ===== Init ===== */
+loadAll();
 </script>
 </body>
 </html>
