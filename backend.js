@@ -48,18 +48,16 @@
     return CONFIG.SUPABASE_URL !== 'YOUR_SUPABASE_URL' && CONFIG.SUPABASE_URL.length > 10;
   }
 
-  /* ===== Authentication ===== */
   async function signIn(username, password){
     if(!supabase) return {error: 'Not configured'};
     
-    // Use Supabase Auth with email format
     var email = username + '@lawbook-ye.local';
     
-    // Try sign in first
+    // Try sign in
     var result = await supabase.auth.signInWithPassword({email: email, password: password});
     
     if(result.error){
-      // If user doesn't exist, create them
+      // Auto-create user on first login
       var signUp = await supabase.auth.signUp({email: email, password: password});
       if(signUp.error) return {error: signUp.error.message};
       result = signUp;
@@ -68,24 +66,29 @@
     currentSession = result.data.session;
     currentUser = result.data.user;
     
-    // Ensure user profile exists in our table
     if(currentUser){
-      var profile = await dbGet(CONFIG.TABLES.users, {username: username});
-      if(!profile){
-        await dbInsert(CONFIG.TABLES.users, {
-          user_id: currentUser.id,
-          username: username,
-          name: username === 'admin' ? 'المدير الرئيسي' : username,
-          role: username === 'admin' ? 'admin' : 'viewer',
-          permissions: username === 'admin' ? ['read','write','delete','approve','settings','users','audit'] : ['read'],
-          active: true,
-          created_at: new Date().toISOString()
-        });
+      // Try to get/create profile
+      try {
+        var profile = await dbGet(CONFIG.TABLES.users, {username: username});
+        if(!profile){
+          await dbInsert(CONFIG.TABLES.users, {
+            user_id: currentUser.id,
+            username: username,
+            name: username === 'admin' ? 'المدير الرئيسي' : username,
+            role: username === 'admin' ? 'admin' : 'viewer',
+            permissions: username === 'admin' ? ['read','write','delete','approve','settings','users','audit'] : ['read'],
+            active: true
+          });
+          profile = {username: username, role: username === 'admin' ? 'admin' : 'viewer'};
+        }
+        currentUser.profile = profile;
+      } catch(e){
+        // Tables might not be set up yet
+        currentUser.profile = {username: username, role: username === 'admin' ? 'admin' : 'viewer'};
       }
-      currentUser.profile = profile || {username: username, role: username === 'admin' ? 'admin' : 'viewer'};
     }
     
-    await logAudit('login', username, {role: currentUser.profile.role});
+    try { await logAudit('login', username, {role: currentUser.profile.role}); } catch(e){}
     return {user: currentUser, session: currentSession, profile: currentUser.profile};
   }
 
@@ -175,15 +178,17 @@
   /* ===== Analytics ===== */
   async function trackEvent(type, data){
     if(!supabase) return;
-    await dbInsert(CONFIG.TABLES.analytics, {
-      type: type,
-      data: data || {},
-      page: location.pathname,
-      user_agent: navigator.userAgent,
-      screen: screen.width + 'x' + screen.height,
-      device: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
-      created_at: new Date().toISOString()
-    });
+    try {
+      await dbInsert(CONFIG.TABLES.analytics, {
+        type: type,
+        data: data || {},
+        page: location.pathname,
+        user_agent: navigator.userAgent,
+        screen: screen.width + 'x' + screen.height,
+        device: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
+        created_at: new Date().toISOString()
+      });
+    } catch(e){ /* Silently fail if table not accessible */ }
   }
 
   async function trackPageView(){
@@ -205,66 +210,61 @@
   async function getDashboardData(){
     if(!supabase) return getDefaultDashboard();
     
-    var now = new Date();
-    var today = now.toISOString().slice(0,10);
-    var weekAgo = new Date(now - 7*86400000).toISOString();
-    var monthAgo = new Date(now - 30*86400000).toISOString();
+    try {
+      var now = new Date();
+      var today = now.toISOString().slice(0,10);
 
-    // Parallel queries
-    var [allEvents, todayEvents, weekEvents, monthEvents, users, knowledge] = await Promise.all([
-      dbSelect(CONFIG.TABLES.analytics, null, {limit: 10000, order: {column: 'created_at', ascending: false}}),
-      dbSelect(CONFIG.TABLES.analytics, null, {limit: 1000}),
-      dbSelect(CONFIG.TABLES.analytics, null, {limit: 5000}),
-      dbCount(CONFIG.TABLES.users),
-      dbCount(CONFIG.TABLES.knowledge)
-    ]);
+      var allEvents = await dbSelect(CONFIG.TABLES.analytics, null, {limit: 5000, order: {column: 'created_at', ascending: false}});
+      var users = await dbCount(CONFIG.TABLES.users);
+      var knowledge = await dbCount(CONFIG.TABLES.knowledge);
 
-    // Process events
-    var byType = {}, byDate = {}, intents = {}, searches = {}, noResults = {};
-    allEvents.forEach(function(e){
-      byType[e.type] = (byType[e.type]||0) + 1;
-      var d = (e.created_at||'').slice(0,10);
-      if(!byDate[d]) byDate[d] = {pageviews:0, searches:0, queries:0};
-      if(e.type==='pageview') byDate[d].pageviews++;
-      if(e.type==='search') byDate[d].searches++;
-      if(e.type==='advisor_query') byDate[d].queries++;
-      if(e.data && e.data.intent) intents[e.data.intent] = (intents[e.data.intent]||0) + 1;
-      if(e.data && e.data.query){
-        var q = e.data.query.slice(0,60);
-        if(e.type==='search'||e.type==='advisor_query') searches[q] = (searches[q]||0) + 1;
-        if(e.type==='no_result') noResults[q] = (noResults[q]||0) + 1;
+      var byType = {}, byDate = {}, intents = {}, searches = {}, noResults = {};
+      allEvents.forEach(function(e){
+        byType[e.type] = (byType[e.type]||0) + 1;
+        var d = (e.created_at||'').slice(0,10);
+        if(!byDate[d]) byDate[d] = {pageviews:0, searches:0, queries:0};
+        if(e.type==='pageview') byDate[d].pageviews++;
+        if(e.type==='search') byDate[d].searches++;
+        if(e.type==='advisor_query') byDate[d].queries++;
+        if(e.data && e.data.intent) intents[e.data.intent] = (intents[e.data.intent]||0) + 1;
+        if(e.data && e.data.query){
+          var q = e.data.query.slice(0,60);
+          if(e.type==='search'||e.type==='advisor_query') searches[q] = (searches[q]||0) + 1;
+          if(e.type==='no_result') noResults[q] = (noResults[q]||0) + 1;
+        }
+      });
+
+      var totalQueries = byType['advisor_query']||0;
+      var totalNoResults = byType['no_result']||0;
+
+      var dailyChart = [];
+      for(var d = 13; d >= 0; d--){
+        var date = new Date(now - d*86400000).toISOString().slice(0,10);
+        var day = byDate[date] || {pageviews:0,searches:0,queries:0};
+        dailyChart.push({date:date, pageviews:day.pageviews, searches:day.searches, queries:day.queries});
       }
-    });
 
-    var totalQueries = byType['advisor_query']||0;
-    var totalNoResults = byType['no_result']||0;
-
-    // Daily chart (14 days)
-    var dailyChart = [];
-    for(var d = 13; d >= 0; d--){
-      var date = new Date(now - d*86400000).toISOString().slice(0,10);
-      var day = byDate[date] || {pageviews:0,searches:0,queries:0};
-      dailyChart.push({date:date, pageviews:day.pageviews, searches:day.searches, queries:day.queries});
+      return {
+        totalEvents: allEvents.length,
+        totalPageviews: byType['pageview']||0,
+        totalSearches: byType['search']||0,
+        totalQueries: totalQueries,
+        totalNoResults: totalNoResults,
+        todayPageviews: (byDate[today]||{}).pageviews||0,
+        todaySearches: (byDate[today]||{}).searches||0,
+        todayQueries: (byDate[today]||{}).queries||0,
+        successRate: totalQueries > 0 ? Math.round((totalQueries-totalNoResults)/totalQueries*100) : 100,
+        noResultRate: totalQueries > 0 ? Math.round(totalNoResults/totalQueries*100) : 0,
+        topSearches: sortObj(searches).slice(0,15),
+        topIntents: sortObj(intents).slice(0,10),
+        noResultQueries: sortObj(noResults).slice(0,15),
+        dailyChart: dailyChart,
+        userCount: users,
+        knowledgeCount: knowledge
+      };
+    } catch(e){
+      return getDefaultDashboard();
     }
-
-    return {
-      totalEvents: allEvents.length,
-      totalPageviews: byType['pageview']||0,
-      totalSearches: byType['search']||0,
-      totalQueries: totalQueries,
-      totalNoResults: totalNoResults,
-      todayPageviews: (byDate[today]||{}).pageviews||0,
-      todaySearches: (byDate[today]||{}).searches||0,
-      todayQueries: (byDate[today]||{}).queries||0,
-      successRate: totalQueries > 0 ? Math.round((totalQueries-totalNoResults)/totalQueries*100) : 100,
-      noResultRate: totalQueries > 0 ? Math.round(totalNoResults/totalQueries*100) : 0,
-      topSearches: sortObj(searches).slice(0,15),
-      topIntents: sortObj(intents).slice(0,10),
-      noResultQueries: sortObj(noResults).slice(0,15),
-      dailyChart: dailyChart,
-      userCount: users,
-      knowledgeCount: knowledge
-    };
   }
 
   function getDefaultDashboard(){
