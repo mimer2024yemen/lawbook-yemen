@@ -7,9 +7,12 @@ var STATIC_ASSETS = [
   '/',
   '/index.html',
   '/styles.css',
+  '/app.js',
+  '/sw.js',
   '/search-engine.js',
   '/legal-rag-v3.js',
   '/legal-response.js',
+  '/data-loader.js',
   '/advisor.html',
   '/laws.html',
   '/contracts.html',
@@ -20,7 +23,10 @@ var STATIC_ASSETS = [
   '/about.html',
   '/privacy.html',
   '/terms.html',
-  '/disclaimer.html'
+  '/disclaimer.html',
+  '/404.html',
+  '/robots.txt',
+  '/manifest.json'
 ];
 
 var DATA_ASSETS = [

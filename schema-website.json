@@ -1,0 +1,19 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "المستشار اليمني القانوني",
+  "alternateName": "المستشار اليمني القانوني",
+  "url": "https://mimer2024yemen.github.io/lawbook-yemen/",
+  "description": "مساعد قانوني ذكي متخصص في القوانين والتشريعات اليمنية. ابحث في أكثر من 12,000 مادة قانونية.",
+  "inLanguage": "ar",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://mimer2024yemen.github.io/lawbook-yemen/?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "المستشار اليمني القانوني",
+    "url": "https://mimer2024yemen.github.io/lawbook-yemen/"
+  }
+}
