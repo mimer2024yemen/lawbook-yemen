@@ -1,12 +1,10 @@
--- المستشار اليمني القانوني — Complete Supabase Setup
--- Creates tables + indexes + RLS + policies + permissions + seed data
--- Run this ONCE in Supabase SQL Editor
+-- المستشار اليمني القانوني — All-in-One Setup
+-- Copy ALL of this and paste in Supabase SQL Editor, then click Run
 
--- ============================================
--- STEP 1: Create Tables
--- ============================================
+BEGIN;
 
-CREATE TABLE IF NOT EXISTS admin_users (
+-- 1. CREATE TABLES
+CREATE TABLE IF NOT EXISTS public.admin_users (
   id BIGSERIAL PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   username TEXT UNIQUE NOT NULL,
@@ -18,7 +16,7 @@ CREATE TABLE IF NOT EXISTS admin_users (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS knowledge_base (
+CREATE TABLE IF NOT EXISTS public.knowledge_base (
   id BIGSERIAL PRIMARY KEY,
   query TEXT,
   law_title TEXT,
@@ -28,8 +26,8 @@ CREATE TABLE IF NOT EXISTS knowledge_base (
   article_text TEXT,
   section TEXT,
   source TEXT,
-  workflow TEXT DEFAULT 'draft' CHECK (workflow IN ('draft','review','approved','published','rejected')),
-  status TEXT DEFAULT 'pending' CHECK (status IN ('pending','approved','published','rejected')),
+  workflow TEXT DEFAULT 'draft',
+  status TEXT DEFAULT 'pending',
   confidence REAL DEFAULT 0,
   submitted_by TEXT,
   submitted_at TIMESTAMPTZ DEFAULT NOW(),
@@ -45,7 +43,7 @@ CREATE TABLE IF NOT EXISTS knowledge_base (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS site_analytics (
+CREATE TABLE IF NOT EXISTS public.site_analytics (
   id BIGSERIAL PRIMARY KEY,
   type TEXT NOT NULL,
   data JSONB DEFAULT '{}',
@@ -56,7 +54,7 @@ CREATE TABLE IF NOT EXISTS site_analytics (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS audit_log (
+CREATE TABLE IF NOT EXISTS public.audit_log (
   id BIGSERIAL PRIMARY KEY,
   action TEXT NOT NULL,
   user_name TEXT,
@@ -64,14 +62,14 @@ CREATE TABLE IF NOT EXISTS audit_log (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS advisor_settings (
+CREATE TABLE IF NOT EXISTS public.advisor_settings (
   key TEXT PRIMARY KEY,
   value JSONB NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS uploaded_files (
+CREATE TABLE IF NOT EXISTS public.uploaded_files (
   id BIGSERIAL PRIMARY KEY,
   filename TEXT NOT NULL,
   file_size BIGINT,
@@ -85,103 +83,70 @@ CREATE TABLE IF NOT EXISTS uploaded_files (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- ============================================
--- STEP 2: Create Indexes
--- ============================================
+-- 2. INDEXES
+CREATE INDEX IF NOT EXISTS idx_analytics_type ON public.site_analytics(type);
+CREATE INDEX IF NOT EXISTS idx_analytics_created ON public.site_analytics(created_at);
+CREATE INDEX IF NOT EXISTS idx_knowledge_status ON public.knowledge_base(status);
+CREATE INDEX IF NOT EXISTS idx_knowledge_workflow ON public.knowledge_base(workflow);
+CREATE INDEX IF NOT EXISTS idx_audit_user ON public.audit_log(user_name);
+CREATE INDEX IF NOT EXISTS idx_audit_created ON public.audit_log(created_at);
 
-CREATE INDEX IF NOT EXISTS idx_analytics_type ON site_analytics(type);
-CREATE INDEX IF NOT EXISTS idx_analytics_created ON site_analytics(created_at);
-CREATE INDEX IF NOT EXISTS idx_knowledge_status ON knowledge_base(status);
-CREATE INDEX IF NOT EXISTS idx_knowledge_workflow ON knowledge_base(workflow);
-CREATE INDEX IF NOT EXISTS idx_knowledge_section ON knowledge_base(section);
-CREATE INDEX IF NOT EXISTS idx_audit_user ON audit_log(user_name);
-CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_log(action);
-CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_log(created_at);
+-- 3. ENABLE RLS
+ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.knowledge_base ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.site_analytics ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.audit_log ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.advisor_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.uploaded_files ENABLE ROW LEVEL SECURITY;
 
--- ============================================
--- STEP 3: Enable RLS
--- ============================================
-
-ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE knowledge_base ENABLE ROW LEVEL SECURITY;
-ALTER TABLE site_analytics ENABLE ROW LEVEL SECURITY;
-ALTER TABLE audit_log ENABLE ROW LEVEL SECURITY;
-ALTER TABLE advisor_settings ENABLE ROW LEVEL SECURITY;
-ALTER TABLE uploaded_files ENABLE ROW LEVEL SECURITY;
-
--- ============================================
--- STEP 4: Drop old policies (safe)
--- ============================================
-
+-- 4. DROP OLD POLICIES
 DO $$ DECLARE r RECORD;
 BEGIN
-  FOR r IN (SELECT schemaname, tablename, policyname FROM pg_policies WHERE schemaname = 'public')
+  FOR r IN (SELECT tablename, policyname FROM pg_policies WHERE schemaname = 'public')
   LOOP
-    EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON ' || r.schemaname || '.' || r.tablename;
+    EXECUTE format('DROP POLICY IF EXISTS %I ON public.%I', r.policyname, r.tablename);
   END LOOP;
 END $$;
 
--- ============================================
--- STEP 5: Create RLS Policies
--- ============================================
+-- 5. CREATE POLICIES
+CREATE POLICY "p_admin_sel" ON public.admin_users FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "p_admin_ins" ON public.admin_users FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "p_admin_upd" ON public.admin_users FOR UPDATE USING (auth.role() = 'authenticated');
 
--- admin_users
-CREATE POLICY "admin_users_select" ON admin_users FOR SELECT USING (auth.role() = 'authenticated');
-CREATE POLICY "admin_users_insert" ON admin_users FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-CREATE POLICY "admin_users_update" ON admin_users FOR UPDATE USING (auth.role() = 'authenticated');
+CREATE POLICY "p_know_sel" ON public.knowledge_base FOR SELECT USING (true);
+CREATE POLICY "p_know_ins" ON public.knowledge_base FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "p_know_upd" ON public.knowledge_base FOR UPDATE USING (auth.role() = 'authenticated');
+CREATE POLICY "p_know_del" ON public.knowledge_base FOR DELETE USING (auth.role() = 'authenticated');
 
--- knowledge_base
-CREATE POLICY "knowledge_select" ON knowledge_base FOR SELECT USING (true);
-CREATE POLICY "knowledge_insert" ON knowledge_base FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-CREATE POLICY "knowledge_update" ON knowledge_base FOR UPDATE USING (auth.role() = 'authenticated');
-CREATE POLICY "knowledge_delete" ON knowledge_base FOR DELETE USING (auth.role() = 'authenticated');
+CREATE POLICY "p_analytics_sel" ON public.site_analytics FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "p_analytics_ins" ON public.site_analytics FOR INSERT WITH CHECK (true);
 
--- site_analytics
-CREATE POLICY "analytics_select" ON site_analytics FOR SELECT USING (auth.role() = 'authenticated');
-CREATE POLICY "analytics_insert" ON site_analytics FOR INSERT WITH CHECK (true);
+CREATE POLICY "p_audit_sel" ON public.audit_log FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "p_audit_ins" ON public.audit_log FOR INSERT WITH CHECK (true);
 
--- audit_log
-CREATE POLICY "audit_select" ON audit_log FOR SELECT USING (auth.role() = 'authenticated');
-CREATE POLICY "audit_insert" ON audit_log FOR INSERT WITH CHECK (true);
+CREATE POLICY "p_settings_sel" ON public.advisor_settings FOR SELECT USING (true);
+CREATE POLICY "p_settings_ins" ON public.advisor_settings FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "p_settings_upd" ON public.advisor_settings FOR UPDATE USING (auth.role() = 'authenticated');
 
--- advisor_settings
-CREATE POLICY "settings_select" ON advisor_settings FOR SELECT USING (true);
-CREATE POLICY "settings_insert" ON advisor_settings FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-CREATE POLICY "settings_update" ON advisor_settings FOR UPDATE USING (auth.role() = 'authenticated');
+CREATE POLICY "p_files_sel" ON public.uploaded_files FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "p_files_ins" ON public.uploaded_files FOR INSERT WITH CHECK (auth.role() = 'authenticated');
 
--- uploaded_files
-CREATE POLICY "files_select" ON uploaded_files FOR SELECT USING (auth.role() = 'authenticated');
-CREATE POLICY "files_insert" ON uploaded_files FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-
--- ============================================
--- STEP 6: Grant Permissions to PostgREST
--- ============================================
-
-GRANT SELECT, INSERT, UPDATE, DELETE ON admin_users TO authenticated;
-GRANT SELECT ON admin_users TO anon;
-
-GRANT SELECT, INSERT, UPDATE, DELETE ON knowledge_base TO authenticated;
-GRANT SELECT ON knowledge_base TO anon;
-
-GRANT SELECT, INSERT ON site_analytics TO authenticated;
-GRANT INSERT ON site_analytics TO anon;
-
-GRANT SELECT, INSERT ON audit_log TO authenticated;
-GRANT INSERT ON audit_log TO anon;
-
-GRANT SELECT, INSERT, UPDATE ON advisor_settings TO authenticated;
-GRANT SELECT ON advisor_settings TO anon;
-
-GRANT SELECT, INSERT ON uploaded_files TO authenticated;
-
+-- 6. GRANT PERMISSIONS
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.admin_users TO authenticated;
+GRANT SELECT ON public.admin_users TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.knowledge_base TO authenticated;
+GRANT SELECT ON public.knowledge_base TO anon;
+GRANT SELECT, INSERT ON public.site_analytics TO authenticated;
+GRANT INSERT ON public.site_analytics TO anon;
+GRANT SELECT, INSERT ON public.audit_log TO authenticated;
+GRANT INSERT ON public.audit_log TO anon;
+GRANT SELECT, INSERT, UPDATE ON public.advisor_settings TO authenticated;
+GRANT SELECT ON public.advisor_settings TO anon;
+GRANT SELECT, INSERT ON public.uploaded_files TO authenticated;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO authenticated;
 
--- ============================================
--- STEP 7: Seed Data
--- ============================================
-
--- Admin user profile (auth user already created)
-INSERT INTO admin_users (user_id, username, name, role, permissions, active)
+-- 7. SEED DATA
+INSERT INTO public.admin_users (user_id, username, name, role, permissions, active)
 VALUES (
   '52eb0fd5-a478-4e3d-a995-2f29c14742c1',
   'admin',
@@ -196,21 +161,9 @@ VALUES (
   active = EXCLUDED.active,
   updated_at = NOW();
 
--- Default settings
-INSERT INTO advisor_settings (key, value) VALUES ('main', '{
-  "advisorName": "المستشار اليمني القانوني",
-  "advisorPersonality": "مستشار قانوني يمني خبير، يجيب بدقة ووضوح، يلتزم بالقانون اليمني النافذ",
-  "responseStyle": "detailed",
-  "legalConservatism": "high",
-  "detailLevel": "high",
-  "priorityLaws": ["القانون المدني اليمني", "قانون الأحوال الشخصية", "قانون العقوبات", "قانون العمل"],
-  "trustedSources": ["yemenilaw.com", "yemen-nic.info", "moj.gov.ye", "cby.ye"],
-  "showConfidence": true,
-  "showSources": true
-}'::jsonb) ON CONFLICT (key) DO NOTHING;
+INSERT INTO public.advisor_settings (key, value) VALUES (
+  'main',
+  '{"advisorName":"المستشار اليمني القانوني","advisorPersonality":"مستشار قانوني يمني خبير","responseStyle":"detailed","legalConservatism":"high","detailLevel":"high","showConfidence":true,"showSources":true}'::jsonb
+) ON CONFLICT (key) DO NOTHING;
 
--- ============================================
--- STEP 8: Refresh PostgREST Schema Cache
--- ============================================
-
-NOTIFY pgrst, 'reload schema';
+COMMIT;
