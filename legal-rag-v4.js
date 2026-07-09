@@ -291,43 +291,34 @@
 
   /* ===== Intent Detection ===== */
   function detectIntent(q){
-    /* Specific compound patterns first */
-    if(/دعوى.*اخلاء|اخلاء.*دعوى|رفع.*اخلاء/.test(q)) return 'rental';
-    if(/دعوى.*نفق|نفق.*دعوى/.test(q)) return 'maintenance';
-    if(/دعوى.*طلاق|طلاق.*دعوى/.test(q)) return 'divorce';
-    if(/دعوى.*ميراث|ميراث.*دعوى/.test(q)) return 'inheritance';
-    if(/دعوى.*سرق|سرق.*دعوى/.test(q)) return 'theft';
-    
-    /* Explicit action keywords */
-    if(/سرق|سارق|اختلاس|نهب|سرقه/.test(q)) return 'theft';
+    if(/سرق|سرقة|اختلاس|نهب/.test(q)) return 'theft';
     if(/قتل|جنايه|قاتل/.test(q)) return 'murder';
     if(/طلاق|طلق|خلع|فسخ/.test(q)) return 'divorce';
     if(/اشتريت|اشتري|مرتجع|استرجاع/.test(q)) return 'sale';
-    
-    /* Topic keywords */
-    if(/ميراث|ارث|تركة|ورث|توفي.*ترك|فريضه|وصي|ترث/.test(q)) return 'inheritance';
-    if(/ايجار|الايجار|مؤجر|مستأجر|اجر.*عقد|عقد.*اجر|اخلاء|طرد.*مستأجر/.test(q)) return 'rental';
-    if(/احتيال|نصب|تزوير|غش|جريمة|اعتداء/.test(q)) return 'theft';
-    if(/عمل|عامل|موظف|وظيف|فصل|راتب|اجازه|تعويض.*نهايه|نهايه.*خدمه/.test(q)) return 'labor';
-    if(/شيك|شيكات|كمبياله|رصيد/.test(q)) return 'check';
-    if(/شركة|شراکه|مؤسسه|تجاري|مساهم|افلاس/.test(q)) return 'company';
-    if(/دعوى|دعوه|محكمة|تقاضي|مستعجل|تنفيذ.*حكم|حكم.*تنفيذ|استرد|مطالبه|مدين/.test(q)) return 'filing';
-    if(/استئناف|استانف|طعن|نقض|تمييز/.test(q)) return 'appeal';
-    if(/محكمة|محاكم|قضاء|اختصاص/.test(q)) return 'court';
-    if(/عقوبة|عقوبه|جزاء|قصاص|ديه|تعزير/.test(q)) return 'penalty';
-    if(/حضانة|كضانه|رعايه/.test(q)) return 'custody';
-    if(/نفقة|نفقات|مؤونه|نفقه/.test(q)) return 'maintenance';
-    if(/جدار|ضوء|جار.*ضرر|ضرر.*جار/.test(q)) return 'civil';
-    if(/بيع|شراء|مشتري|بائع|تقسيط|مرهون/.test(q)) return 'sale';
-    if(/تعويض|ضمان|فساد/.test(q)) return 'compensation';
-    
-    /* Question type (lowest priority) */
-    if(/هل/.test(q)) return 'yesno';
-    if(/كيف/.test(q)) return 'how';
-    if(/متى/.test(q)) return 'when';
+    var intents = {
+      'maintenance':/نفقة|نفقات|مؤونه|نفقه/,
+      'custody':/حضانة|كضانه|رعايه/,
+      'inheritance':/ميراث|ارث|ترکه|فريضه|مورث|وارث/,
+      'rental':/ايجار|استيجار|مؤجر|مستأجر|موجر/,
+      'prison':/سجن|حبس|توقيف|سجين/,
+      'company':/شركة|شراکه|مؤسسه|تجاري/,
+      'labor':/عمل|عامل|موظف|وظيف|فصل|تسريح/,
+      'contract':/عقد|اتفاقيه|فسخ\s+عقد/,
+      'compensation':/تعويض|ضمان|فساد/,
+      'court':/محكمة|قضاء|تقاضي/,
+      'filing':/رفع\s+دعوى|تقديم\s+دعوى|كيف\s+(ارفع|أقدم)/,
+      'appeal':/استئناف|طعن|نقض|تمييز/,
+      'penalty':/عقوبه|جزاء|حد|تعزير|قصاص/,
+      'check':/شيك|شيكات|بدون\s+رصيد/
+    };
+    for(var k in intents){ if(intents[k].test(q)) return k; }
+    if(/هل\s/.test(q)) return 'yesno';
+    if(/كيف\s/.test(q)) return 'how';
+    if(/متى\s/.test(q)) return 'when';
     if(/لماذا|ليه/.test(q)) return 'why';
     return 'general';
   }
+
   function getIntentSection(intent){
     var map = {
       'divorce':'personal-status','maintenance':'personal-status','custody':'personal-status','inheritance':'personal-status',
@@ -340,6 +331,6 @@
 
   function isFollowUp(q){ return /^(وماذا|وإذا|وبعدين|واذا|طيب\s+و|ماذا\s+بعد|وكيف|وكم|وهل|بالاضافه|ايضا|كمان|زود|اشرح|وضح|ممكن\s+توضح)/.test(q.trim()); }
 
-  global.LegalRAGv3 = {buildIndex:buildIndex, search:search, detectIntent:detectIntent, isFollowUp:isFollowUp, norm:norm, tokenize:tokenize, expandQuery:expandQuery};
+  global.LegalRAGv4 = {buildIndex:buildIndex, search:search, detectIntent:detectIntent, isFollowUp:isFollowUp, norm:norm, tokenize:tokenize, expandQuery:expandQuery};
 
 })(window);
