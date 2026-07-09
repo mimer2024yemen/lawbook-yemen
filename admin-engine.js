@@ -1,564 +1,669 @@
 /**
- * المستشار اليمني القانوني — Admin Engine
- * Analytics, file parsing, permissions, settings, self-improvement
+ * المستشار اليمني القانوني — Production Admin Engine v2
+ * Secure auth + IndexedDB analytics + file processing + approval workflow
  */
 (function(global){
   'use strict';
 
-  /* ===== Analytics ===== */
-  var ANALYTICS_KEY = 'advisor_analytics';
-
-  function trackEvent(type, data){
-    var analytics = getAnalytics();
-    var event = { type: type, data: data || {}, ts: Date.now(), url: location.href };
-    analytics.events.push(event);
-    if(analytics.events.length > 5000) analytics.events = analytics.events.slice(-5000);
-    
-    // Update counters
-    if(!analytics.counters[type]) analytics.counters[type] = 0;
-    analytics.counters[type]++;
-    
-    // Track daily
-    var today = new Date().toISOString().slice(0,10);
-    if(!analytics.daily[today]) analytics.daily[today] = {};
-    if(!analytics.daily[today][type]) analytics.daily[today][type] = 0;
-    analytics.daily[today][type]++;
-    
-    saveAnalytics(analytics);
+  /* ===== Crypto: SHA-256 Hashing ===== */
+  async function sha256(text){
+    var encoder = new TextEncoder();
+    var data = encoder.encode(text);
+    var hash = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hash)).map(function(b){ return b.toString(16).padStart(2,'0'); }).join('');
   }
 
-  function getAnalytics(){
-    try {
-      return JSON.parse(localStorage.getItem(ANALYTICS_KEY) || '{"events":[],"counters":{},"daily":{},"sessions":{}}');
-    } catch(e){ return {events:[],counters:{},daily:{},sessions:{}}; }
+  /* ===== IndexedDB Core ===== */
+  var DB_NAME = 'admin_production';
+  var DB_VERSION = 3;
+  var db = null;
+
+  function openDB(){
+    return new Promise(function(resolve, reject){
+      if(db){ resolve(db); return; }
+      var req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = function(e){
+        var idb = e.target.result;
+        if(!idb.objectStoreNames.contains('users')){
+          var us = idb.createObjectStore('users', {keyPath:'username'});
+          us.createIndex('role','role');
+        }
+        if(!idb.objectStoreNames.contains('sessions')){
+          idb.createObjectStore('sessions', {keyPath:'token'});
+        }
+        if(!idb.objectStoreNames.contains('analytics')){
+          var an = idb.createObjectStore('analytics', {keyPath:'id',autoIncrement:true});
+          an.createIndex('type','type');
+          an.createIndex('ts','ts');
+          an.createIndex('date','date');
+        }
+        if(!idb.objectStoreNames.contains('knowledge')){
+          var kn = idb.createObjectStore('knowledge', {keyPath:'id',autoIncrement:true});
+          kn.createIndex('status','status');
+          kn.createIndex('workflow','workflow');
+          kn.createIndex('confidence','confidence');
+        }
+        if(!idb.objectStoreNames.contains('audit')){
+          var au = idb.createObjectStore('audit', {keyPath:'id',autoIncrement:true});
+          au.createIndex('user','user');
+          au.createIndex('action','action');
+          au.createIndex('ts','ts');
+        }
+        if(!idb.objectStoreNames.contains('files')){
+          idb.createObjectStore('files', {keyPath:'id',autoIncrement:true});
+        }
+        if(!idb.objectStoreNames.contains('settings')){
+          idb.createObjectStore('settings', {keyPath:'key'});
+        }
+      };
+      req.onsuccess = function(e){ db = e.target.result; resolve(db); };
+      req.onerror = function(){ reject(req.error); };
+    });
   }
 
-  function saveAnalytics(data){
-    try { localStorage.setItem(ANALYTICS_KEY, JSON.stringify(data)); } catch(e){}
+  async function dbPut(store, data){
+    var idb = await openDB();
+    return new Promise(function(resolve, reject){
+      var tx = idb.transaction(store, 'readwrite');
+      var req = tx.objectStore(store).put(data);
+      req.onsuccess = function(){ resolve(req.result); };
+      req.onerror = function(){ reject(req.error); };
+    });
   }
 
-  function trackPageView(){
-    trackEvent('pageview', { page: location.pathname });
+  async function dbGet(store, key){
+    var idb = await openDB();
+    return new Promise(function(resolve, reject){
+      var tx = idb.transaction(store, 'readonly');
+      var req = tx.objectStore(store).get(key);
+      req.onsuccess = function(){ resolve(req.result); };
+      req.onerror = function(){ reject(req.error); };
+    });
   }
 
-  function trackSearch(query, resultCount, intent){
-    trackEvent('search', { query: query.slice(0,100), results: resultCount, intent: intent });
+  async function dbGetAll(store){
+    var idb = await openDB();
+    return new Promise(function(resolve, reject){
+      var tx = idb.transaction(store, 'readonly');
+      var req = tx.objectStore(store).getAll();
+      req.onsuccess = function(){ resolve(req.result || []); };
+      req.onerror = function(){ reject(req.error); };
+    });
   }
 
-  function trackAdvisorQuery(query, intent, confidence, hasResults){
-    trackEvent('advisor_query', { 
-      query: query.slice(0,100), 
-      intent: intent, 
+  async function dbDelete(store, key){
+    var idb = await openDB();
+    return new Promise(function(resolve, reject){
+      var tx = idb.transaction(store, 'readwrite');
+      var req = tx.objectStore(store).delete(key);
+      req.onsuccess = function(){ resolve(); };
+      req.onerror = function(){ reject(req.error); };
+    });
+  }
+
+  async function dbCount(store){
+    var idb = await openDB();
+    return new Promise(function(resolve, reject){
+      var tx = idb.transaction(store, 'readonly');
+      var req = tx.objectStore(store).count();
+      req.onsuccess = function(){ resolve(req.result); };
+      req.onerror = function(){ reject(req.error); };
+    });
+  }
+
+  /* ===== Authentication ===== */
+  var SESSION_KEY = 'admin_session_token';
+  var SESSION_DURATION = 8 * 60 * 60 * 1000; // 8 hours
+
+  var DEFAULT_ADMIN = {
+    username: 'admin',
+    passwordHash: '', // Will be set on first run
+    role: 'admin',
+    name: 'المدير الرئيسي',
+    permissions: ['read','write','delete','approve','settings','users','audit'],
+    createdAt: Date.now(),
+    active: true
+  };
+
+  async function initAdmin(password){
+    var existing = await dbGet('users', 'admin');
+    if(existing) return existing;
+    var hash = await sha256(password);
+    var admin = Object.assign({}, DEFAULT_ADMIN, {passwordHash: hash});
+    await dbPut('users', admin);
+    return admin;
+  }
+
+  async function login(username, password){
+    var user = await dbGet('users', username);
+    if(!user || !user.active) return null;
+    var hash = await sha256(password);
+    if(hash !== user.passwordHash) return null;
+
+    // Create session
+    var token = await sha256(username + Date.now() + Math.random());
+    var session = {
+      token: token,
+      username: username,
+      role: user.role,
+      name: user.name,
+      permissions: user.permissions,
+      loginAt: Date.now(),
+      expiresAt: Date.now() + SESSION_DURATION,
+      userAgent: navigator.userAgent
+    };
+    await dbPut('sessions', session);
+    localStorage.setItem(SESSION_KEY, token);
+
+    await logAudit('login', username, {role: user.role});
+    trackEvent('admin_login', {user: username});
+
+    return session;
+  }
+
+  async function logout(){
+    var token = localStorage.getItem(SESSION_KEY);
+    if(token){
+      try { await dbDelete('sessions', token); } catch(e){}
+    }
+    localStorage.removeItem(SESSION_KEY);
+  }
+
+  async function getCurrentSession(){
+    var token = localStorage.getItem(SESSION_KEY);
+    if(!token) return null;
+    var session = await dbGet('sessions', token);
+    if(!session || session.expiresAt < Date.now()){
+      localStorage.removeItem(SESSION_KEY);
+      return null;
+    }
+    return session;
+  }
+
+  async function requireAuth(){
+    var session = await getCurrentSession();
+    return session;
+  }
+
+  async function hasPermission(perm){
+    var session = await getCurrentSession();
+    if(!session) return false;
+    return session.permissions && session.permissions.indexOf(perm) !== -1;
+  }
+
+  /* ===== User Management ===== */
+  async function getUsers(){
+    return await dbGetAll('users');
+  }
+
+  async function addUser(userData){
+    var hash = await sha256(userData.password);
+    var user = {
+      username: userData.username,
+      passwordHash: hash,
+      role: userData.role || 'viewer',
+      name: userData.name || userData.username,
+      permissions: getRolePermissions(userData.role || 'viewer'),
+      createdAt: Date.now(),
+      createdBy: (await getCurrentSession() || {}).username || 'system',
+      active: true
+    };
+    await dbPut('users', user);
+    await logAudit('add_user', user.username, {role: user.role});
+    return user;
+  }
+
+  async function updateUser(username, updates){
+    var user = await dbGet('users', username);
+    if(!user) return null;
+    if(updates.password){
+      updates.passwordHash = await sha256(updates.password);
+      delete updates.password;
+    }
+    if(updates.role){
+      updates.permissions = getRolePermissions(updates.role);
+    }
+    Object.assign(user, updates, {updatedAt: Date.now()});
+    await dbPut('users', user);
+    await logAudit('update_user', username, updates);
+    return user;
+  }
+
+  async function deleteUser(username){
+    if(username === 'admin') throw new Error('Cannot delete main admin');
+    await dbDelete('users', username);
+    await logAudit('delete_user', username);
+  }
+
+  function getRolePermissions(role){
+    var perms = {
+      'admin': ['read','write','delete','approve','settings','users','audit'],
+      'editor': ['read','write','approve'],
+      'reviewer': ['read','approve'],
+      'viewer': ['read']
+    };
+    return perms[role] || perms['viewer'];
+  }
+
+  /* ===== Analytics (IndexedDB) ===== */
+  function getToday(){ return new Date().toISOString().slice(0,10); }
+
+  async function trackEvent(type, data){
+    var event = {
+      type: type,
+      data: data || {},
+      ts: Date.now(),
+      date: getToday(),
+      url: location.href,
+      userAgent: navigator.userAgent
+    };
+    await dbPut('analytics', event);
+  }
+
+  async function trackPageView(page){
+    await trackEvent('pageview', {
+      page: page || location.pathname,
+      referrer: document.referrer,
+      screen: screen.width + 'x' + screen.height,
+      device: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
+    });
+  }
+
+  async function trackSearch(query, resultCount, intent){
+    await trackEvent('search', {query: query.slice(0,200), results: resultCount, intent: intent});
+  }
+
+  async function trackAdvisorQuery(query, intent, confidence, hasResults){
+    await trackEvent('advisor_query', {
+      query: query.slice(0,200),
+      intent: intent,
       confidence: confidence,
       hasResults: hasResults
     });
   }
 
-  function trackNoResult(query){
-    trackEvent('no_result', { query: query.slice(0,200) });
+  async function trackNoResult(query){
+    await trackEvent('no_result', {query: query.slice(0,200)});
   }
 
-  /* ===== Session Tracking ===== */
-  var sessionId = Date.now().toString(36) + Math.random().toString(36).slice(2,6);
-  var sessionStart = Date.now();
-
-  function getSessionId(){ return sessionId; }
-
-  function trackSession(){
-    var analytics = getAnalytics();
-    if(!analytics.sessions) analytics.sessions = {};
-    analytics.sessions[sessionId] = {
-      start: sessionStart,
-      lastActive: Date.now(),
-      pageviews: 0,
-      searches: 0,
-      advisorQueries: 0
-    };
-    saveAnalytics(analytics);
-  }
-
-  /* ===== Analytics Dashboard Data ===== */
-  function getDashboardData(){
-    var analytics = getAnalytics();
+  /* ===== Dashboard Data ===== */
+  async function getDashboardData(){
+    var events = await dbGetAll('analytics');
     var now = Date.now();
-    var today = new Date().toISOString().slice(0,10);
-    var weekAgo = new Date(now - 7*24*60*60*1000).toISOString().slice(0,10);
-    var monthAgo = new Date(now - 30*24*60*60*1000).toISOString().slice(0,10);
-    
-    // Count events by time period
-    var todayEvents = analytics.events.filter(function(e){ 
-      return new Date(e.ts).toISOString().slice(0,10) === today; 
+    var today = getToday();
+    var weekAgo = new Date(now - 7*86400000).toISOString().slice(0,10);
+    var monthAgo = new Date(now - 30*86400000).toISOString().slice(0,10);
+
+    var byType = {};
+    var byDate = {};
+    var byDevice = {};
+    var searchQueries = {};
+    var noResultQueries = {};
+    var intents = {};
+
+    events.forEach(function(e){
+      byType[e.type] = (byType[e.type]||0) + 1;
+
+      if(!byDate[e.date]) byDate[e.date] = {pageviews:0,searches:0,queries:0};
+      if(e.type==='pageview') byDate[e.date].pageviews++;
+      if(e.type==='search') byDate[e.date].searches++;
+      if(e.type==='advisor_query') byDate[e.date].queries++;
+
+      if(e.data.device) byDevice[e.data.device] = (byDevice[e.data.device]||0) + 1;
+      if(e.data.query){
+        var q = e.data.query.slice(0,60);
+        if(e.type==='search'||e.type==='advisor_query') searchQueries[q] = (searchQueries[q]||0)+1;
+        if(e.type==='no_result') noResultQueries[q] = (noResultQueries[q]||0)+1;
+      }
+      if(e.data.intent) intents[e.data.intent] = (intents[e.data.intent]||0)+1;
     });
-    var weekEvents = analytics.events.filter(function(e){ 
-      return new Date(e.ts).toISOString().slice(0,10) >= weekAgo; 
-    });
-    var monthEvents = analytics.events.filter(function(e){ 
-      return new Date(e.ts).toISOString().slice(0,10) >= monthAgo; 
-    });
-    
-    // Top searches
-    var searchCounts = {};
-    analytics.events.filter(function(e){ return e.type === 'search' || e.type === 'advisor_query'; })
-      .forEach(function(e){
-        var q = (e.data.query || '').slice(0,50);
-        if(q) searchCounts[q] = (searchCounts[q]||0) + 1;
-      });
-    var topSearches = Object.keys(searchCounts)
-      .sort(function(a,b){ return searchCounts[b] - searchCounts[a]; })
-      .slice(0,10)
-      .map(function(q){ return {query: q, count: searchCounts[q]}; });
-    
-    // Top intents
-    var intentCounts = {};
-    analytics.events.filter(function(e){ return e.data && e.data.intent; })
-      .forEach(function(e){
-        var i = e.data.intent;
-        intentCounts[i] = (intentCounts[i]||0) + 1;
-      });
-    var topIntents = Object.keys(intentCounts)
-      .sort(function(a,b){ return intentCounts[b] - intentCounts[a]; })
-      .slice(0,10)
-      .map(function(i){ return {intent: i, count: intentCounts[i]}; });
-    
-    // No-result queries
-    var noResultQueries = analytics.events
-      .filter(function(e){ return e.type === 'no_result'; })
-      .map(function(e){ return e.data.query || ''; })
-      .filter(Boolean)
-      .slice(-20);
-    
-    // Success rate
-    var totalQueries = (analytics.counters.advisor_query || 0);
-    var noResults = (analytics.counters.no_result || 0);
-    var successRate = totalQueries > 0 ? Math.round((totalQueries - noResults) / totalQueries * 100) : 0;
-    
-    // Daily chart data (last 7 days)
+
+    // Daily chart (last 14 days)
     var dailyChart = [];
-    for(var d = 6; d >= 0; d--){
-      var date = new Date(now - d*24*60*60*1000).toISOString().slice(0,10);
-      var dayData = analytics.daily[date] || {};
-      dailyChart.push({
-        date: date,
-        pageviews: dayData.pageview || 0,
-        searches: dayData.search || 0,
-        queries: dayData.advisor_query || 0
-      });
+    for(var d = 13; d >= 0; d--){
+      var date = new Date(now - d*86400000).toISOString().slice(0,10);
+      var day = byDate[date] || {pageviews:0,searches:0,queries:0};
+      dailyChart.push({date:date, pageviews:day.pageviews, searches:day.searches, queries:day.queries});
     }
-    
+
+    var todayData = byDate[today] || {pageviews:0,searches:0,queries:0};
+    var totalQueries = byType['advisor_query']||0;
+    var noResults = byType['no_result']||0;
+
     return {
-      // Counts
-      totalPageviews: analytics.counters.pageview || 0,
-      totalSearches: analytics.counters.search || 0,
+      totalEvents: events.length,
+      totalPageviews: byType['pageview']||0,
+      totalSearches: byType['search']||0,
       totalQueries: totalQueries,
       totalNoResults: noResults,
-      
-      // Today
-      todayPageviews: todayEvents.filter(function(e){ return e.type === 'pageview'; }).length,
-      todaySearches: todayEvents.filter(function(e){ return e.type === 'search'; }).length,
-      todayQueries: todayEvents.filter(function(e){ return e.type === 'advisor_query'; }).length,
-      
-      // Week
-      weekPageviews: weekEvents.filter(function(e){ return e.type === 'pageview'; }).length,
-      weekQueries: weekEvents.filter(function(e){ return e.type === 'advisor_query'; }).length,
-      
-      // Month
-      monthPageviews: monthEvents.filter(function(e){ return e.type === 'pageview'; }).length,
-      monthQueries: monthEvents.filter(function(e){ return e.type === 'advisor_query'; }).length,
-      
-      // Rates
-      successRate: successRate,
-      noResultRate: totalQueries > 0 ? Math.round(noResults / totalQueries * 100) : 0,
-      
-      // Rankings
-      topSearches: topSearches,
-      topIntents: topIntents,
-      noResultQueries: noResultQueries,
-      
-      // Chart
+      todayPageviews: todayData.pageviews,
+      todaySearches: todayData.searches,
+      todayQueries: todayData.queries,
+      successRate: totalQueries > 0 ? Math.round((totalQueries-noResults)/totalQueries*100) : 100,
+      noResultRate: totalQueries > 0 ? Math.round(noResults/totalQueries*100) : 0,
+      topSearches: sortObj(searchQueries).slice(0,15),
+      topIntents: sortObj(intents).slice(0,10),
+      noResultQueries: sortObj(noResultQueries).slice(0,15),
+      deviceBreakdown: byDevice,
       dailyChart: dailyChart,
-      
-      // Sessions
-      activeSessions: Object.keys(analytics.sessions || {}).length
+      userCount: await dbCount('users'),
+      knowledgeCount: await dbCount('knowledge')
     };
   }
 
-  /* ===== File Parser ===== */
-  function parseTextFile(text){
+  function sortObj(obj){
+    return Object.keys(obj).map(function(k){return {label:k,count:obj[k]};})
+      .sort(function(a,b){return b.count-a.count;});
+  }
+
+  /* ===== File Processing ===== */
+  function parseTextFile(text, filename){
     var lines = text.split('\n');
     var articles = [];
-    var currentArticle = null;
+    var current = null;
     var lawTitle = '';
     var lawYear = '';
     var lawNumber = '';
-    
-    // Try to detect law title from first lines
-    for(var i = 0; i < Math.min(10, lines.length); i++){
+
+    // Detect law title from first 15 lines
+    for(var i = 0; i < Math.min(15, lines.length); i++){
       var line = lines[i].trim();
-      if(/قانون|نظام|مرسوم/.test(line) && line.length > 10 && line.length < 200){
+      if(/قانون|نظام|مرسوم|قانون\s+رقم/.test(line) && line.length > 8 && line.length < 250){
         lawTitle = line;
       }
-      if(/سنة\s*\d{4}/.test(line)){
-        var yearMatch = line.match(/سنة\s*(\d{4})/);
-        if(yearMatch) lawYear = yearMatch[1];
-      }
-      if(/رقم\s*\d+/.test(line)){
-        var numMatch = line.match(/رقم\s*(\d+)/);
-        if(numMatch) lawNumber = numMatch[1];
-      }
+      var ym = line.match(/سنة\s*(\d{4})/);
+      if(ym) lawYear = ym[1];
+      var nm = line.match(/رقم\s*(\d+)/);
+      if(nm) lawNumber = nm[1];
     }
-    
+
     // Extract articles
-    var articlePattern = /^[\s]*[٠-٩\d]+[\s]*[-\-\.][\s]*(.+)/;
-    var materialPattern = /(?:المادة|مادة)\s*[\(]?\s*([٠-٩\d]+)\s*[\)]?\s*[-\:]*\s*(.*)/;
-    
+    var patterns = [
+      /(?:المادة|مادة)\s*[\(٠-٩\d\)]+\s*[-\:]*\s*(.*)/,
+      /^[٠-٩\d]+[\s]*[-\.]\s+(.+)/,
+      /^الفصل\s+[٠-٩\d]+[\s]*[-\:]*\s*(.*)/
+    ];
+
     for(var i = 0; i < lines.length; i++){
       var line = lines[i].trim();
-      if(!line) continue;
-      
-      var materialMatch = line.match(materialPattern);
-      if(materialMatch){
-        if(currentArticle) articles.push(currentArticle);
-        currentArticle = {
-          number: materialMatch[1],
-          text: materialMatch[2] || '',
-          lineStart: i + 1
-        };
-      } else if(currentArticle){
-        currentArticle.text += ' ' + line;
+      if(!line || line.length < 3) continue;
+
+      var numMatch = line.match(/(?:المادة|مادة|مادة|الفصل)\s*[\(]?\s*([٠-٩\d]+)\s*[\)]?/);
+      if(numMatch){
+        if(current) articles.push(current);
+        var num = numMatch[1].replace(/[٠-٩]/g, function(d){return String('٠١٢٣٤٥٦٧٨٩'.indexOf(d));});
+        current = {number:num, text:line.replace(numMatch[0],'').trim(), lineStart:i+1};
+      } else if(current && line.length > 5){
+        current.text += ' ' + line;
       }
     }
-    if(currentArticle) articles.push(currentArticle);
-    
-    // Detect section from content
-    var fullText = text.slice(0, 5000);
-    var section = detectSection(fullText);
-    
+    if(current) articles.push(current);
+
+    var section = detectSection(text.slice(0,8000));
     return {
-      lawTitle: lawTitle,
+      filename: filename,
+      lawTitle: lawTitle || filename.replace(/\.\w+$/,''),
       lawYear: lawYear,
       lawNumber: lawNumber,
       articles: articles,
       section: section,
       totalLines: lines.length,
       totalArticles: articles.length,
-      confidence: articles.length > 0 ? 0.7 : 0.2
+      confidence: articles.length > 3 ? 0.8 : articles.length > 0 ? 0.5 : 0.2,
+      format: 'text'
     };
+  }
+
+  function parseJSONFile(jsonStr, filename){
+    try {
+      var data = JSON.parse(jsonStr);
+      if(data.laws) return {format:'database', data:data, confidence:0.9, filename:filename, totalArticles:JSON.stringify(data).split('"number"').length-1};
+      if(Array.isArray(data)){
+        var arts = data.filter(function(i){return i.number||i.text||i.content;}).map(function(i){
+          return {number:i.number||i.article||'', text:i.text||i.content||''};
+        });
+        return {format:'articles', articles:arts, confidence:0.7, filename:filename, totalArticles:arts.length, lawTitle:data.title||''};
+      }
+      if(data.title) return {format:'law', lawTitle:data.title, articles:data.articles||[], confidence:0.8, filename:filename};
+      return {format:'unknown', data:data, confidence:0.3, filename:filename};
+    } catch(e){ return {format:'error', error:e.message, confidence:0, filename:filename}; }
   }
 
   function detectSection(text){
-    var sectionPatterns = {
-      'personal-status': /زواج|طلاق|نفقة|حضانة|ميراث|خلع|فسخ|عدة|مهر|ولاء|رضاع/,
-      'civil': /ملكية|عقد|ضمان|تعويض|إتلاف|غصب|شفعة|رهن|كفالة|وكالة|وديعة/,
-      'criminal': /جريمة|سرقة|قتل|زنا|قذف|حرابة|ردة|شرب|مخدر|تزوير|احتيال|رشوة/,
-      'commercial': /تجاري|شركة|إفلاس|شيك|كمبيالة|سند|علامة|تجارة|بضاعة/,
-      'labor': /عامل|موظف|راتب|أجر|إجازة|فصل|خدمة|تأمين|عمل|نقابة/,
-      'litigation-procedures': /دعوى|محكمة|حكم|استئناف|نقض|تنفيذ|مرافعة|خصومة/
+    var patterns = {
+      'personal-status':/زواج|طلاق|نفقة|حضانة|ميراث|خلع|فسخ|عدة|مهر|رضاع|ولاء/,
+      'civil':/ملكية|عقد|ضمان|تعويض|إتلاف|غصب|شفعة|رهن|كفالة|وكالة|وديعة|إخلاء/,
+      'criminal':/جريمة|سرقة|قتل|زنا|قذف|حرابة|ردة|شرب|مخدر|تزوير|احتيال|رشوة|اعتداء/,
+      'commercial':/تجاري|شركة|إفلاس|شيك|كمبيالة|سند|علامة|تجارة|بضاعة|تاجر/,
+      'labor':/عامل|موظف|راتب|أجر|إجازة|فصل|خدمة|تأمين|عمل|نقابة|تسريح/,
+      'litigation-procedures':/دعوى|محكمة|حكم|استئناف|نقض|تنفيذ|مرافعة|خصومة|طعن/
     };
-    
-    for(var section in sectionPatterns){
-      if(sectionPatterns[section].test(text)) return section;
-    }
+    for(var s in patterns){ if(patterns[s].test(text)) return s; }
     return '';
   }
 
-  function parseJSONFile(jsonStr){
-    try {
-      var data = JSON.parse(jsonStr);
-      var articles = [];
-      var lawTitle = '';
-      
-      // Detect format
-      if(data.laws){
-        // Our database format
-        return { format: 'database', data: data, confidence: 0.9 };
-      }
-      if(Array.isArray(data)){
-        // Array of articles
-        data.forEach(function(item){
-          if(item.number || item.text || item.content){
-            articles.push({
-              number: item.number || item.article || '',
-              text: item.text || item.content || ''
-            });
-          }
-        });
-        return { format: 'articles', articles: articles, confidence: 0.7 };
-      }
-      if(data.title && (data.content || data.articles)){
-        // Single law
-        return { 
-          format: 'law', 
-          lawTitle: data.title,
-          articles: data.articles || [],
-          content: data.content || [],
-          confidence: 0.8
-        };
-      }
-      
-      return { format: 'unknown', data: data, confidence: 0.3 };
-    } catch(e){
-      return { format: 'error', error: e.message, confidence: 0 };
-    }
-  }
+  /* ===== Knowledge Workflow ===== */
+  var WORKFLOW_STATES = ['draft','review','approved','published','rejected'];
 
-  /* ===== Settings Management ===== */
-  var SETTINGS_KEY = 'advisor_settings';
-
-  var defaultSettings = {
-    // AI Settings
-    advisorName: 'المستشار اليمني القانوني',
-    advisorPersonality: 'مستشار قانوني يمني خبير، يجيب بدقة ووضوح، يلتزم بالقانون اليمني النافذ',
-    responseStyle: 'detailed', // detailed, concise, balanced
-    legalConservatism: 'high', // high, medium, low
-    detailLevel: 'high', // high, medium, low
-    
-    // Sources
-    priorityLaws: ['القانون المدني اليمني', 'قانون الأحوال الشخصية', 'قانون العقوبات', 'قانون العمل'],
-    trustedSources: ['yemenilaw.com', 'yemen-nic.info', 'moj.gov.ye'],
-    
-    // Features
-    enableExternalSearch: false,
-    enableKnowledgeExpansion: true,
-    enableAutoApprove: false,
-    autoApproveThreshold: 0.8,
-    
-    // Display
-    showConfidence: true,
-    showSources: true,
-    showRelatedArticles: true,
-    maxResponseLength: 2000
-  };
-
-  function getSettings(){
-    try {
-      var stored = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
-      return Object.assign({}, defaultSettings, stored);
-    } catch(e){ return Object.assign({}, defaultSettings); }
-  }
-
-  function saveSettings(settings){
-    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch(e){}
-  }
-
-  /* ===== Permissions ===== */
-  var AUTH_KEY = 'advisor_auth';
-  var USERS_KEY = 'advisor_users';
-
-  var defaultUsers = {
-    'admin': { 
-      password: 'admin123', // Default — should be changed
-      role: 'admin', 
-      name: 'المدير الرئيسي',
-      permissions: ['read','write','delete','approve','settings','users']
-    },
-    'editor': { 
-      password: 'editor123', 
-      role: 'editor', 
-      name: 'محرر قانوني',
-      permissions: ['read','write','approve']
-    },
-    'reviewer': { 
-      password: 'reviewer123', 
-      role: 'reviewer', 
-      name: 'مراجع',
-      permissions: ['read','approve']
-    },
-    'viewer': { 
-      password: 'viewer123', 
-      role: 'viewer', 
-      name: 'قارئ فقط',
-      permissions: ['read']
-    }
-  };
-
-  function getUsers(){
-    try {
-      var stored = JSON.parse(localStorage.getItem(USERS_KEY));
-      if(!stored || !Object.keys(stored).length){
-        localStorage.setItem(USERS_KEY, JSON.stringify(defaultUsers));
-        return defaultUsers;
-      }
-      return stored;
-    } catch(e){ return defaultUsers; }
-  }
-
-  function login(username, password){
-    var users = getUsers();
-    var user = users[username];
-    if(!user || user.password !== password) return null;
-    
-    var session = {
-      username: username,
-      role: user.role,
-      name: user.name,
-      permissions: user.permissions,
-      loginAt: Date.now()
+  async function addKnowledgeEntry(data, submittedBy){
+    var entry = {
+      // Content
+      query: data.query || '',
+      lawTitle: data.lawTitle || '',
+      lawNumber: data.lawNumber || '',
+      lawYear: data.lawYear || '',
+      articleNumber: data.articleNumber || '',
+      articleText: data.articleText || '',
+      section: data.section || '',
+      source: data.source || '',
+      // Workflow
+      workflow: 'draft',
+      status: 'pending',
+      // Confidence
+      confidence: calculateConfidence(data),
+      // Metadata
+      submittedBy: submittedBy || 'system',
+      submittedAt: Date.now(),
+      reviewedBy: null,
+      reviewedAt: null,
+      approvedBy: null,
+      approvedAt: null,
+      publishedAt: null,
+      rejectionReason: null,
+      // Tracking
+      useCount: 0,
+      lastUsed: null,
+      feedback: []
     };
-    
-    try { localStorage.setItem(AUTH_KEY, JSON.stringify(session)); } catch(e){}
-    trackEvent('admin_login', { user: username, role: user.role });
-    return session;
+    var id = await dbPut('knowledge', entry);
+    entry.id = id;
+    await logAudit('add_knowledge', submittedBy, {law:entry.lawTitle, article:entry.articleNumber});
+    return entry;
   }
 
-  function logout(){
-    try { localStorage.removeItem(AUTH_KEY); } catch(e){}
+  function calculateConfidence(data){
+    var score = 0;
+    if(data.lawTitle && data.lawTitle.length > 5) score += 25;
+    if(data.articleNumber && /\d+/.test(data.articleNumber)) score += 20;
+    if(data.articleText && data.articleText.length > 30) score += 25;
+    if(data.source) score += 15;
+    if(data.lawYear) score += 5;
+    if(data.section) score += 5;
+    if(data.status === 'active') score += 5;
+    return Math.min(score/100, 1);
   }
 
-  function getCurrentUser(){
-    try {
-      return JSON.parse(localStorage.getItem(AUTH_KEY) || 'null');
-    } catch(e){ return null; }
+  async function updateWorkflow(id, newStage, by, reason){
+    var entry = await dbGet('knowledge', id);
+    if(!entry) return null;
+
+    entry.workflow = newStage;
+    entry.updatedAt = Date.now();
+
+    switch(newStage){
+      case 'review':
+        entry.reviewedBy = by;
+        entry.reviewedAt = Date.now();
+        break;
+      case 'approved':
+        entry.approvedBy = by;
+        entry.approvedAt = Date.now();
+        entry.status = 'approved';
+        break;
+      case 'published':
+        entry.publishedAt = Date.now();
+        entry.status = 'published';
+        break;
+      case 'rejected':
+        entry.status = 'rejected';
+        entry.rejectionReason = reason || '';
+        break;
+    }
+
+    await dbPut('knowledge', entry);
+    await logAudit('workflow_' + newStage, by, {id:id, law:entry.lawTitle, reason:reason});
+    return entry;
   }
 
-  function hasPermission(permission){
-    var user = getCurrentUser();
-    if(!user) return false;
-    return user.permissions && user.permissions.indexOf(permission) !== -1;
+  async function getKnowledgeByStatus(status){
+    var all = await dbGetAll('knowledge');
+    if(!status) return all;
+    return all.filter(function(e){ return e.status === status || e.workflow === status; });
   }
 
-  function requireAuth(){
-    var user = getCurrentUser();
-    if(!user) return false;
-    return true;
+  async function recordKnowledgeUsage(id){
+    var entry = await dbGet('knowledge', id);
+    if(!entry) return;
+    entry.useCount = (entry.useCount||0) + 1;
+    entry.lastUsed = Date.now();
+    await dbPut('knowledge', entry);
   }
 
   /* ===== Audit Log ===== */
-  var AUDIT_KEY = 'advisor_audit';
-
-  function logAudit(action, details){
-    var log = getAuditLog();
-    log.push({
+  async function logAudit(action, user, details){
+    await dbPut('audit', {
       action: action,
+      user: user || 'system',
       details: details || {},
-      user: (getCurrentUser() || {}).username || 'system',
-      ts: Date.now()
+      ts: Date.now(),
+      date: getToday()
     });
-    if(log.length > 1000) log = log.slice(-1000);
-    try { localStorage.setItem(AUDIT_KEY, JSON.stringify(log)); } catch(e){}
   }
 
-  function getAuditLog(){
-    try { return JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]'); } catch(e){ return []; }
+  async function getAuditLog(limit){
+    var all = await dbGetAll('audit');
+    all.sort(function(a,b){return b.ts-a.ts;});
+    return all.slice(0, limit || 100);
+  }
+
+  /* ===== Settings (IndexedDB) ===== */
+  var DEFAULT_SETTINGS = {
+    advisorName: 'المستشار اليمني القانوني',
+    advisorPersonality: 'مستشار قانوني يمني خبير، يجيب بدقة ووضوح',
+    responseStyle: 'detailed',
+    legalConservatism: 'high',
+    detailLevel: 'high',
+    priorityLaws: ['القانون المدني اليمني','قانون الأحوال الشخصية','قانون العقوبات','قانون العمل'],
+    trustedSources: ['yemenilaw.com','yemen-nic.info','moj.gov.ye','cby.ye'],
+    showConfidence: true,
+    showSources: true,
+    enableKnowledgeExpansion: true
+  };
+
+  async function getSettings(){
+    var stored = await dbGet('settings', 'main');
+    return Object.assign({}, DEFAULT_SETTINGS, stored ? stored.value : {});
+  }
+
+  async function saveSettings(settings){
+    await dbPut('settings', {key:'main', value:settings, updatedAt:Date.now()});
+    await logAudit('save_settings', (await getCurrentSession()||{}).username, {});
   }
 
   /* ===== Self-Improvement Analysis ===== */
-  function getImprovementSuggestions(){
-    var analytics = getAnalytics();
+  async function getImprovementSuggestions(){
+    var events = await dbGetAll('analytics');
     var suggestions = [];
-    
-    // 1. Frequent no-result queries
-    var noResultQueries = analytics.events
-      .filter(function(e){ return e.type === 'no_result'; })
-      .map(function(e){ return e.data.query || ''; })
-      .filter(Boolean);
-    
+
+    // No-result queries
     var nrc = {};
-    noResultQueries.forEach(function(q){ nrc[q] = (nrc[q]||0) + 1; });
-    var frequentNoResult = Object.keys(nrc)
-      .sort(function(a,b){ return nrc[b] - nrc[a]; })
-      .slice(0,10)
-      .map(function(q){ return {query: q, count: nrc[q]}; });
-    
-    if(frequentNoResult.length){
-      suggestions.push({
-        type: 'missing_knowledge',
-        title: 'أسئلة متكررة بدون إجابة',
-        description: 'هذه الأسئلة تُطرح كثيراً لكن النظام لا يجد إجابة لها',
-        items: frequentNoResult,
-        action: 'إضافة معرفة قانونية لهذه المواضيع'
-      });
+    events.filter(function(e){return e.type==='no_result';}).forEach(function(e){
+      var q = (e.data.query||'').slice(0,60);
+      if(q) nrc[q] = (nrc[q]||0)+1;
+    });
+    var freq = sortObj(nrc).slice(0,10);
+    if(freq.length){
+      suggestions.push({type:'missing',title:'🔴 أسئلة متكررة بدون إجابة',desc:'هذه الأسئلة تُطرح كثيراً لكن لا توجد إجابة',items:freq,action:'إضافة معرفة قانونية'});
     }
-    
-    // 2. Popular topics that need more content
-    var intentCounts = {};
-    analytics.events.filter(function(e){ return e.data && e.data.intent; })
-      .forEach(function(e){
-        intentCounts[e.data.intent] = (intentCounts[e.data.intent]||0) + 1;
-      });
-    
-    var popularIntents = Object.keys(intentCounts)
-      .sort(function(a,b){ return intentCounts[b] - intentCounts[a]; })
-      .slice(0,5);
-    
-    suggestions.push({
-      type: 'popular_topics',
-      title: 'المواضيع الأكثر طلباً',
-      description: 'هذه المواضيع تحتاج محتوى أكثر',
-      items: popularIntents.map(function(i){ return {topic: i, count: intentCounts[i]}; }),
-      action: 'إضافة مواد قانونية أكثر لهذه المواضيع'
+
+    // Popular intents
+    var ic = {};
+    events.filter(function(e){return e.data&&e.data.intent;}).forEach(function(e){
+      ic[e.data.intent]=(ic[e.data.intent]||0)+1;
     });
-    
-    // 3. New user vocabulary
-    var userWords = {};
-    analytics.events.filter(function(e){ return e.data && e.data.query; })
-      .forEach(function(e){
-        var words = (e.data.query || '').split(/\s+/);
-        words.forEach(function(w){
-          if(w.length > 3) userWords[w] = (userWords[w]||0) + 1;
-        });
+    suggestions.push({type:'popular',title:'📊 المواضيع الأكثر طلباً',desc:'تحتاج محتوى أكثر',items:sortObj(ic).slice(0,8),action:'إضافة مواد قانونية'});
+
+    // New vocabulary
+    var wc = {};
+    events.filter(function(e){return e.data&&e.data.query;}).forEach(function(e){
+      (e.data.query||'').split(/\s+/).forEach(function(w){
+        if(w.length>3) wc[w]=(wc[w]||0)+1;
       });
-    
-    var newWords = Object.keys(userWords)
-      .sort(function(a,b){ return userWords[b] - userWords[a]; })
-      .slice(0,20);
-    
-    suggestions.push({
-      type: 'user_vocabulary',
-      title: 'كلمات يستخدمها المستخدمون',
-      description: 'هذه الكلمات قد تحتاج إضافة كمرادفات في محرك البحث',
-      items: newWords.map(function(w){ return {word: w, count: userWords[w]}; }),
-      action: 'إضافة كمرادفات في محرك البحث'
     });
-    
+    suggestions.push({type:'vocab',title:'💬 كلمات يستخدمها المستخدمون',desc:'قد تحتاج إضافة كمرادفات',items:sortObj(wc).slice(0,20),action:'إضافة مرادفات'});
+
     return suggestions;
+  }
+
+  /* ===== Initialize Default Data ===== */
+  async function initialize(password){
+    await openDB();
+    await initAdmin(password || '777287583');
+    // Init settings if not exists
+    var existing = await dbGet('settings', 'main');
+    if(!existing) await dbPut('settings', {key:'main', value:DEFAULT_SETTINGS, createdAt:Date.now()});
   }
 
   /* ===== Public API ===== */
   global.AdminEngine = {
+    initialize: initialize,
+    // Auth
+    login: login,
+    logout: logout,
+    getCurrentSession: getCurrentSession,
+    requireAuth: requireAuth,
+    hasPermission: hasPermission,
+    // Users
+    getUsers: getUsers,
+    addUser: addUser,
+    updateUser: updateUser,
+    deleteUser: deleteUser,
     // Analytics
     trackEvent: trackEvent,
     trackPageView: trackPageView,
     trackSearch: trackSearch,
     trackAdvisorQuery: trackAdvisorQuery,
     trackNoResult: trackNoResult,
-    getAnalytics: getAnalytics,
     getDashboardData: getDashboardData,
-    trackSession: trackSession,
-    getSessionId: getSessionId,
-    
-    // File Parser
+    // Files
     parseTextFile: parseTextFile,
     parseJSONFile: parseJSONFile,
     detectSection: detectSection,
-    
-    // Settings
-    getSettings: getSettings,
-    saveSettings: saveSettings,
-    defaultSettings: defaultSettings,
-    
-    // Permissions
-    login: login,
-    logout: logout,
-    getCurrentUser: getCurrentUser,
-    hasPermission: hasPermission,
-    requireAuth: requireAuth,
-    getUsers: getUsers,
-    
+    // Knowledge
+    addKnowledgeEntry: addKnowledgeEntry,
+    updateWorkflow: updateWorkflow,
+    getKnowledgeByStatus: getKnowledgeByStatus,
+    recordKnowledgeUsage: recordKnowledgeUsage,
     // Audit
     logAudit: logAudit,
     getAuditLog: getAuditLog,
-    
-    // Self-improvement
-    getImprovementSuggestions: getImprovementSuggestions
+    // Settings
+    getSettings: getSettings,
+    saveSettings: saveSettings,
+    // Improvement
+    getImprovementSuggestions: getImprovementSuggestions,
+    // Constants
+    WORKFLOW_STATES: WORKFLOW_STATES
   };
-
-  // Auto-track pageview
-  if(typeof document !== 'undefined'){
-    if(document.readyState === 'loading'){
-      document.addEventListener('DOMContentLoaded', trackPageView);
-    } else {
-      trackPageView();
-    }
-  }
 
 })(window);

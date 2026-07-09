@@ -8,763 +8,483 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='35' fill='%23d4a843' font-weight='bold'>م.ق</text></svg>">
 <link rel="stylesheet" href="styles.css">
 <style>
-/* ===== Admin Dashboard Styles ===== */
 .admin-app{display:flex;min-height:100vh;background:var(--bg)}
+.admin-sidebar{width:250px;background:var(--navy-950);border-left:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-brand{padding:16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px}
+.sb-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--gold-400),var(--gold-200));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--navy-900);box-shadow:var(--shadow-gold)}
+.sb-text{color:#fff;font-size:15px;font-weight:700}.sb-sub{color:var(--gold-300);font-size:10px}
+.sb-nav{flex:1;padding:8px}
+.sb-section{padding:8px 10px 4px;font-size:10px;font-weight:700;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;transition:all .15s;margin-bottom:2px}
+.sb-item:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.8)}
+.sb-item.active{background:rgba(212,168,67,.1);color:var(--gold-300);font-weight:600}
+.sb-item .ic{font-size:16px;width:20px;text-align:center}
+.sb-badge{margin-right:auto;background:var(--red-500);color:#fff;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700}
+.sb-footer{padding:12px;border-top:1px solid rgba(255,255,255,.06)}
+.sb-user{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;background:rgba(255,255,255,.03);margin-bottom:8px}
+.sb-user-av{width:32px;height:32px;border-radius:8px;background:var(--navy-700);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--gold-300)}
+.sb-user-name{color:#fff;font-size:12px;font-weight:600}.sb-user-role{color:rgba(255,255,255,.4);font-size:10px}
+.sb-logout{width:100%;padding:8px;border-radius:8px;background:rgba(255,255,255,.05);border:none;color:rgba(255,255,255,.4);font-size:12px;cursor:pointer;font-family:inherit}
 
-/* Sidebar */
-.admin-sidebar{width:240px;background:var(--navy-950);border-left:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh}
-.sidebar-brand{padding:16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px}
-.sidebar-brand-icon{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--gold-400),var(--gold-200));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--navy-900)}
-.sidebar-brand-text{color:#fff;font-size:14px;font-weight:700}
-.sidebar-brand-sub{color:var(--gold-300);font-size:10px}
-.sidebar-nav{flex:1;padding:8px;overflow-y:auto}
-.sidebar-section{padding:8px 8px 4px;font-size:10px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1px}
-.sidebar-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;transition:all .15s;margin-bottom:2px}
-.sidebar-item:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.8)}
-.sidebar-item.active{background:rgba(212,168,67,.1);color:var(--gold-300)}
-.sidebar-item .item-icon{font-size:16px;width:20px;text-align:center}
-.sidebar-item .item-badge{margin-right:auto;background:var(--red-500);color:#fff;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700}
-.sidebar-footer{padding:12px;border-top:1px solid rgba(255,255,255,.06)}
-.sidebar-user{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;background:rgba(255,255,255,.03)}
-.sidebar-user-avatar{width:32px;height:32px;border-radius:8px;background:var(--navy-700);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--gold-300)}
-.sidebar-user-info{flex:1}
-.sidebar-user-name{color:#fff;font-size:12px;font-weight:600}
-.sidebar-user-role{color:rgba(255,255,255,.4);font-size:10px}
-
-/* Main Content */
 .admin-main{flex:1;display:flex;flex-direction:column;min-width:0}
-.admin-topbar{padding:16px 24px;background:var(--surface);border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.admin-topbar h1{font-size:1.2rem;font-weight:700}
-.admin-topbar-actions{display:flex;gap:8px}
+.admin-topbar{padding:14px 24px;background:var(--surface);border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between}
+.admin-topbar h1{font-size:1.1rem;font-weight:700}
 .admin-content{flex:1;padding:24px;overflow-y:auto}
 
 /* Dashboard Cards */
-.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:24px}
-.dash-card{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:16px;transition:all .15s}
-.dash-card:hover{box-shadow:var(--shadow-sm)}
-.dash-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.dash-card-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
-.dash-card-icon.blue{background:var(--blue-100);color:var(--blue-600)}
-.dash-card-icon.gold{background:var(--gold-100);color:var(--gold-600)}
-.dash-card-icon.green{background:var(--green-100);color:var(--green-600)}
-.dash-card-icon.red{background:var(--red-100);color:var(--red-600)}
-.dash-card-icon.navy{background:var(--navy-100);color:var(--navy-600)}
-.dash-card-value{font-size:1.8rem;font-weight:800;color:var(--text-primary);line-height:1}
-.dash-card-label{font-size:12px;color:var(--text-tertiary);margin-top:4px}
-.dash-card-change{font-size:11px;margin-top:4px}
-.dash-card-change.up{color:var(--green-600)}
-.dash-card-change.down{color:var(--red-600)}
+.dg{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin-bottom:24px}
+.dc{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:16px;transition:all .15s}
+.dc:hover{box-shadow:var(--shadow-sm)}
+.dc-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.dc-ic{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.dc-ic.b{background:var(--blue-100);color:var(--blue-600)}.dc-ic.g{background:var(--gold-100);color:var(--gold-600)}
+.dc-ic.gr{background:var(--green-100);color:var(--green-600)}.dc-ic.r{background:var(--red-100);color:var(--red-600)}
+.dc-ic.n{background:var(--navy-100);color:var(--navy-600)}
+.dc-val{font-size:1.8rem;font-weight:800;line-height:1}
+.dc-lbl{font-size:11px;color:var(--text-tertiary);margin-top:4px}
 
-/* Chart placeholder */
-.chart-container{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:20px;margin-bottom:24px}
-.chart-title{font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
-.chart-bars{display:flex;align-items:flex-end;gap:8px;height:120px;padding-top:8px}
-.chart-bar{flex:1;background:linear-gradient(to top,var(--blue-500),var(--blue-400));border-radius:4px 4px 0 0;min-height:4px;transition:height .3s;position:relative}
-.chart-bar:hover{opacity:.8}
-.chart-bar-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--text-tertiary);white-space:nowrap}
-.chart-bar-value{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:var(--text-secondary)}
+/* Chart */
+.ch{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:20px;margin-bottom:20px}
+.ch-title{font-size:13px;font-weight:700;margin-bottom:14px}
+.ch-bars{display:flex;align-items:flex-end;gap:6px;height:100px}
+.ch-bar{flex:1;border-radius:4px 4px 0 0;min-height:4px;transition:height .3s;position:relative;cursor:pointer}
+.ch-bar:hover{opacity:.8}
+.ch-bar-l{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--text-tertiary);white-space:nowrap}
+.ch-bar-v{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;color:var(--text-secondary);display:none}
+.ch-bar:hover .ch-bar-v{display:block}
 
-/* Data Table */
-.data-table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border-light);border-radius:12px;overflow:hidden;margin-bottom:24px}
-.data-table th{background:var(--bg);padding:10px 14px;font-size:12px;font-weight:700;color:var(--text-tertiary);text-align:right;border-bottom:1px solid var(--border-light)}
-.data-table td{padding:10px 14px;font-size:13px;border-bottom:1px solid var(--border-light)}
-.data-table tr:last-child td{border-bottom:none}
-.data-table tr:hover td{background:var(--bg)}
+/* Table */
+.dt{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border-light);border-radius:12px;overflow:hidden;margin-bottom:20px;font-size:13px}
+.dt th{background:var(--bg);padding:10px 14px;font-size:11px;font-weight:700;color:var(--text-tertiary);text-align:right;border-bottom:1px solid var(--border-light)}
+.dt td{padding:10px 14px;border-bottom:1px solid var(--border-light)}
+.dt tr:last-child td{border-bottom:none}.dt tr:hover td{background:var(--bg)}
 
-/* Knowledge Cards */
-.k-card{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:16px;margin-bottom:12px}
-.k-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
-.k-card-title{font-size:15px;font-weight:700;flex:1}
-.k-card-badges{display:flex;gap:6px}
-.k-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.k-badge.high{background:var(--green-100);color:var(--green-600)}
-.k-badge.medium{background:var(--amber-100);color:#92400e}
-.k-badge.low{background:var(--red-100);color:var(--red-600)}
-.k-badge.pending{background:var(--blue-100);color:var(--blue-600)}
-.k-badge.approved{background:var(--green-100);color:var(--green-600)}
-.k-card-body{margin-bottom:12px}
-.k-field{margin-bottom:6px}
-.k-label{font-size:11px;font-weight:700;color:var(--text-tertiary)}
-.k-value{font-size:13px;color:var(--text-primary)}
-.k-actions{display:flex;gap:8px;flex-wrap:wrap}
-.k-btn{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
-.k-btn.approve{background:var(--green-500);color:#fff}
-.k-btn.approve:hover{background:var(--green-600)}
-.k-btn.reject{background:var(--red-500);color:#fff}
-.k-btn.reject:hover{background:var(--red-600)}
-.k-btn.edit{background:var(--blue-500);color:#fff}
-.k-btn.primary{background:var(--gold-400);color:var(--navy-900)}
+/* Knowledge Card */
+.kc{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:16px;margin-bottom:12px}
+.kc-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.kc-t{font-size:14px;font-weight:700;flex:1}
+.kc-bdg{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700}
+.kc-bdg.draft{background:var(--blue-100);color:var(--blue-600)}
+.kc-bdg.review{background:var(--amber-100);color:#92400e}
+.kc-bdg.approved{background:var(--green-100);color:var(--green-600)}
+.kc-bdg.published{background:var(--navy-100);color:var(--navy-600)}
+.kc-bdg.rejected{background:var(--red-100);color:var(--red-600)}
+.kc-body{margin-bottom:10px}
+.kc-f{margin-bottom:5px}.kc-l{font-size:10px;font-weight:700;color:var(--text-tertiary)}.kc-v{font-size:12px}
+.kc-act{display:flex;gap:6px;flex-wrap:wrap}
+.kb{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.kb.approve{background:var(--green-500);color:#fff}.kb.approve:hover{background:var(--green-600)}
+.kb.reject{background:var(--red-500);color:#fff}.kb.reject:hover{background:var(--red-600)}
+.kb.review{background:var(--amber-500);color:#fff}.kb.primary{background:var(--gold-400);color:var(--navy-900)}
+.kb.edit{background:var(--blue-500);color:#fff}
 
 /* Forms */
-.form-group{margin-bottom:16px}
-.form-label{display:block;font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:6px}
-.form-input{width:100%;padding:10px 14px;border:1px solid var(--border-light);border-radius:8px;font-size:14px;font-family:inherit;transition:all .15s}
-.form-input:focus{border-color:var(--blue-500);outline:none;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
-.form-textarea{min-height:100px;resize:vertical}
-.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 12px center}
+.fg{margin-bottom:14px}.fl{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:5px}
+.fi{width:100%;padding:10px 12px;border:1px solid var(--border-light);border-radius:8px;font-size:13px;font-family:inherit;transition:all .15s}
+.fi:focus{border-color:var(--blue-500);outline:none;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.fa{min-height:80px;resize:vertical}
 
 /* Login */
 .login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg)}
 .login-card{background:var(--surface);border:1px solid var(--border-light);border-radius:16px;padding:32px;width:100%;max-width:380px;box-shadow:var(--shadow-lg)}
 .login-logo{text-align:center;margin-bottom:24px}
-.login-logo-icon{width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,var(--gold-400),var(--gold-200));display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:var(--navy-900);margin:0 auto 12px;box-shadow:var(--shadow-gold)}
-.login-logo h2{font-size:1.2rem;font-weight:700}
-.login-logo p{font-size:13px;color:var(--text-tertiary)}
-.login-error{background:var(--red-100);color:var(--red-600);padding:10px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none}
+.login-icon{width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,var(--gold-400),var(--gold-200));display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:var(--navy-900);margin:0 auto 12px;box-shadow:var(--shadow-gold)}
+.login-err{background:var(--red-100);color:var(--red-600);padding:10px;border-radius:8px;font-size:13px;margin-bottom:12px;display:none}
 
-/* File Upload */
-.upload-zone{border:2px dashed var(--border-light);border-radius:12px;padding:40px;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:16px}
+/* Upload */
+.upload-zone{border:2px dashed var(--border-light);border-radius:12px;padding:36px;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:16px}
 .upload-zone:hover{border-color:var(--gold-400);background:rgba(212,168,67,.03)}
-.upload-zone.dragover{border-color:var(--gold-400);background:rgba(212,168,67,.06)}
-.upload-icon{font-size:36px;margin-bottom:12px}
-.upload-text{font-size:14px;color:var(--text-secondary)}
-.upload-hint{font-size:12px;color:var(--text-tertiary);margin-top:4px}
+.upload-zone.drag{border-color:var(--gold-400);background:rgba(212,168,67,.06)}
 
-/* Preview */
-.preview-card{background:var(--bg);border:1px solid var(--border-light);border-radius:12px;padding:16px;margin-top:16px}
-.preview-title{font-size:14px;font-weight:700;margin-bottom:12px}
-.preview-stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px}
-.preview-stat{font-size:12px;color:var(--text-secondary)}
-.preview-stat strong{color:var(--text-primary)}
-.preview-articles{max-height:300px;overflow-y:auto}
-.preview-article{padding:8px;border-bottom:1px solid var(--border-light);font-size:12px}
-.preview-article:last-child{border-bottom:none}
+/* Suggestion */
+.sg{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:16px;margin-bottom:12px}
+.sg-t{font-size:14px;font-weight:700;margin-bottom:6px}.sg-d{font-size:12px;color:var(--text-secondary);margin-bottom:10px}
+.sg-items{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.sg-it{padding:3px 10px;background:var(--bg);border:1px solid var(--border-light);border-radius:20px;font-size:11px}
+.sg-act{font-size:12px;color:var(--blue-500);font-weight:600}
 
-/* Suggestions */
-.suggestion-card{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:16px;margin-bottom:12px}
-.suggestion-title{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-.suggestion-desc{font-size:13px;color:var(--text-secondary);margin-bottom:12px}
-.suggestion-items{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-.suggestion-item{padding:4px 12px;background:var(--bg);border:1px solid var(--border-light);border-radius:20px;font-size:12px;color:var(--text-secondary)}
-.suggestion-action{font-size:12px;color:var(--blue-500);font-weight:600}
+.cf{height:5px;border-radius:3px;background:var(--border-light);overflow:hidden;margin-top:4px}
+.cf-f{height:100%;border-radius:3px}.cf-f.hi{background:var(--green-500)}.cf-f.md{background:var(--amber-500)}.cf-f.lo{background:var(--red-500)}
 
-/* Confidence bar */
-.conf-bar{height:6px;border-radius:3px;background:var(--border-light);overflow:hidden;margin-top:4px}
-.conf-fill{height:100%;border-radius:3px;transition:width .3s}
-.conf-fill.high{background:var(--green-500)}
-.conf-fill.medium{background:var(--amber-500)}
-.conf-fill.low{background:var(--red-500)}
-
-/* Responsive */
 @media(max-width:900px){
-  .admin-sidebar{display:none}
-  .admin-sidebar.open{display:flex;position:fixed;inset:0;z-index:100}
-  .admin-content{padding:16px}
-  .dash-grid{grid-template-columns:1fr 1fr}
+  .admin-sidebar{display:none}.admin-sidebar.open{display:flex;position:fixed;inset:0;z-index:100}
+  .admin-content{padding:16px}.dg{grid-template-columns:1fr 1fr}
 }
-@media(max-width:480px){
-  .dash-grid{grid-template-columns:1fr}
-  .admin-topbar{padding:12px 16px}
-}
+@media(max-width:480px){.dg{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- Login Page -->
+<!-- Login -->
 <div id="loginPage" class="login-page">
   <div class="login-card">
     <div class="login-logo">
-      <div class="login-logo-icon">م.ق</div>
-      <h2>لوحة الإدارة</h2>
-      <p>المستشار اليمني القانوني</p>
+      <div class="login-icon">م.ق</div>
+      <h2 style="font-size:1.2rem;font-weight:700">لوحة الإدارة</h2>
+      <p style="font-size:13px;color:var(--text-tertiary)">المستشار اليمني القانوني</p>
     </div>
-    <div class="login-error" id="loginError">اسم المستخدم أو كلمة المرور غير صحيحة</div>
-    <div class="form-group">
-      <label class="form-label">اسم المستخدم</label>
-      <input type="text" id="loginUser" class="form-input" placeholder="admin" autocomplete="username">
-    </div>
-    <div class="form-group">
-      <label class="form-label">كلمة المرور</label>
-      <input type="password" id="loginPass" class="form-input" placeholder="••••••" autocomplete="current-password">
-    </div>
-    <button class="k-btn primary" style="width:100%;padding:12px;font-size:15px" onclick="doLogin()">تسجيل الدخول</button>
-    <p style="text-align:center;margin-top:12px;font-size:11px;color:var(--text-tertiary)">المستخدم الافتراضي: admin / admin123</p>
+    <div class="login-err" id="loginErr">بيانات الدخول غير صحيحة</div>
+    <div class="fg"><label class="fl">اسم المستخدم</label><input type="text" id=" loginUser" class="fi" placeholder="admin" autocomplete="username"></div>
+    <div class="fg"><label class="fl">كلمة المرور</label><input type="password" id="loginPass" class="fi" placeholder="••••••" autocomplete="current-password"></div>
+    <button class="kb primary" style="width:100%;padding:12px;font-size:15px" onclick="doLogin()">تسجيل الدخول</button>
+    <p style="text-align:center;margin-top:12px;font-size:10px;color:var(--text-tertiary)"> محمي بتشفير SHA-256</p>
   </div>
 </div>
 
-<!-- Admin Dashboard -->
+<!-- Dashboard -->
 <div id="adminApp" class="admin-app" style="display:none">
-  <!-- Sidebar -->
-  <aside class="admin-sidebar" id="adminSidebar">
-    <div class="sidebar-brand">
-      <div class="sidebar-brand-icon">م.ق</div>
-      <div><div class="sidebar-brand-text">لوحة الإدارة</div><div class="sidebar-brand-sub">المستشار اليمني القانوني</div></div>
-    </div>
-    <nav class="sidebar-nav">
-      <div class="sidebar-section">عام</div>
-      <div class="sidebar-item active" onclick="showSection('dashboard')"><span class="item-icon">📊</span>لوحة التحكم</div>
-      <div class="sidebar-item" onclick="showSection('analytics')"><span class="item-icon">📈</span>الإحصائيات</div>
-      
-      <div class="sidebar-section">المعرفة</div>
-      <div class="sidebar-item" onclick="showSection('knowledge')"><span class="item-icon">📚</span>قاعدة المعرفة<span class="item-badge" id="pendingBadge">0</span></div>
-      <div class="sidebar-item" onclick="showSection('upload')"><span class="item-icon">📤</span>رفع ملفات</div>
-      <div class="sidebar-item" onclick="showSection('improvement')"><span class="item-icon">🧠</span>فرص التحسين</div>
-      
-      <div class="sidebar-section">الإعدادات</div>
-      <div class="sidebar-item" onclick="showSection('ai-settings')"><span class="item-icon">⚙️</span>إعدادات المستشار</div>
-      <div class="sidebar-item" onclick="showSection('audit')"><span class="item-icon">📋</span>سجل العمليات</div>
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="sb-brand"><div class="sb-icon">م.ق</div><div><div class="sb-text">لوحة الإدارة</div><div class="sb-sub">المستشار اليمني القانوني</div></div></div>
+    <nav class="sb-nav">
+      <div class="sb-section">عام</div>
+      <div class="sb-item active" onclick="nav('dashboard')"><span class="ic">📊</span>لوحة التحكم</div>
+      <div class="sb-item" onclick="nav('analytics')"><span class="ic">📈</span>الإحصائيات</div>
+      <div class="sb-section">المعرفة</div>
+      <div class="sb-item" onclick="nav('knowledge')"><span class="ic">📚</span>قاعدة المعرفة<span class="sb-badge" id="pendingBadge"></span></div>
+      <div class="sb-item" onclick="nav('upload')"><span class="ic">📤</span>رفع ملفات</div>
+      <div class="sb-item" onclick="nav('workflow')"><span class="ic">🔄</span>دورة الاعتماد</div>
+      <div class="sb-item" onclick="nav('improve')"><span class="ic">🧠</span>فرص التحسين</div>
+      <div class="sb-section">النظام</div>
+      <div class="sb-item" onclick="nav('settings')"><span class="ic">⚙️</span>إعدادات المستشار</div>
+      <div class="sb-item" onclick="nav('users')"><span class="ic">👥</span>المستخدمون</div>
+      <div class="sb-item" onclick="nav('audit')"><span class="ic">📋</span>سجل العمليات</div>
     </nav>
-    <div class="sidebar-footer">
-      <div class="sidebar-user">
-        <div class="sidebar-user-avatar">👤</div>
-        <div class="sidebar-user-info">
-          <div class="sidebar-user-name" id="userName">المدير</div>
-          <div class="sidebar-user-role" id="userRole">admin</div>
-        </div>
-      </div>
-      <button class="k-btn" style="width:100%;margin-top:8px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.5)" onclick="doLogout()">تسجيل الخروج</button>
+    <div class="sb-footer">
+      <div class="sb-user"><div class="sb-user-av">👤</div><div><div class="sb-user-name" id="uName">المدير</div><div class="sb-user-role" id="uRole">admin</div></div></div>
+      <button class="sb-logout" onclick="doLogout()">تسجيل الخروج</button>
     </div>
   </aside>
 
-  <!-- Main -->
   <div class="admin-main">
     <div class="admin-topbar">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button onclick="document.getElementById('adminSidebar').classList.toggle('open')" style="display:none;background:none;border:none;font-size:20px;cursor:pointer" id="menuBtn">☰</button>
-        <h1 id="sectionTitle">لوحة التحكم</h1>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button onclick="document.getElementById('sidebar').classList.toggle('open')" style="display:none;background:none;border:none;font-size:20px;cursor:pointer" id="menuBtn">☰</button>
+        <h1 id="secTitle">لوحة التحكم</h1>
       </div>
-      <div class="admin-topbar-actions">
-        <a href="advisor.html" class="k-btn" style="background:var(--bg);border:1px solid var(--border-light);color:var(--text-secondary);font-size:12px">🤖 المستشار</a>
-        <a href="index.html" class="k-btn" style="background:var(--bg);border:1px solid var(--border-light);color:var(--text-secondary);font-size:12px">🏠 الرئيسية</a>
-      </div>
-    </div>
-
-    <div class="admin-content" id="adminContent">
-      <!-- Dashboard Section -->
-      <div id="sec-dashboard">
-        <div class="dash-grid" id="dashCards"></div>
-        <div class="chart-container">
-          <div class="chart-title"><span>الزيارات خلال 7 أيام</span></div>
-          <div class="chart-bars" id="visitChart"></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-          <div>
-            <h3 style="font-size:14px;font-weight:700;margin-bottom:12px">أكثر الأسئلة بحثاً</h3>
-            <table class="data-table" id="topSearchesTable"><tr><th>السؤال</th><th>العدد</th></tr></table>
-          </div>
-          <div>
-            <h3 style="font-size:14px;font-weight:700;margin-bottom:12px">الأسئلة بدون إجابة</h3>
-            <table class="data-table" id="noResultTable"><tr><th>السؤال</th></tr></table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Analytics Section -->
-      <div id="sec-analytics" style="display:none">
-        <div class="dash-grid" id="analyticsCards"></div>
-        <div class="chart-container">
-          <div class="chart-title"><span>الاستشارات خلال 7 أيام</span></div>
-          <div class="chart-bars" id="queryChart"></div>
-        </div>
-        <h3 style="font-size:14px;font-weight:700;margin:16px 0 12px">توزيع النوايا</h3>
-        <table class="data-table" id="intentTable"><tr><th>النوع</th><th>العدد</th><th>النسبة</th></tr></table>
-      </div>
-
-      <!-- Knowledge Section -->
-      <div id="sec-knowledge" style="display:none">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-          <h2 style="font-size:16px;font-weight:700">قاعدة المعرفة القانونية</h2>
-          <div style="display:flex;gap:8px">
-            <button class="k-btn approve" onclick="loadKnowledgeList('approved')">✅ المعتمدة</button>
-            <button class="k-btn" style="background:var(--blue-500);color:#fff" onclick="loadKnowledgeList('pending')">⏳ قيد المراجعة</button>
-          </div>
-        </div>
-        <div id="knowledgeList"></div>
-      </div>
-
-      <!-- Upload Section -->
-      <div id="sec-upload" style="display:none">
-        <h2 style="font-size:16px;font-weight:700;margin-bottom:16px">رفع ملفات قانونية</h2>
-        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
-          <div class="upload-icon">📁</div>
-          <div class="upload-text">اسحب الملف هنا أو اضغط لاختياره</div>
-          <div class="upload-hint">يدعم: TXT, JSON, CSV, PDF (نص), Word (نص)</div>
-        </div>
-        <input type="file" id="fileInput" style="display:none" accept=".txt,.json,.csv,.pdf,.doc,.docx" onchange="handleFileSelect(event)">
-        <div id="filePreview"></div>
-        <div id="fileActions" style="display:none;margin-top:16px">
-          <button class="k-btn approve" onclick="commitFileData()">✅ اعتماد وإضافة</button>
-          <button class="k-btn reject" onclick="clearFileUpload()">❌ إلغاء</button>
-        </div>
-      </div>
-
-      <!-- Improvement Section -->
-      <div id="sec-improvement" style="display:none">
-        <h2 style="font-size:16px;font-weight:700;margin-bottom:16px">فرص تحسين الذكاء</h2>
-        <div id="improvementList"></div>
-      </div>
-
-      <!-- AI Settings Section -->
-      <div id="sec-ai-settings" style="display:none">
-        <h2 style="font-size:16px;font-weight:700;margin-bottom:16px">إعدادات المستشار القانوني</h2>
-        <div style="max-width:600px">
-          <div class="form-group">
-            <label class="form-label">اسم المستشار</label>
-            <input type="text" id="setAdvisorName" class="form-input">
-          </div>
-          <div class="form-group">
-            <label class="form-label">شخصية المستشار</label>
-            <textarea id="setPersonality" class="form-input form-textarea"></textarea>
-          </div>
-          <div class="form-group">
-            <label class="form-label">أسلوب الإجابة</label>
-            <select id="setStyle" class="form-input form-select">
-              <option value="detailed">مفصل</option>
-              <option value="concise">مختصر</option>
-              <option value="balanced">متوازن</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">مستوى التحفظ القانوني</label>
-            <select id="setConservatism" class="form-input form-select">
-              <option value="high">محفظ (آمن)</option>
-              <option value="medium">متوسط</option>
-              <option value="low">متساهل</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">مستوى التفصيل</label>
-            <select id="setDetail" class="form-input form-select">
-              <option value="high">عالي</option>
-              <option value="medium">متوسط</option>
-              <option value="low">منخفض</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">القوانين ذات الأولوية (سطر لكل قانون)</label>
-            <textarea id="setPriorityLaws" class="form-input form-textarea" placeholder="القانون المدني اليمني&#10;قانون الأحوال الشخصية"></textarea>
-          </div>
-          <div class="form-group">
-            <label class="form-label">المصادر الموثوقة (سطر لكل مصدر)</label>
-            <textarea id="setTrustedSources" class="form-input form-textarea" placeholder="yemenilaw.com&#10;moj.gov.ye"></textarea>
-          </div>
-          <div class="form-group">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-              <input type="checkbox" id="setShowConfidence">
-              <span class="form-label" style="margin:0">عرض درجة الثقة في الإجابات</span>
-            </label>
-          </div>
-          <div class="form-group">
-            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-              <input type="checkbox" id="setShowSources">
-              <span class="form-label" style="margin:0">عرض المصادر في الإجابات</span>
-            </label>
-          </div>
-          <button class="k-btn primary" onclick="saveAISettings()">💾 حفظ الإعدادات</button>
-        </div>
-      </div>
-
-      <!-- Audit Section -->
-      <div id="sec-audit" style="display:none">
-        <h2 style="font-size:16px;font-weight:700;margin-bottom:16px">سجل العمليات</h2>
-        <table class="data-table" id="auditTable">
-          <tr><th>الوقت</th><th>المستخدم</th><th>العملية</th><th>التفاصيل</th></tr>
-        </table>
+      <div style="display:flex;gap:8px">
+        <a href="advisor.html" class="kb" style="background:var(--bg);border:1px solid var(--border-light);color:var(--text-secondary);font-size:12px">🤖 المستشار</a>
+        <a href="index.html" class="kb" style="background:var(--bg);border:1px solid var(--border-light);color:var(--text-secondary);font-size:12px">🏠 الرئيسية</a>
       </div>
     </div>
+    <div class="admin-content" id="content"></div>
   </div>
 </div>
 
 <script src="admin-engine.js"></script>
-<script src="knowledge-manager.js"></script>
 <script>
+var cur = 'dashboard';
+
 /* ===== Auth ===== */
-function doLogin(){
-  var user = document.getElementById('loginUser').value;
-  var pass = document.getElementById('loginPass').value;
-  var session = AdminEngine.login(user, pass);
-  if(session){
-    document.getElementById('loginPage').style.display = 'none';
-    document.getElementById('adminApp').style.display = 'flex';
-    document.getElementById('userName').textContent = session.name;
-    document.getElementById('userRole').textContent = session.role;
-    initDashboard();
-  } else {
-    document.getElementById('loginError').style.display = 'block';
-  }
+async function doLogin(){
+  var u = document.getElementById('loginUser').value.trim();
+  var p = document.getElementById('loginPass').value;
+  if(!u||!p){ document.getElementById('loginErr').style.display='block'; return; }
+  try {
+    var s = await AdminEngine.login(u, p);
+    if(s){
+      document.getElementById('loginPage').style.display='none';
+      document.getElementById('adminApp').style.display='flex';
+      document.getElementById('uName').textContent=s.name;
+      document.getElementById('uRole').textContent=s.role;
+      nav('dashboard');
+      if(window.innerWidth<=900) document.getElementById('menuBtn').style.display='block';
+    } else {
+      document.getElementById('loginErr').style.display='block';
+    }
+  } catch(e){ document.getElementById('loginErr').style.display='block'; }
 }
-
-function doLogout(){
-  AdminEngine.logout();
-  location.reload();
-}
-
-function checkAuth(){
-  if(AdminEngine.requireAuth()){
-    document.getElementById('loginPage').style.display = 'none';
-    document.getElementById('adminApp').style.display = 'flex';
-    var user = AdminEngine.getCurrentUser();
-    document.getElementById('userName').textContent = user.name;
-    document.getElementById('userRole').textContent = user.role;
-    initDashboard();
+async function doLogout(){ await AdminEngine.logout(); location.reload(); }
+async function checkAuth(){
+  await AdminEngine.initialize('777287583');
+  var s = await AdminEngine.getCurrentSession();
+  if(s){
+    document.getElementById('loginPage').style.display='none';
+    document.getElementById('adminApp').style.display='flex';
+    document.getElementById('uName').textContent=s.name;
+    document.getElementById('uRole').textContent=s.role;
+    nav('dashboard');
   }
 }
 
 /* ===== Navigation ===== */
-var currentSection = 'dashboard';
-
-function showSection(section){
-  currentSection = section;
-  // Hide all sections
-  document.querySelectorAll('[id^="sec-"]').forEach(function(el){ el.style.display = 'none'; });
-  // Show target
-  var el = document.getElementById('sec-' + section);
-  if(el) el.style.display = 'block';
-  // Update sidebar
-  document.querySelectorAll('.sidebar-item').forEach(function(item){ item.classList.remove('active'); });
-  event.target.closest('.sidebar-item').classList.add('active');
-  // Update title
-  var titles = {
-    'dashboard':'لوحة التحكم','analytics':'الإحصائيات','knowledge':'قاعدة المعرفة',
-    'upload':'رفع ملفات','improvement':'فرص التحسين','ai-settings':'إعدادات المستشار','audit':'سجل العمليات'
-  };
-  document.getElementById('sectionTitle').textContent = titles[section] || section;
-  // Load section data
-  if(section === 'dashboard') loadDashboard();
-  if(section === 'analytics') loadAnalytics();
-  if(section === 'knowledge') loadKnowledgeList('pending');
-  if(section === 'improvement') loadImprovements();
-  if(section === 'ai-settings') loadAISettings();
-  if(section === 'audit') loadAuditLog();
-}
-
-/* ===== Dashboard ===== */
-function initDashboard(){
-  loadDashboard();
-  loadPendingBadge();
-  // Responsive menu
-  if(window.innerWidth <= 900) document.getElementById('menuBtn').style.display = 'block';
-}
-
-function loadDashboard(){
-  var data = AdminEngine.getDashboardData();
-  
-  document.getElementById('dashCards').innerHTML = [
-    dashCard('📊','blue',data.todayPageviews,'زيارات اليوم',''),
-    dashCard('🔍','gold',data.todaySearches,'بحث اليوم',''),
-    dashCard('🤖','green',data.todayQueries,'استشارات اليوم',''),
-    dashCard('📈','navy',data.weekPageviews,'زيارات الأسبوع',''),
-    dashCard('✅','green',data.successRate+'%','نسبة نجاح البحث',''),
-    dashCard('❌','red',data.totalNoResults,'أسئلة بدون إجابة',''),
-  ].join('');
-  
-  // Chart
-  renderChart('visitChart', data.dailyChart, 'pageviews');
-  
-  // Top searches
-  var searchHtml = '<tr><th>السؤال</th><th>العدد</th></tr>';
-  data.topSearches.forEach(function(s){
-    searchHtml += '<tr><td>'+esc(s.query)+'</td><td>'+s.count+'</td></tr>';
-  });
-  document.getElementById('topSearchesTable').innerHTML = searchHtml;
-  
-  // No results
-  var noResultHtml = '<tr><th>السؤال</th></tr>';
-  data.noResultQueries.slice(0,10).forEach(function(q){
-    noResultHtml += '<tr><td>'+esc(q)+'</td></tr>';
-  });
-  document.getElementById('noResultTable').innerHTML = noResultHtml;
-}
-
-function dashCard(icon,color,value,label,change){
-  return '<div class="dash-card"><div class="dash-card-header"><div class="dash-card-icon '+color+'">'+icon+'</div></div><div class="dash-card-value">'+value+'</div><div class="dash-card-label">'+label+'</div>'+(change?'<div class="dash-card-change">'+change+'</div>':'')+'</div>';
-}
-
-function renderChart(containerId,data,key){
-  var el = document.getElementById(containerId);
-  if(!data||!data.length){el.innerHTML='<div style="text-align:center;color:var(--text-tertiary);padding:40px">لا توجد بيانات</div>';return;}
-  var max = Math.max.apply(null,data.map(function(d){return d[key]||0;}))||1;
-  var html = '';
-  data.forEach(function(d){
-    var val = d[key]||0;
-    var h = Math.max(4, val/max*100);
-    var day = d.date.slice(5);
-    html += '<div class="chart-bar" style="height:'+h+'%"><span class="chart-bar-value">'+val+'</span><span class="chart-bar-label">'+day+'</span></div>';
-  });
-  el.innerHTML = html;
-}
-
-/* ===== Analytics ===== */
-function loadAnalytics(){
-  var data = AdminEngine.getDashboardData();
-  
-  document.getElementById('analyticsCards').innerHTML = [
-    dashCard('📊','blue',data.totalPageviews,'إجمالي الزيارات',''),
-    dashCard('🔍','gold',data.totalSearches,'إجمالي البحث',''),
-    dashCard('🤖','green',data.totalQueries,'إجمالي الاستشارات',''),
-    dashCard('📈','navy',data.monthPageviews,'زيارات الشهر',''),
-    dashCard('✅','green',data.successRate+'%','نسبة النجاح',''),
-    dashCard('⚠️','red',data.noResultRate+'%','نسبة عدم الإجابة',''),
-  ].join('');
-  
-  renderChart('queryChart', data.dailyChart, 'queries');
-  
-  // Intent table
-  var intentHtml = '<tr><th>النوع</th><th>العدد</th><th>النسبة</th></tr>';
-  var total = data.topIntents.reduce(function(s,i){return s+i.count;},0)||1;
-  data.topIntents.forEach(function(i){
-    var pct = Math.round(i.count/total*100);
-    intentHtml += '<tr><td>'+esc(i.intent)+'</td><td>'+i.count+'</td><td>'+pct+'%</td></tr>';
-  });
-  document.getElementById('intentTable').innerHTML = intentHtml;
-}
-
-/* ===== Knowledge ===== */
-async function loadKnowledgeList(type){
-  var items;
-  if(type === 'pending'){
-    items = await KnowledgeManager.getPendingItems();
-  } else {
-    items = await KnowledgeManager.getApprovedItems();
+async function nav(section){
+  cur=section;
+  document.querySelectorAll('.sb-item').forEach(function(i){i.classList.remove('active');});
+  if(event&&event.target) event.target.closest('.sb-item').classList.add('active');
+  var titles={dashboard:'لوحة التحكم',analytics:'الإحصائيات',knowledge:'قاعدة المعرفة',upload:'رفع ملفات',workflow:'دورة الاعتماد',improve:'فرص التحسين',settings:'إعدادات المستشار',users:'المستخدمون',audit:'سجل العمليات'};
+  document.getElementById('secTitle').textContent=titles[section]||section;
+  var c=document.getElementById('content');
+  switch(section){
+    case 'dashboard': await renderDashboard(c); break;
+    case 'analytics': await renderAnalytics(c); break;
+    case 'knowledge': await renderKnowledge(c); break;
+    case 'upload': renderUpload(c); break;
+    case 'workflow': await renderWorkflow(c); break;
+    case 'improve': await renderImprove(c); break;
+    case 'settings': await renderSettings(c); break;
+    case 'users': await renderUsers(c); break;
+    case 'audit': await renderAudit(c); break;
   }
-  
-  var el = document.getElementById('knowledgeList');
-  if(!items.length){
-    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-tertiary)">لا توجد عناصر</div>';
-    return;
-  }
-  
-  el.innerHTML = items.map(function(item){
-    var confClass = item.confidence >= 0.8 ? 'high' : item.confidence >= 0.5 ? 'medium' : 'low';
-    var html = '<div class="k-card">';
-    html += '<div class="k-card-header"><div class="k-card-title">'+esc(item.lawTitle||'معرفة قانونية')+'</div>';
-    html += '<div class="k-card-badges"><span class="k-badge '+confClass+'">ثقة: '+Math.round((item.confidence||0)*100)+'%</span></div></div>';
-    html += '<div class="k-card-body">';
-    if(item.articleNumber) html += '<div class="k-field"><div class="k-label">رقم المادة</div><div class="k-value">'+esc(item.articleNumber)+'</div></div>';
-    if(item.articleText) html += '<div class="k-field"><div class="k-label">النص</div><div class="k-value">'+esc(item.articleText).slice(0,200)+'</div></div>';
-    if(item.source) html += '<div class="k-field"><div class="k-label">المصدر</div><div class="k-value">'+esc(item.source)+'</div></div>';
-    html += '<div class="conf-bar"><div class="conf-fill '+confClass+'" style="width:'+Math.round((item.confidence||0)*100)+'%"></div></div>';
-    html += '</div>';
-    if(type === 'pending'){
-      html += '<div class="k-actions"><button class="k-btn approve" onclick="approveItem('+item.id+')">✅ اعتماد</button><button class="k-btn reject" onclick="rejectItem('+item.id+')">❌ رفض</button></div>';
-    }
-    html += '</div>';
-    return html;
-  }).join('');
-}
-
-async function approveItem(id){
-  await KnowledgeManager.approveKnowledge(id);
-  AdminEngine.logAudit('approve_knowledge', {id: id});
-  loadKnowledgeList('pending');
-  loadPendingBadge();
-}
-
-async function rejectItem(id){
-  var reason = prompt('سبب الرفض:');
-  await KnowledgeManager.rejectKnowledge(id, reason);
-  AdminEngine.logAudit('reject_knowledge', {id: id, reason: reason});
-  loadKnowledgeList('pending');
-  loadPendingBadge();
-}
-
-async function loadPendingBadge(){
-  try {
-    var pending = await KnowledgeManager.getPendingItems();
-    var badge = document.getElementById('pendingBadge');
-    if(badge) badge.textContent = pending.length || '';
-  } catch(e){}
-}
-
-/* ===== File Upload ===== */
-var uploadedData = null;
-
-function handleFileSelect(e){
-  var file = e.target.files[0];
-  if(!file) return;
-  
-  var reader = new FileReader();
-  reader.onload = function(ev){
-    var content = ev.target.result;
-    var ext = file.name.split('.').pop().toLowerCase();
-    
-    if(ext === 'json'){
-      var parsed = AdminEngine.parseJSONFile(content);
-      showFilePreview(file.name, parsed);
-    } else if(ext === 'txt' || ext === 'csv'){
-      var parsed = AdminEngine.parseTextFile(content);
-      showFilePreview(file.name, parsed);
-    } else {
-      document.getElementById('filePreview').innerHTML = '<div class="preview-card"><div class="preview-title">⚠️ نوع ملف غير مدعوم حالياً</div><p style="font-size:13px;color:var(--text-secondary)">يدعم حالياً: TXT, JSON, CSV. دعم PDF و Word قيد التطوير.</p></div>';
-    }
-  };
-  reader.readAsText(file);
-}
-
-function showFilePreview(filename, parsed){
-  uploadedData = parsed;
-  var el = document.getElementById('filePreview');
-  
-  if(parsed.format === 'error'){
-    el.innerHTML = '<div class="preview-card"><div class="preview-title">❌ خطأ في قراءة الملف</div><p>'+esc(parsed.error)+'</p></div>';
-    return;
-  }
-  
-  var html = '<div class="preview-card">';
-  html += '<div class="preview-title">📋 معاينة: '+esc(filename)+'</div>';
-  html += '<div class="preview-stats">';
-  
-  if(parsed.format === 'database'){
-    var lawCount = Object.values(parsed.data.laws||{}).reduce(function(s,a){return s+a.length;},0);
-    html += '<div class="preview-stat">قوانين: <strong>'+lawCount+'</strong></div>';
-  } else if(parsed.articles){
-    html += '<div class="preview-stat">مواد: <strong>'+parsed.articles.length+'</strong></div>';
-    if(parsed.lawTitle) html += '<div class="preview-stat">القانون: <strong>'+esc(parsed.lawTitle)+'</strong></div>';
-    if(parsed.section) html += '<div class="preview-stat">القسم: <strong>'+esc(parsed.section)+'</strong></div>';
-  } else if(parsed.lawTitle){
-    html += '<div class="preview-stat">القانون: <strong>'+esc(parsed.lawTitle)+'</strong></div>';
-  }
-  
-  html += '<div class="preview-stat">الثقة: <strong>'+Math.round((parsed.confidence||0)*100)+'%</strong></div>';
-  html += '</div>';
-  
-  // Show first few articles
-  var arts = parsed.articles || [];
-  if(arts.length){
-    html += '<div class="preview-articles">';
-    arts.slice(0,10).forEach(function(a){
-      html += '<div class="preview-article"><strong>مادة '+esc(a.number)+'</strong>: '+esc((a.text||'').slice(0,150))+'</div>';
-    });
-    if(arts.length > 10) html += '<div class="preview-article" style="color:var(--text-tertiary)">... و'+(arts.length-10)+' مادة أخرى</div>';
-    html += '</div>';
-  }
-  
-  html += '</div>';
-  el.innerHTML = html;
-  document.getElementById('fileActions').style.display = 'block';
-}
-
-function commitFileData(){
-  if(!uploadedData) return;
-  
-  if(uploadedData.articles){
-    // Add each article as knowledge
-    var count = 0;
-    uploadedData.articles.forEach(function(art){
-      KnowledgeManager.addKnowledge({
-        query: 'رفع ملف: ' + (uploadedData.lawTitle || ''),
-        lawTitle: uploadedData.lawTitle || 'قانون مرفوع',
-        articleNumber: art.number,
-        articleText: art.text,
-        section: uploadedData.section || '',
-        source: 'رفع ملف من لوحة الإدارة',
-        status: 'active'
-      });
-      count++;
-    });
-    AdminEngine.logAudit('upload_file', {articles: count, law: uploadedData.lawTitle});
-    alert('تمت إضافة '+count+' مادة قانونية');
-  }
-  
-  clearFileUpload();
-  loadPendingBadge();
-}
-
-function clearFileUpload(){
-  uploadedData = null;
-  document.getElementById('filePreview').innerHTML = '';
-  document.getElementById('fileActions').style.display = 'none';
-  document.getElementById('fileInput').value = '';
-}
-
-// Drag and drop
-var uploadZone = document.getElementById('uploadZone');
-if(uploadZone){
-  uploadZone.addEventListener('dragover', function(e){ e.preventDefault(); this.classList.add('dragover'); });
-  uploadZone.addEventListener('dragleave', function(){ this.classList.remove('dragover'); });
-  uploadZone.addEventListener('drop', function(e){
-    e.preventDefault();
-    this.classList.remove('dragover');
-    if(e.dataTransfer.files.length){
-      document.getElementById('fileInput').files = e.dataTransfer.files;
-      handleFileSelect({target:{files:e.dataTransfer.files}});
-    }
-  });
-}
-
-/* ===== AI Settings ===== */
-function loadAISettings(){
-  var s = AdminEngine.getSettings();
-  document.getElementById('setAdvisorName').value = s.advisorName;
-  document.getElementById('setPersonality').value = s.advisorPersonality;
-  document.getElementById('setStyle').value = s.responseStyle;
-  document.getElementById('setConservatism').value = s.legalConservatism;
-  document.getElementById('setDetail').value = s.detailLevel;
-  document.getElementById('setPriorityLaws').value = (s.priorityLaws||[]).join('\n');
-  document.getElementById('setTrustedSources').value = (s.trustedSources||[]).join('\n');
-  document.getElementById('setShowConfidence').checked = s.showConfidence;
-  document.getElementById('setShowSources').checked = s.showSources;
-}
-
-function saveAISettings(){
-  var settings = {
-    advisorName: document.getElementById('setAdvisorName').value,
-    advisorPersonality: document.getElementById('setPersonality').value,
-    responseStyle: document.getElementById('setStyle').value,
-    legalConservatism: document.getElementById('setConservatism').value,
-    detailLevel: document.getElementById('setDetail').value,
-    priorityLaws: document.getElementById('setPriorityLaws').value.split('\n').filter(Boolean),
-    trustedSources: document.getElementById('setTrustedSources').value.split('\n').filter(Boolean),
-    showConfidence: document.getElementById('setShowConfidence').checked,
-    showSources: document.getElementById('setShowSources').checked
-  };
-  AdminEngine.saveSettings(settings);
-  AdminEngine.logAudit('save_settings', settings);
-  alert('تم حفظ الإعدادات بنجاح');
-}
-
-/* ===== Improvements ===== */
-function loadImprovements(){
-  var suggestions = AdminEngine.getImprovementSuggestions();
-  var el = document.getElementById('improvementList');
-  
-  if(!suggestions.length){
-    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-tertiary)">لا توجد اقتراحات حالياً</div>';
-    return;
-  }
-  
-  el.innerHTML = suggestions.map(function(s){
-    var html = '<div class="suggestion-card">';
-    html += '<div class="suggestion-title">';
-    var icons = {'missing_knowledge':'🔴','popular_topics':'📊','user_vocabulary':'💬'};
-    html += (icons[s.type]||'💡')+' '+esc(s.title);
-    html += '</div>';
-    html += '<div class="suggestion-desc">'+esc(s.description)+'</div>';
-    html += '<div class="suggestion-items">';
-    s.items.slice(0,8).forEach(function(item){
-      var label = item.query || item.topic || item.word || '';
-      html += '<div class="suggestion-item">'+esc(label)+(item.count?' ('+item.count+')':'')+'</div>';
-    });
-    html += '</div>';
-    html += '<div class="suggestion-action">→ '+esc(s.action)+'</div>';
-    html += '</div>';
-    return html;
-  }).join('');
-}
-
-/* ===== Audit Log ===== */
-function loadAuditLog(){
-  var log = AdminEngine.getAuditLog().reverse().slice(0,50);
-  var el = document.getElementById('auditTable');
-  var html = '<tr><th>الوقت</th><th>المستخدم</th><th>العملية</th><th>التفاصيل</th></tr>';
-  log.forEach(function(entry){
-    var time = new Date(entry.ts).toLocaleString('ar');
-    var details = JSON.stringify(entry.details||{}).slice(0,80);
-    html += '<tr><td>'+time+'</td><td>'+esc(entry.user)+'</td><td>'+esc(entry.action)+'</td><td>'+esc(details)+'</td></tr>';
-  });
-  el.innerHTML = html;
 }
 
 /* ===== Helpers ===== */
-function esc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]; }); }
+function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c];})}
+function dc(ic,cl,val,lbl){return '<div class="dc"><div class="dc-hd"><div class="dc-ic '+cl+'">'+ic+'</div></div><div class="dc-val">'+val+'</div><div class="dc-lbl">'+lbl+'</div></div>';}
+function chart(id,data,key,color){
+  var el=document.getElementById(id);if(!el)return;
+  if(!data||!data.length){el.innerHTML='<div style="text-align:center;color:var(--text-tertiary);padding:30px">لا بيانات</div>';return;}
+  var mx=Math.max.apply(null,data.map(function(d){return d[key]||0;}))||1;
+  el.innerHTML=data.map(function(d){
+    var v=d[key]||0;var h=Math.max(4,v/mx*100);
+    return '<div class="ch-bar" style="height:'+h%;background:'+color+'"><span class="ch-bar-v">'+v+'</span><span class="ch-bar-l">'+d.date.slice(5)+'</span></div>';
+  }).join('');
+}
+
+/* ===== Dashboard ===== */
+async function renderDashboard(c){
+  var d=await AdminEngine.getDashboardData();
+  c.innerHTML='<div class="dg">'+
+    dc('📊','b',d.todayPageviews,'زيارات اليوم')+
+    dc('🔍','g',d.todaySearches,'بحث اليوم')+
+    dc('🤖','gr',d.todayQueries,'استشارات اليوم')+
+    dc('📈','n',d.weekPageviews,'زيارات الأسبوع')+
+    dc('✅','gr',d.successRate+'%','نسبة النجاح')+
+    dc('❌','r',d.totalNoResults,'بدون إجابة')+
+    dc('👥','n',d.userCount,'المستخدمون')+
+    dc('📚','g',d.knowledgeCount,'معرف')+
+    '</div>'+
+    '<div class="ch"><div class="ch-title">الزيارات خلال 14 يوم</div><div class="ch-bars" id="chVisit"></div></div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">'+
+      '<div><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">أكثر الأسئلة</h3><table class="dt" id="tSearch"><tr><th>السؤال</th><th>العدد</th></tr></table></div>'+
+      '<div><h3 style="font-size:13px;font-weight:700;margin-bottom:10px">بدون إجابة</h3><table class="dt" id="tNoRes"><tr><th>السؤال</th></tr></table></div>'+
+    '</div>';
+  chart('chVisit',d.dailyChart,'pageviews','var(--blue-500)');
+  var sh='<tr><th>السؤال</th><th>العدد</th></tr>';
+  d.topSearches.slice(0,8).forEach(function(s){sh+='<tr><td>'+esc(s.label)+'</td><td>'+s.count+'</td></tr>';});
+  document.getElementById('tSearch').innerHTML=sh;
+  var nr='<tr><th>السؤال</th></tr>';
+  d.noResultQueries.slice(0,8).forEach(function(q){nr+='<tr><td>'+esc(q.label)+'</td></tr>';});
+  document.getElementById('tNoRes').innerHTML=nr;
+}
+
+/* ===== Analytics ===== */
+async function renderAnalytics(c){
+  var d=await AdminEngine.getDashboardData();
+  c.innerHTML='<div class="dg">'+
+    dc('📊','b',d.totalPageviews,'إجمالي الزيارات')+
+    dc('🔍','g',d.totalSearches,'إجمالي البحث')+
+    dc('🤖','gr',d.totalQueries,'إجمالي الاستشارات')+
+    dc('📈','n',d.successRate+'%','نسبة النجاح')+
+    dc('⚠️','r',d.noResultRate+'%','نسبة الفشل')+
+    '</div>'+
+    '<div class="ch"><div class="ch-title">الاستشارات خلال 14 يوم</div><div class="ch-bars" id="chQuery"></div></div>'+
+    '<h3 style="font-size:13px;font-weight:700;margin:16px 0 10px">توزيع النوايا</h3>'+
+    '<table class="dt" id="tInt"><tr><th>النوع</th><th>العدد</th><th>النسبة</th></tr></table>';
+  chart('chQuery',d.dailyChart,'queries','var(--gold-400)');
+  var total=d.topIntents.reduce(function(s,i){return s+i.count;},0)||1;
+  var ih='<tr><th>النوع</th><th>العدد</th><th>النسبة</th></tr>';
+  d.topIntents.forEach(function(i){ih+='<tr><td>'+esc(i.label)+'</td><td>'+i.count+'</td><td>'+Math.round(i.count/total*100)+'%</td></tr>';});
+  document.getElementById('tInt').innerHTML=ih;
+}
+
+/* ===== Knowledge ===== */
+async function renderKnowledge(c){
+  var items=await AdminEngine.getKnowledgeByStatus();
+  c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="font-size:15px;font-weight:700">قاعدة المعرفة القانونية</h2><div style="display:flex;gap:6px"><button class="kb approve" onclick="filterKW(\'approved\')">✅ معتمدة</button><button class="kb" style="background:var(--blue-500);color:#fff" onclick="filterKW(\'pending\')">⏳ مراجعة</button><button class="kb" style="background:var(--navy-800);color:#fff" onclick="filterKW(\'\')">الكل</button></div></div><div id="kwList"></div>';
+  renderKWList(items);
+}
+async function filterKW(status){
+  var items=status?await AdminEngine.getKnowledgeByStatus(status):await AdminEngine.getKnowledgeByStatus();
+  renderKWList(items);
+}
+function renderKWList(items){
+  var el=document.getElementById('kwList');
+  if(!items.length){el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text-tertiary)">لا عناصر</div>';return;}
+  el.innerHTML=items.map(function(i){
+    var cc=i.confidence>=0.8?'hi':i.confidence>=0.5?'md':'lo';
+    var wf=i.workflow||'draft';
+    var html='<div class="kc"><div class="kc-hd"><div class="kc-t">'+esc(i.lawTitle||'معرفة')+'</div><span class="kc-bdg '+wf+'">'+wf+'</span></div><div class="kc-body">';
+    if(i.articleNumber) html+='<div class="kc-f"><div class="kc-l">المادة</div><div class="kc-v">'+esc(i.articleNumber)+'</div></div>';
+    if(i.articleText) html+='<div class="kc-f"><div class="kc-l">النص</div><div class="kc-v">'+esc(i.articleText).slice(0,200)+'</div></div>';
+    if(i.source) html+='<div class="kc-f"><div class="kc-l">المصدر</div><div class="kc-v">'+esc(i.source)+'</div></div>';
+    html+='<div class="cf"><div class="cf-f '+cc+'" style="width:'+Math.round((i.confidence||0)*100)+'%"></div></div></div>';
+    if(wf==='draft'||wf==='review'){
+      html+='<div class="kc-act"><button class="kb approve" onclick="doWF('+i.id+',\'approved\')">✅ اعتماد</button><button class="kb review" onclick="doWF('+i.id+',\'review\')">🔄 مراجعة</button><button class="kb reject" onclick="doWF('+i.id+',\'rejected\')">❌ رفض</button></div>';
+    }
+    if(wf==='approved'){
+      html+='<div class="kc-act"><button class="kb primary" onclick="doWF('+i.id+',\'published\')">📤 نشر</button><span style="font-size:11px;color:var(--text-tertiary)">استُخدمت '+(i.useCount||0)+' مرة</span></div>';
+    }
+    html+='</div>';return html;
+  }).join('');
+}
+async function doWF(id,state){
+  var reason=state==='rejected'?prompt('سبب الرفض:'):null;
+  await AdminEngine.updateWorkflow(id,state,(await AdminEngine.getCurrentSession()||{}).username,reason);
+  nav('knowledge');
+  updateBadge();
+}
+
+/* ===== Upload ===== */
+function renderUpload(c){
+  c.innerHTML='<h2 style="font-size:15px;font-weight:700;margin-bottom:16px">رفع ملفات قانونية</h2>'+
+    '<div class="upload-zone" id="uz" onclick="document.getElementById(\'fi\').click()"><div style="font-size:36px;margin-bottom:8px">📁</div><div style="font-size:14px">اسحب الملف أو اضغط</div><div style="font-size:11px;color:var(--text-tertiary);margin-top:4px">TXT, JSON, CSV</div></div>'+
+    '<input type="file" id="fi" style="display:none" accept=".txt,.json,.csv" onchange="handleFile(event)">'+
+    '<div id="fp"></div><div id="fa" style="display:none;margin-top:16px"><button class="kb approve" onclick="commitFile()">✅ اعتماد وإضافة</button> <button class="kb reject" onclick="clearFile()">❌ إلغاء</button></div>';
+  var uz=document.getElementById('uz');
+  uz.ondragover=function(e){e.preventDefault();this.classList.add('drag');};
+  uz.ondragleave=function(){this.classList.remove('drag');};
+  uz.ondrop=function(e){e.preventDefault();this.classList.remove('drag');if(e.dataTransfer.files.length)handleFile({target:{files:e.dataTransfer.files}});};
+}
+var uploaded=null;
+function handleFile(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    var ext=f.name.split('.').pop().toLowerCase();
+    if(ext==='json') uploaded=AdminEngine.parseJSONFile(ev.target.result,f.name);
+    else uploaded=AdminEngine.parseTextFile(ev.target.result,f.name);
+    showPreview(f.name);
+  };
+  r.readAsText(f);
+}
+function showPreview(name){
+  var p=uploaded;var el=document.getElementById('fp');
+  var html='<div class="kc"><div style="font-size:14px;font-weight:700;margin-bottom:10px">📋 '+esc(name)+'</div><div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px">';
+  if(p.articles) html+='<span style="font-size:12px">مواد: <strong>'+p.articles.length+'</strong></span>';
+  if(p.lawTitle) html+='<span style="font-size:12px">القانون: <strong>'+esc(p.lawTitle)+'</strong></span>';
+  if(p.section) html+='<span style="font-size:12px">القسم: <strong>'+esc(p.section)+'</strong></span>';
+  html+='<span style="font-size:12px">الثقة: <strong>'+Math.round((p.confidence||0)*100)+'%</strong></span></div>';
+  if(p.articles&&p.articles.length){
+    html+='<div style="max-height:200px;overflow-y:auto">';
+    p.articles.slice(0,8).forEach(function(a){html+='<div style="padding:6px;border-bottom:1px solid var(--border-light);font-size:12px"><strong>مادة '+esc(a.number)+'</strong>: '+esc((a.text||'').slice(0,120))+'</div>';});
+    if(p.articles.length>8) html+='<div style="padding:6px;color:var(--text-tertiary);font-size:11px">... و'+(p.articles.length-8)+' أخرى</div>';
+    html+='</div>';
+  }
+  html+='</div>';el.innerHTML=html;
+  document.getElementById('fa').style.display='block';
+}
+async function commitFile(){
+  if(!uploaded||!uploaded.articles)return;
+  var user=(await AdminEngine.getCurrentSession()||{}).username||'system';
+  for(var i=0;i<uploaded.articles.length;i++){
+    await AdminEngine.addKnowledgeEntry({
+      query:'رفع ملف',lawTitle:uploaded.lawTitle||'قانون مرفوع',
+      articleNumber:uploaded.articles[i].number,articleText:uploaded.articles[i].text,
+      section:uploaded.section||'',source:'رفع ملف: '+uploaded.filename,status:'active'
+    },user);
+  }
+  alert('تمت إضافة '+uploaded.articles.length+' مادة');clearFile();updateBadge();
+}
+function clearFile(){uploaded=null;document.getElementById('fp').innerHTML='';document.getElementById('fa').style.display='none';document.getElementById('fi').value='';}
+
+/* ===== Workflow ===== */
+async function renderWorkflow(c){
+  var items=await AdminEngine.getKnowledgeByStatus();
+  var stages={draft:[],review:[],approved:[],published:[],rejected:[]};
+  items.forEach(function(i){var s=i.workflow||'draft';if(stages[s])stages[s].push(i);});
+  c.innerHTML='<h2 style="font-size:15px;font-weight:700;margin-bottom:16px">دورة اعتماد المعرفة</h2>'+
+    '<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">'+
+      wfBadge('📝 مسودة',stages.draft.length,'var(--blue-100)','var(--blue-600)')+
+      wfBadge('🔍 مراجعة',stages.review.length,'var(--amber-100)','#92400e')+
+      wfBadge('✅ معتمدة',stages.approved.length,'var(--green-100)','var(--green-600)')+
+      wfBadge('📤 منشورة',stages.published.length,'var(--navy-100)','var(--navy-600)')+
+      wfBadge('❌ مرفوضة',stages.rejected.length,'var(--red-100)','var(--red-600)')+
+    '</div>'+
+    '<h3 style="font-size:13px;font-weight:700;margin-bottom:10px">قيد المراجعة</h3>'+
+    '<div id="wfList"></div>';
+  renderKWList(stages.review.concat(stages.draft));
+}
+function wfBadge(label,count,bg,color){return '<div style="padding:8px 16px;border-radius:8px;background:'+bg+';color:'+color+';font-size:13px;font-weight:600">'+label+' ('+count+')</div>';}
+
+/* ===== Improvements ===== */
+async function renderImprove(c){
+  var sug=await AdminEngine.getImprovementSuggestions();
+  c.innerHTML='<h2 style="font-size:15px;font-weight:700;margin-bottom:16px">فرص تحسين الذكاء</h2>'+
+    (sug.length?sug.map(function(s){
+      return '<div class="sg"><div class="sg-t">'+s.title+'</div><div class="sg-d">'+s.desc+'</div>'+
+        '<div class="sg-items">'+s.items.slice(0,10).map(function(i){return '<div class="sg-it">'+esc(i.label||i.query||i.word||'')+(i.count?' ('+i.count+')':'')+'</div>';}).join('')+'</div>'+
+        '<div class="sg-act">→ '+s.action+'</div></div>';
+    }).join(''):'<div style="text-align:center;padding:40px;color:var(--text-tertiary)">لا اقتراحات</div>');
+}
+
+/* ===== Settings ===== */
+async function renderSettings(c){
+  var s=await AdminEngine.getSettings();
+  c.innerHTML='<h2 style="font-size:15px;font-weight:700;margin-bottom:16px">إعدادات المستشار</h2><div style="max-width:600px">'+
+    fg('setAN','اسم المستشار',s.advisorName)+
+    fg('setAP','شخصية المستشار',s.advisorPersonality,'textarea')+
+    fg('setRS','أسلوب الإجابة',s.responseStyle,'select',[['detailed','مفصل'],['concise','مختصر'],['balanced','متوازن']])+
+    fg('setLC','التحفظ القانوني',s.legalConservatism,'select',[['high','محفظ'],['medium','متوسط'],['low','متساهل']])+
+    fg('setDL','مستوى التفصيل',s.detailLevel,'select',[['high','عالي'],['medium','متوسط'],['low','منخفض']])+
+    fg('setPL','القوانين ذات الأولوية (سطر لكل قانون)',(s.priorityLaws||[]).join('\n'),'textarea')+
+    fg('setTS','المصادر الموثوقة (سطر لكل مصدر)',(s.trustedSources||[]).join('\n'),'textarea')+
+    '<div class="fg"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="setSC" '+(s.showConfidence?'checked':'')+'><span class="fl" style="margin:0">عرض درجة الثقة</span></label></div>'+
+    '<div class="fg"><label style="display:flex;align-items:center;gap:8px;cursor:pointer"><input type="checkbox" id="setSS" '+(s.showSources?'checked':'')+'><span class="fl" style="margin:0">عرض المصادر</span></label></div>'+
+    '<button class="kb primary" onclick="saveSet()">💾 حفظ</button></div>';
+}
+function fg(id,label,val,type,options){
+  if(type==='textarea') return '<div class="fg"><label class="fl">'+label+'</label><textarea id="'+id+'" class="fi fa">'+esc(val)+'</textarea></div>';
+  if(type==='select') return '<div class="fg"><label class="fl">'+label+'</label><select id="'+id+'" class="fi">'+options.map(function(o){return '<option value="'+o[0]+'"'+(val===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('')+'</select></div>';
+  return '<div class="fg"><label class="fl">'+label+'</label><input type="text" id="'+id+'" class="fi" value="'+esc(val)+'"></div>';
+}
+async function saveSet(){
+  await AdminEngine.saveSettings({
+    advisorName:document.getElementById('setAN').value,
+    advisorPersonality:document.getElementById('setAP').value,
+    responseStyle:document.getElementById('setRS').value,
+    legalConservatism:document.getElementById('setLC').value,
+    detailLevel:document.getElementById('setDL').value,
+    priorityLaws:document.getElementById('setPL').value.split('\n').filter(Boolean),
+    trustedSources:document.getElementById('setTS').value.split('\n').filter(Boolean),
+    showConfidence:document.getElementById('setSC').checked,
+    showSources:document.getElementById('setSS').checked
+  });
+  alert('تم الحفظ');
+}
+
+/* ===== Users ===== */
+async function renderUsers(c){
+  var users=await AdminEngine.getUsers();
+  c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="font-size:15px;font-weight:700">المستخدمون</h2><button class="kb primary" onclick="showAddUser()">➕ إضافة</button></div>'+
+    '<table class="dt"><tr><th>المستخدم</th><th>الاسم</th><th>الدور</th><th>الحالة</th><th>إجراء</th></tr>'+
+    users.map(function(u){return '<tr><td>'+esc(u.username)+'</td><td>'+esc(u.name)+'</td><td>'+esc(u.role)+'</td><td>'+(u.active?'✅ نشط':'❌ معطل')+'</td><td><button class="kb edit" onclick="toggleUser(\''+u.username+'\')">'+(u.active?'تعطيل':'تفعيل')+'</button></td></tr>';}).join('')+'</table>'+
+    '<div id="addUserForm" style="display:none;max-width:400px;margin-top:16px"><h3 style="font-size:14px;font-weight:700;margin-bottom:12px">إضافة مستخدم</h3>'+
+    fg('nuUser','اسم المستخدم','')+fg('nuName','الاسم','')+fg('nuPass','كلمة المرور','')+
+    fg('nuRole','الدور','viewer','select',[['admin','مدير'],['editor','محرر'],['reviewer','مراجع'],['viewer','قارئ']])+
+    '<button class="kb approve" onclick="addUser()">إضافة</button></div>';
+}
+function showAddUser(){document.getElementById('addUserForm').style.display='block';}
+async function addUser(){
+  await AdminEngine.addUser({username:document.getElementById('nuUser').value,name:document.getElementById('nuName').value,password:document.getElementById('nuPass').value,role:document.getElementById('nuRole').value});
+  alert('تمت الإضافة');nav('users');
+}
+async function toggleUser(u){
+  var user=(await AdminEngine.getUsers()).find(function(x){return x.username===u;});
+  if(user) await AdminEngine.updateUser(u,{active:!user.active});
+  nav('users');
+}
+
+/* ===== Audit ===== */
+async function renderAudit(c){
+  var log=await AdminEngine.getAuditLog(100);
+  c.innerHTML='<h2 style="font-size:15px;font-weight:700;margin-bottom:16px">سجل العمليات</h2>'+
+    '<table class="dt"><tr><th>الوقت</th><th>المستخدم</th><th>العملية</th><th>التفاصيل</th></tr>'+
+    log.map(function(e){return '<tr><td>'+new Date(e.ts).toLocaleString('ar')+'</td><td>'+esc(e.user)+'</td><td>'+esc(e.action)+'</td><td>'+esc(JSON.stringify(e.details||{})).slice(0,60)+'</td></tr>';}).join('')+'</table>';
+}
+
+/* ===== Badge ===== */
+async function updateBadge(){
+  try{
+    var items=await AdminEngine.getKnowledgeByStatus('pending');
+    var b=document.getElementById('pendingBadge');
+    if(b) b.textContent=items.length||'';
+  }catch(e){}
+}
 
 /* ===== Init ===== */
+document.getElementById('loginPass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+document.getElementById('loginUser').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('loginPass').focus();});
 checkAuth();
-
-// Enter key for login
-document.getElementById('loginPass').addEventListener('keydown', function(e){
-  if(e.key === 'Enter') doLogin();
-});
 </script>
 </body>
 </html>
