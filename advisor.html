@@ -239,17 +239,71 @@ var ragIndex = null;
 var chats = JSON.parse(localStorage.getItem('advisor_chats') || '[]');
 var currentChatId = null;
 var isStreaming = false;
+var supabaseReady = false;
 
 /* ===== Init ===== */
 async function init(){
   try {
-    var db = await App.loadDatabase();
-    ragIndex = LegalRAGv3.buildIndex(db);
+    // Try Supabase first
+    var backendOk = await Backend.initialize();
+    if(backendOk && Backend.isConfigured()){
+      supabaseReady = true;
+      console.log('✅ Supabase connected — loading from cloud');
+      await loadFromSupabase();
+    } else {
+      console.log('⚠️ Supabase not available — using local JSON');
+      var db = await App.loadDatabase();
+      ragIndex = LegalRAGv3.buildIndex(db);
+    }
     renderChatList();
     if(chats.length) loadChat(chats[0].id);
   } catch(e){
     console.error('Init error:', e);
+    // Fallback to local
+    var db = await App.loadDatabase();
+    ragIndex = LegalRAGv3.buildIndex(db);
   }
+}
+
+async function loadFromSupabase(){
+  // Load all laws and articles from Supabase
+  var laws = await Backend.getLaws();
+  var allArticles = [];
+  
+  // Load articles for each law
+  for(var i = 0; i < laws.length; i++){
+    var articles = await Backend.getLawArticles(laws[i].slug, 500);
+    for(var j = 0; j < articles.length; j++){
+      allArticles.push({
+        title: articles[j].article_text || '',
+        description: articles[j].article_text || '',
+        searchText: articles[j].article_text || '',
+        slug: articles[j].law_slug || '',
+        section: articles[j].section || '',
+        sectionLabel: articles[j].section || '',
+        articleCount: 0,
+        articles: [{number: articles[j].article_number, text: articles[j].article_text}]
+      });
+    }
+  }
+  
+  // Build database object for RAG
+  var db = { laws: {}, contracts: [], posts: [] };
+  laws.forEach(function(l){
+    if(!db.laws[l.section]) db.laws[l.section] = [];
+    db.laws[l.section].push({
+      title: l.title,
+      description: l.description || '',
+      slug: l.slug,
+      section: l.section,
+      sectionLabel: l.section_label || l.section,
+      url: 'viewer.html?type=law&section='+encodeURIComponent(l.section)+'&slug='+encodeURIComponent(l.slug),
+      articles: allArticles.filter(function(a){ return a.slug === l.slug; }).map(function(a){ return a.articles[0]; })
+    });
+  });
+  
+  ragIndex = LegalRAGv3.buildIndex(db);
+  console.log('✅ RAG index built from Supabase: ' + ragIndex.N + ' docs');
 }
 
 /* ===== Chat Management ===== */
@@ -347,52 +401,60 @@ async function processAndRespond(query, typingId, chat){
   var intent = LegalRAGv3.detectIntent(query);
   var results = LegalRAGv3.search(ragIndex, query, 12, intent);
 
-  /* Check knowledge base if RAG results are weak */
-  var knowledgeResults = [];
-  try {
-    knowledgeResults = await KnowledgeManager.searchKnowledge(query, 3);
-  } catch(e){}
-
-  /* Merge knowledge results with RAG results */
-  if(knowledgeResults.length && (!results.length || results[0].score < 30)){
-    for(var k = 0; k < knowledgeResults.length; k++){
-      var kr = knowledgeResults[k];
-      results.unshift({
-        doc: {
-          type: 'knowledge',
-          title: (kr.articleNumber ? 'مادة (' + kr.articleNumber + ') — ' : '') + (kr.lawTitle || ''),
-          text: kr.articleText || '',
-          section: kr.section || '',
-          url: '',
-          lawTitle: kr.lawTitle || '',
-          articleNumber: kr.articleNumber || ''
-        },
-        score: 100 * (kr.confidence || 0.5)
-      });
-      /* Record usage */
-      if(kr.id) KnowledgeManager.recordUsage(kr.id);
-    }
+  /* Search Supabase knowledge base if available */
+  if(supabaseReady){
+    try {
+      var kbResults = await Backend.searchKnowledge(query);
+      if(kbResults.length && (!results.length || results[0].score < 30)){
+        for(var k = 0; k < kbResults.length; k++){
+          var kr = kbResults[k];
+          results.unshift({
+            doc: {
+              type: 'knowledge',
+              title: (kr.article_number ? 'مادة (' + kr.article_number + ') — ' : '') + (kr.law_title || ''),
+              text: kr.article_text || '',
+              section: kr.section || '',
+              url: '',
+              lawTitle: kr.law_title || '',
+              articleNumber: kr.article_number || ''
+            },
+            score: 100 * (kr.confidence || 0.5)
+          });
+        }
+      }
+      Backend.trackAdvisorQuery(query, intent, results.length > 0 ? results[0].score : 0, results.length > 0);
+      if(!results.length) Backend.trackNoResult(query);
+    } catch(e){}
+  } else {
+    /* Fallback to local knowledge */
+    try {
+      var knowledgeResults = await KnowledgeManager.searchKnowledge(query, 3);
+      if(knowledgeResults.length && (!results.length || results[0].score < 30)){
+        for(var k = 0; k < knowledgeResults.length; k++){
+          var kr = knowledgeResults[k];
+          results.unshift({
+            doc: { type:'knowledge', title:(kr.articleNumber?'مادة ('+kr.articleNumber+') — ':'')+(kr.lawTitle||''), text:kr.articleText||'', section:kr.section||'', url:'', lawTitle:kr.lawTitle||'', articleNumber:kr.articleNumber||'' },
+            score: 100 * (kr.confidence || 0.5)
+          });
+        }
+      }
+    } catch(e){}
   }
 
-  AdminEngine.trackAdvisorQuery(query, intent, results.length > 0 ? results[0].score : 0, results.length > 0);
   var responseParts = LegalResponse.generate(query, results, intent);
   var markdown = LegalResponse.toMarkdown(responseParts);
 
   /* If low confidence, suggest knowledge submission */
   var hasHighConfidence = results.length && results[0].score > 30;
-  if(!hasHighConfidence && !knowledgeResults.length){
+  if(!hasHighConfidence){
     markdown += '\n\n---\n\n';
-    markdown += '> 📝 **لم أجد نصاً قانونياً كافياً في قاعدة البيانات.**\n>';
-    markdown += '> \n> إذا كنت تعرف القانون أو المادة المتعلقة بهذا السؤال، يمكنك إضافتها من خلال ';
-    markdown += '[لوحة الإدارة](admin.html) للمراجعة والاعتماد.\n';
-
-    /* Auto-save as pending knowledge */
-    try {
-      await KnowledgeManager.addKnowledge({
-        query: query,
-        topic: intent,
-        source: 'سؤال مستخدم — يحتاج مراجعة'
-      });
+    markdown += '> 📝 **لم أجد نصاً قانونياً كافياً.** يمكنك إضافة المعرفة من [لوحة الإدارة](admin.html).\n';
+    if(supabaseReady){
+      try { await Backend.addKnowledge({query:query, topic:intent, source:'سؤال مستخدم'}, 'system'); } catch(e){}
+    } else {
+      try { await KnowledgeManager.addKnowledge({query:query, topic:intent, source:'سؤال مستخدم'}); } catch(e){}
+    }
+  }
     } catch(e){}
   }
 
