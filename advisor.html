@@ -340,7 +340,8 @@ function send(){
 
 function processAndRespond(query, typingId, chat){
   var intent = LegalRAGv3.detectIntent(query);
-  var results = LegalRAGv3.search(ragIndex, query, 12);
+  var intent = LegalRAGv3.detectIntent(query);
+    var results = LegalRAGv3.search(ragIndex, query, 12, intent);
   var responseParts = LegalResponse.generate(query, results, intent);
   var markdown = LegalResponse.toMarkdown(responseParts);
 
