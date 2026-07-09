@@ -171,8 +171,11 @@
 </div>
 
 <script src="admin-engine.js"></script>
+<script src="backend.js"></script>
 <script>
 var cur = 'dashboard';
+
+var useBackend = false;
 
 /* ===== Auth ===== */
 async function doLogin(){
@@ -180,12 +183,19 @@ async function doLogin(){
   var p = document.getElementById('loginPass').value;
   if(!u||!p){ document.getElementById('loginErr').style.display='block'; return; }
   try {
-    var s = await AdminEngine.login(u, p);
-    if(s){
+    var session;
+    if(useBackend && Backend.isConfigured()){
+      var result = await Backend.signIn(u, p);
+      if(result.error){ document.getElementById('loginErr').style.display='block'; return; }
+      session = {username:u, name:u, role:'admin', permissions:['read','write','delete','approve','settings','users','audit']};
+    } else {
+      session = await AdminEngine.login(u, p);
+    }
+    if(session){
       document.getElementById('loginPage').style.display='none';
       document.getElementById('adminApp').style.display='flex';
-      document.getElementById('uName').textContent=s.name;
-      document.getElementById('uRole').textContent=s.role;
+      document.getElementById('uName').textContent=session.name||u;
+      document.getElementById('uRole').textContent=session.role||'admin';
       nav('dashboard');
       if(window.innerWidth<=900) document.getElementById('menuBtn').style.display='block';
     } else {
@@ -193,8 +203,27 @@ async function doLogin(){
     }
   } catch(e){ document.getElementById('loginErr').style.display='block'; }
 }
-async function doLogout(){ await AdminEngine.logout(); location.reload(); }
+async function doLogout(){
+  if(useBackend) await Backend.signOut();
+  else await AdminEngine.logout();
+  location.reload();
+}
 async function checkAuth(){
+  // Try Supabase first
+  try {
+    var ok = await Backend.initialize();
+    if(ok && Backend.isConfigured()){
+      useBackend = true;
+      var session = await Backend.getSession();
+      if(session){
+        document.getElementById('loginPage').style.display='none';
+        document.getElementById('adminApp').style.display='flex';
+        nav('dashboard');
+        return;
+      }
+    }
+  } catch(e){}
+  // Fallback to local
   await AdminEngine.initialize('777287583');
   var s = await AdminEngine.getCurrentSession();
   if(s){
@@ -242,7 +271,7 @@ function chart(id,data,key,color){
 
 /* ===== Dashboard ===== */
 async function renderDashboard(c){
-  var d=await AdminEngine.getDashboardData();
+  var d = useBackend ? await Backend.getDashboardData() : await AdminEngine.getDashboardData();
   c.innerHTML='<div class="dg">'+
     dc('📊','b',d.todayPageviews,'زيارات اليوم')+
     dc('🔍','g',d.todaySearches,'بحث اليوم')+
@@ -269,7 +298,7 @@ async function renderDashboard(c){
 
 /* ===== Analytics ===== */
 async function renderAnalytics(c){
-  var d=await AdminEngine.getDashboardData();
+  var d = useBackend ? await Backend.getDashboardData() : await AdminEngine.getDashboardData();
   c.innerHTML='<div class="dg">'+
     dc('📊','b',d.totalPageviews,'إجمالي الزيارات')+
     dc('🔍','g',d.totalSearches,'إجمالي البحث')+
@@ -289,12 +318,12 @@ async function renderAnalytics(c){
 
 /* ===== Knowledge ===== */
 async function renderKnowledge(c){
-  var items=await AdminEngine.getKnowledgeByStatus();
+  var items=useBackend ? await Backend.getKnowledge() : await AdminEngine.getKnowledgeByStatus();
   c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="font-size:15px;font-weight:700">قاعدة المعرفة القانونية</h2><div style="display:flex;gap:6px"><button class="kb approve" onclick="filterKW(\'approved\')">✅ معتمدة</button><button class="kb" style="background:var(--blue-500);color:#fff" onclick="filterKW(\'pending\')">⏳ مراجعة</button><button class="kb" style="background:var(--navy-800);color:#fff" onclick="filterKW(\'\')">الكل</button></div></div><div id="kwList"></div>';
   renderKWList(items);
 }
 async function filterKW(status){
-  var items=status?await AdminEngine.getKnowledgeByStatus(status):await AdminEngine.getKnowledgeByStatus();
+  var items=useBackend ? await Backend.getKnowledge(status) : (status ? await AdminEngine.getKnowledgeByStatus(status) : await AdminEngine.getKnowledgeByStatus());
   renderKWList(items);
 }
 function renderKWList(items){
@@ -319,7 +348,7 @@ function renderKWList(items){
 }
 async function doWF(id,state){
   var reason=state==='rejected'?prompt('سبب الرفض:'):null;
-  await AdminEngine.updateWorkflow(id,state,(await AdminEngine.getCurrentSession()||{}).username,reason);
+  if(useBackend) await Backend.updateKnowledgeWorkflow(id,state,(await Backend.getUser()||{}).email||'admin'); else await AdminEngine.updateWorkflow(id,state,(await AdminEngine.getCurrentSession()||{}).username,reason);
   nav('knowledge');
   updateBadge();
 }
@@ -367,7 +396,7 @@ async function commitFile(){
   if(!uploaded||!uploaded.articles)return;
   var user=(await AdminEngine.getCurrentSession()||{}).username||'system';
   for(var i=0;i<uploaded.articles.length;i++){
-    await AdminEngine.addKnowledgeEntry({
+    (useBackend ? Backend.addKnowledge : AdminEngine.addKnowledgeEntry)({
       query:'رفع ملف',lawTitle:uploaded.lawTitle||'قانون مرفوع',
       articleNumber:uploaded.articles[i].number,articleText:uploaded.articles[i].text,
       section:uploaded.section||'',source:'رفع ملف: '+uploaded.filename,status:'active'
@@ -379,7 +408,7 @@ function clearFile(){uploaded=null;document.getElementById('fp').innerHTML='';do
 
 /* ===== Workflow ===== */
 async function renderWorkflow(c){
-  var items=await AdminEngine.getKnowledgeByStatus();
+  var items=useBackend ? await Backend.getKnowledge() : await AdminEngine.getKnowledgeByStatus();
   var stages={draft:[],review:[],approved:[],published:[],rejected:[]};
   items.forEach(function(i){var s=i.workflow||'draft';if(stages[s])stages[s].push(i);});
   c.innerHTML='<h2 style="font-size:15px;font-weight:700;margin-bottom:16px">دورة اعتماد المعرفة</h2>'+
@@ -398,7 +427,7 @@ function wfBadge(label,count,bg,color){return '<div style="padding:8px 16px;bord
 
 /* ===== Improvements ===== */
 async function renderImprove(c){
-  var sug=await AdminEngine.getImprovementSuggestions();
+  var sug=useBackend ? await Backend.getImprovementSuggestions() : await AdminEngine.getImprovementSuggestions();
   c.innerHTML='<h2 style="font-size:15px;font-weight:700;margin-bottom:16px">فرص تحسين الذكاء</h2>'+
     (sug.length?sug.map(function(s){
       return '<div class="sg"><div class="sg-t">'+s.title+'</div><div class="sg-d">'+s.desc+'</div>'+
@@ -409,7 +438,7 @@ async function renderImprove(c){
 
 /* ===== Settings ===== */
 async function renderSettings(c){
-  var s=await AdminEngine.getSettings();
+  var s=useBackend ? await Backend.getSettings() : await AdminEngine.getSettings();
   c.innerHTML='<h2 style="font-size:15px;font-weight:700;margin-bottom:16px">إعدادات المستشار</h2><div style="max-width:600px">'+
     fg('setAN','اسم المستشار',s.advisorName)+
     fg('setAP','شخصية المستشار',s.advisorPersonality,'textarea')+
@@ -428,7 +457,7 @@ function fg(id,label,val,type,options){
   return '<div class="fg"><label class="fl">'+label+'</label><input type="text" id="'+id+'" class="fi" value="'+esc(val)+'"></div>';
 }
 async function saveSet(){
-  await AdminEngine.saveSettings({
+  if(useBackend) await Backend.saveSettings({
     advisorName:document.getElementById('setAN').value,
     advisorPersonality:document.getElementById('setAP').value,
     responseStyle:document.getElementById('setRS').value,
@@ -444,7 +473,7 @@ async function saveSet(){
 
 /* ===== Users ===== */
 async function renderUsers(c){
-  var users=await AdminEngine.getUsers();
+  var users=useBackend ? await Backend.getUsers() : await AdminEngine.getUsers();
   c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="font-size:15px;font-weight:700">المستخدمون</h2><button class="kb primary" onclick="showAddUser()">➕ إضافة</button></div>'+
     '<table class="dt"><tr><th>المستخدم</th><th>الاسم</th><th>الدور</th><th>الحالة</th><th>إجراء</th></tr>'+
     users.map(function(u){return '<tr><td>'+esc(u.username)+'</td><td>'+esc(u.name)+'</td><td>'+esc(u.role)+'</td><td>'+(u.active?'✅ نشط':'❌ معطل')+'</td><td><button class="kb edit" onclick="toggleUser(\''+u.username+'\')">'+(u.active?'تعطيل':'تفعيل')+'</button></td></tr>';}).join('')+'</table>'+
@@ -455,18 +484,18 @@ async function renderUsers(c){
 }
 function showAddUser(){document.getElementById('addUserForm').style.display='block';}
 async function addUser(){
-  await AdminEngine.addUser({username:document.getElementById('nuUser').value,name:document.getElementById('nuName').value,password:document.getElementById('nuPass').value,role:document.getElementById('nuRole').value});
+  if(useBackend) await Backend.addUser({username:document.getElementById('nuUser').value,name:document.getElementById('nuName').value,password:document.getElementById('nuPass').value,role:document.getElementById('nuRole').value});
   alert('تمت الإضافة');nav('users');
 }
 async function toggleUser(u){
   var user=(await AdminEngine.getUsers()).find(function(x){return x.username===u;});
-  if(user) await AdminEngine.updateUser(u,{active:!user.active});
+  if(user) if(useBackend) await Backend.updateUser(user.id,{active:!user.active}); else await AdminEngine.updateUser(u,{active:!user.active});
   nav('users');
 }
 
 /* ===== Audit ===== */
 async function renderAudit(c){
-  var log=await AdminEngine.getAuditLog(100);
+  var log=useBackend ? await Backend.getAuditLog(100) : await AdminEngine.getAuditLog(100);
   c.innerHTML='<h2 style="font-size:15px;font-weight:700;margin-bottom:16px">سجل العمليات</h2>'+
     '<table class="dt"><tr><th>الوقت</th><th>المستخدم</th><th>العملية</th><th>التفاصيل</th></tr>'+
     log.map(function(e){return '<tr><td>'+new Date(e.ts).toLocaleString('ar')+'</td><td>'+esc(e.user)+'</td><td>'+esc(e.action)+'</td><td>'+esc(JSON.stringify(e.details||{})).slice(0,60)+'</td></tr>';}).join('')+'</table>';
