@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>العقود | لوبوك</title>
+<title>العقود | المستشار اليمني القانوني</title>
 <meta name="theme-color" content="#0a1628">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>LB</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>م.ق</text></svg>">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<nav class="navbar"><div class="navbar-inner"><a href="index.html" class="brand"><div class="brand-icon">LB</div><div class="brand-text"><div class="brand-name">لوبوك</div></div></a><a href="advisor.html" class="back-btn" style="margin-left:8px">⚖️ المستشار</a><a href="index.html" class="back-btn">← الرئيسية</a></div></nav>
+<nav class="navbar"><div class="navbar-inner"><a href="index.html" class="brand"><div class="brand-icon">م.ق</div><div class="brand-text"><div class="brand-name">المستشار اليمني القانوني</div></div></a><a href="advisor.html" class="back-btn" style="margin-left:8px">⚖️ المستشار</a><a href="index.html" class="back-btn">← الرئيسية</a></div></nav>
 
 <div class="container">
   <div class="page-header"><h1>نماذج العقود</h1><p>بحث ذكي وفرز أسرع داخل نماذج العقود القانونية</p></div>
@@ -24,7 +24,7 @@
   <div class="grid" id="grid"><div class="empty-state">جاري التحميل...</div></div>
 </div>
 
-<footer class="footer-simple">&copy; 2026 لوبوك — المكتبة القانونية اليمنية</footer>
+<footer class="footer-simple">&copy; 2026 المستشار اليمني القانوني — المستشار اليمني القانوني</footer>
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script src="search-engine.js"></script>
@@ -59,8 +59,8 @@ function renderContracts(){
 }
 document.getElementById('searchInput').addEventListener('input',renderContracts);
 function findContract(slug){ var a=(fullDB&&fullDB.contracts)||[]; for(var i=0;i<a.length;i++) if(a[i].slug===slug) return a[i]; return null; }
-async function downloadTXT(i){ try{ await ensureFullDB(); var x=currentContracts[i]&&findContract(currentContracts[i].slug); if(!x) return; var t=(x.title||'عقد')+'\n'+'='.repeat(50)+'\n\n'; if(x.content){for(var j=0;j<x.content.length;j++) t+=x.content[j]+'\n\n';} t+='='.repeat(50)+'\nلوبوك - المكتبة القانونية اليمنية\n'; var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'})); a.download=(x.title||'contract')+'.txt'; a.click(); }catch(e){console.error(e);alert('تعذر التنزيل.');} }
-async function downloadPDF(i){ try{ await ensureFullDB(); var x=currentContracts[i]&&findContract(currentContracts[i].slug); if(!x) return; var t=x.title||'عقد',c=''; if(x.content){for(var j=0;j<x.content.length;j++) c+='<div style="margin-bottom:10px;line-height:2;font-size:14px">'+x.content[j]+'</div>';} var w=window.open('','_blank'); w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>'+t+'</title><style>@page{size:Letter;margin:.55in .39in}body{font-family:Tahoma,Arial,sans-serif;margin:0;background:#fff}@media screen{body{background:#e5e7eb}.page{width:min(8.5in,calc(100vw - 40px));min-height:11in;margin:20px auto;background:#fff;padding:.5in;box-shadow:0 10px 40px rgba(0,0,0,.15)}}@media print{.page{width:100%;padding:0;box-shadow:none}}.header{text-align:center;padding-bottom:12px;border-bottom:2px solid #d4a843;margin-bottom:20px}.title{text-align:center;font-size:22px;font-weight:900;color:#0b225a;margin-bottom:20px}.content{direction:rtl;text-align:right}.footer{text-align:center;padding-top:12px;border-top:1px solid #d6c288;margin-top:30px;font-size:10px;color:#8b92a5}</style></head><body><div class="page"><div class="header"><h2>لوبوك - المكتبة القانونية اليمنية</h2></div><div class="title">'+t+'</div><div class="content">'+c+'</div><div class="footer">تم تجهيز النسخة للطباعة من لوبوك | '+new Date().toLocaleDateString('ar')+'</div></div></body></html>'); w.document.close(); setTimeout(function(){w.print();},500); }catch(e){console.error(e);alert('تعذر التجهيز.');} }
+async function downloadTXT(i){ try{ await ensureFullDB(); var x=currentContracts[i]&&findContract(currentContracts[i].slug); if(!x) return; var t=(x.title||'عقد')+'\n'+'='.repeat(50)+'\n\n'; if(x.content){for(var j=0;j<x.content.length;j++) t+=x.content[j]+'\n\n';} t+='='.repeat(50)+'\nالمستشار اليمني القانوني\n'; var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'})); a.download=(x.title||'contract')+'.txt'; a.click(); }catch(e){console.error(e);alert('تعذر التنزيل.');} }
+async function downloadPDF(i){ try{ await ensureFullDB(); var x=currentContracts[i]&&findContract(currentContracts[i].slug); if(!x) return; var t=x.title||'عقد',c=''; if(x.content){for(var j=0;j<x.content.length;j++) c+='<div style="margin-bottom:10px;line-height:2;font-size:14px">'+x.content[j]+'</div>';} var w=window.open('','_blank'); w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>'+t+'</title><style>@page{size:Letter;margin:.55in .39in}body{font-family:Tahoma,Arial,sans-serif;margin:0;background:#fff}@media screen{body{background:#e5e7eb}.page{width:min(8.5in,calc(100vw - 40px));min-height:11in;margin:20px auto;background:#fff;padding:.5in;box-shadow:0 10px 40px rgba(0,0,0,.15)}}@media print{.page{width:100%;padding:0;box-shadow:none}}.header{text-align:center;padding-bottom:12px;border-bottom:2px solid #d4a843;margin-bottom:20px}.title{text-align:center;font-size:22px;font-weight:900;color:#0b225a;margin-bottom:20px}.content{direction:rtl;text-align:right}.footer{text-align:center;padding-top:12px;border-top:1px solid #d6c288;margin-top:30px;font-size:10px;color:#8b92a5}</style></head><body><div class="page"><div class="header"><h2>المستشار اليمني القانوني</h2></div><div class="title">'+t+'</div><div class="content">'+c+'</div><div class="footer">تم تجهيز النسخة للطباعة من المستشار اليمني القانوني | '+new Date().toLocaleDateString('ar')+'</div></div></body></html>'); w.document.close(); setTimeout(function(){w.print();},500); }catch(e){console.error(e);alert('تعذر التجهيز.');} }
 var stb=document.getElementById('scrollTop');
 window.addEventListener('scroll',function(){stb.classList.toggle('visible',window.scrollY>300);},{passive:true});
 loadCatalog().catch(function(e){console.error(e);document.getElementById('grid').innerHTML='<div class="empty-state">تعذر التحميل.</div>';});

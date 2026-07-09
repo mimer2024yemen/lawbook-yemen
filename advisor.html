@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>المستشار القانوني اليمني | لوبوك</title>
+<title>المستشار اليمني القانوني</title>
 <meta name="description" content="مستشار قانوني ذكي يجيب على أسئلتك القانونية بنصوص يمنية حقيقية — مجاني بالكامل">
 <meta name="theme-color" content="#0a1628">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>LB</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>م.ق</text></svg>">
 <link rel="stylesheet" href="styles.css">
 <style>
 /* ===== ChatGPT-like Layout ===== */
@@ -177,7 +177,7 @@ body{font-family:'Segoe UI',Tahoma,'Noto Sans Arabic',Arial,sans-serif;backgroun
     <div class="topbar">
       <div class="topbar-title">
         <span class="dot"></span>
-        المستشار القانوني اليمني
+        المستشار اليمني القانوني
       </div>
       <div class="topbar-actions">
         <button class="topbar-btn" onclick="clearCurrentChat()">🗑️ مسح</button>
@@ -190,8 +190,8 @@ body{font-family:'Segoe UI',Tahoma,'Noto Sans Arabic',Arial,sans-serif;backgroun
         <!-- Welcome -->
         <div class="welcome" id="welcome">
           <div class="welcome-icon">⚖️</div>
-          <h1>المستشار القانوني اليمني</h1>
-          <p>مساعدك القانوني الذكي. اسألني أي سؤال بالعربية الفصحى أو اللهجة اليمنية وسأجيبك بناءً على القوانين اليمنية الحقيقية.</p>
+          <h1>المستشار اليمني القانوني</h1>
+          <p>مساعد قانوني ذكي متخصص في القوانين والتشريعات اليمنية. اسألني أي سؤال قانوني وسأجيبك بناءً على القوانين اليمنية الحقيقية.</p>
           <div class="quick-grid">
             <button class="quick-btn" onclick="askQuick(this)">هل يحق للمؤجر طرد المستأجر قبل انتهاء عقد الإيجار؟</button>
             <button class="quick-btn" onclick="askQuick(this)">ما عقوبة السرقة في القانون اليمني؟</button>
@@ -229,7 +229,7 @@ body{font-family:'Segoe UI',Tahoma,'Noto Sans Arabic',Arial,sans-serif;backgroun
 <script>
 /* ===== State ===== */
 var ragIndex = null;
-var chats = JSON.parse(localStorage.getItem('lawbook_chats') || '[]');
+var chats = JSON.parse(localStorage.getItem('advisor_chats') || '[]');
 var currentChatId = null;
 var isStreaming = false;
 
@@ -288,7 +288,7 @@ function clearCurrentChat(){
 }
 
 function saveChats(){
-  try{ localStorage.setItem('lawbook_chats', JSON.stringify(chats.slice(0, 50))); } catch(e){}
+  try{ localStorage.setItem('advisor_chats', JSON.stringify(chats.slice(0, 50))); } catch(e){}
 }
 
 function renderChatList(){

@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>عرض المحتوى | لوبوك</title>
+<title>عرض المحتوى | المستشار اليمني القانوني</title>
 <meta name="theme-color" content="#0a1628">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>LB</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='45' fill='%23d4a843' font-weight='bold'>م.ق</text></svg>">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<nav class="navbar"><div class="navbar-inner"><a href="index.html" class="brand"><div class="brand-icon">LB</div><div class="brand-text"><div class="brand-name">لوبوك</div></div></a><a href="advisor.html" class="back-btn" style="margin-left:8px">⚖️ المستشار</a><a id="backLink" href="index.html" class="back-btn">← رجوع</a></div></nav>
+<nav class="navbar"><div class="navbar-inner"><a href="index.html" class="brand"><div class="brand-icon">م.ق</div><div class="brand-text"><div class="brand-name">المستشار اليمني القانوني</div></div></a><a href="advisor.html" class="back-btn" style="margin-left:8px">⚖️ المستشار</a><a id="backLink" href="index.html" class="back-btn">← رجوع</a></div></nav>
 
 <div class="viewer-wrap">
   <section class="viewer-hero">
@@ -28,7 +28,7 @@
   </div>
 </div>
 
-<footer class="footer-simple">جميع المواد المعروضة تُفتح محليًا داخل موقع لوبوك</footer>
+<footer class="footer-simple">جميع المواد المعروضة تُفتح محليًا داخل موقع المستشار اليمني القانوني</footer>
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
@@ -40,7 +40,7 @@ function params(){return new URLSearchParams(location.search)}
 function getBackLink(t,s){if(t==='law')return s?'laws.html?section='+encodeURIComponent(s):'laws.html';if(t==='contract')return'contracts.html';if(t==='post')return'posts.html';return'index.html';}
 function renderBadges(t,s,i){var h='<span class="badge badge-blue">'+(typeLabels[t]||'محتوى')+'</span>';if(s&&sectionLabels[s])h+='<span class="badge badge-gold">'+sectionLabels[s]+'</span>';if(i.articles&&i.articles.length)h+='<span class="badge badge-blue">'+i.articles.length+' مادة</span>';document.getElementById('badges').innerHTML=h;}
 function renderQuickLinks(t,s){var h='<a href="'+getBackLink(t,s)+'">📚 العودة إلى القسم</a><a href="index.html">🏠 الصفحة الرئيسية</a>';if(t!=='law')h+='<a href="laws.html">⚖️ تصفح القوانين</a>';if(t!=='contract')h+='<a href="contracts.html">📝 تصفح العقود</a>';if(t!=='post')h+='<a href="posts.html">📰 تصفح المقالات</a>';document.getElementById('quickLinks').innerHTML=h;}
-function renderItem(t,s,i){currentItem={type:t,section:s,item:i};document.title=(i.title||'عرض المحتوى')+' | لوبوك';document.getElementById('title').textContent=i.title||'بدون عنوان';document.getElementById('description').textContent=i.description||'';document.getElementById('backLink').href=getBackLink(t,s);renderBadges(t,s,i);renderQuickLinks(t,s,i);var h='';if(i.content&&i.content.length){for(var c=0;c<i.content.length;c++){if(!i.content[c])continue;h+='<div class="content-block"><p>'+esc(i.content[c])+'</p></div>';}}if(i.articles&&i.articles.length){h+='<div style="height:8px"></div><h2 style="margin:8px 0 14px;color:var(--navy-800);font-size:20px;font-weight:700">النصوص والمواد</h2><div class="articles-list">';for(var a=0;a<i.articles.length;a++){var ar=i.articles[a];h+='<div class="article-item"><h4>مادة ('+esc(ar.number||String(a+1))+')</h4><p>'+esc(ar.text||'')+'</p></div>';}h+='</div>';}document.getElementById('contentArea').innerHTML=h||'<div class="empty-state">لا يوجد محتوى.</div>';}
+function renderItem(t,s,i){currentItem={type:t,section:s,item:i};document.title=(i.title||'عرض المحتوى')+' | المستشار اليمني القانوني';document.getElementById('title').textContent=i.title||'بدون عنوان';document.getElementById('description').textContent=i.description||'';document.getElementById('backLink').href=getBackLink(t,s);renderBadges(t,s,i);renderQuickLinks(t,s,i);var h='';if(i.content&&i.content.length){for(var c=0;c<i.content.length;c++){if(!i.content[c])continue;h+='<div class="content-block"><p>'+esc(i.content[c])+'</p></div>';}}if(i.articles&&i.articles.length){h+='<div style="height:8px"></div><h2 style="margin:8px 0 14px;color:var(--navy-800);font-size:20px;font-weight:700">النصوص والمواد</h2><div class="articles-list">';for(var a=0;a<i.articles.length;a++){var ar=i.articles[a];h+='<div class="article-item"><h4>مادة ('+esc(ar.number||String(a+1))+')</h4><p>'+esc(ar.text||'')+'</p></div>';}h+='</div>';}document.getElementById('contentArea').innerHTML=h||'<div class="empty-state">لا يوجد محتوى.</div>';}
 function findItem(db,t,s,slug){if(t==='law'){if(s&&db.laws[s]){for(var i=0;i<db.laws[s].length;i++)if(db.laws[s][i].slug===slug)return db.laws[s][i];}var keys=Object.keys(db.laws||{});for(var k=0;k<keys.length;k++){var a=db.laws[keys[k]]||[];for(var j=0;j<a.length;j++)if(a[j].slug===slug)return a[j];}}var arr=t==='contract'?(db.contracts||[]):(db.posts||[]);for(var x=0;x<arr.length;x++)if(arr[x].slug===slug)return arr[x];return null;}
 async function load(){var p=params(),t=p.get('type')||'law',s=p.get('section')||'',slug=p.get('slug')||'';try{var r=await fetch('database.json'),db=await r.json(),item=findItem(db,t,s,slug);if(!item){document.getElementById('title').textContent='المحتوى غير موجود';document.getElementById('contentArea').innerHTML='<div class="empty-state">تأكد من الرابط.</div>';renderQuickLinks(t,s,{});return;}renderItem(t,s,item);}catch(e){document.getElementById('title').textContent='تعذر التحميل';document.getElementById('contentArea').innerHTML='<div class="empty-state">يرجى إعادة المحاولة.</div>';}}
 function downloadTXT(){if(!currentItem)return;var x=currentItem.item,parts=[x.title||'محتوى قانوني','='.repeat(40),''];if(x.description)parts.push(x.description,'');if(x.content){for(var i=0;i<x.content.length;i++)parts.push(x.content[i],'');}if(x.articles&&x.articles.length){parts.push('المواد','');for(var j=0;j<x.articles.length;j++)parts.push('مادة ('+(x.articles[j].number||String(j+1))+')',x.articles[j].text||'','');}var b=new Blob([parts.join('\n')],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=(x.slug||'content')+'.txt';a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1000);}
