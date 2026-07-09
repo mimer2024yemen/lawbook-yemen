@@ -183,25 +183,29 @@ async function doLogin(){
   var p = document.getElementById('loginPass').value;
   if(!u||!p){ document.getElementById('loginErr').style.display='block'; return; }
   try {
-    var session;
     if(useBackend && Backend.isConfigured()){
       var result = await Backend.signIn(u, p);
       if(result.error){ document.getElementById('loginErr').style.display='block'; return; }
-      session = {username:u, name:u, role:'admin', permissions:['read','write','delete','approve','settings','users','audit']};
-    } else {
-      session = await AdminEngine.login(u, p);
-    }
-    if(session){
+      var profile = result.profile || {};
       document.getElementById('loginPage').style.display='none';
       document.getElementById('adminApp').style.display='flex';
-      document.getElementById('uName').textContent=session.name||u;
-      document.getElementById('uRole').textContent=session.role||'admin';
+      document.getElementById('uName').textContent=profile.name || u;
+      document.getElementById('uRole').textContent=profile.role || 'admin';
       nav('dashboard');
-      if(window.innerWidth<=900) document.getElementById('menuBtn').style.display='block';
     } else {
-      document.getElementById('loginErr').style.display='block';
+      var s = await AdminEngine.login(u, p);
+      if(s){
+        document.getElementById('loginPage').style.display='none';
+        document.getElementById('adminApp').style.display='flex';
+        document.getElementById('uName').textContent=s.name;
+        document.getElementById('uRole').textContent=s.role;
+        nav('dashboard');
+      } else {
+        document.getElementById('loginErr').style.display='block';
+      }
     }
-  } catch(e){ document.getElementById('loginErr').style.display='block'; }
+    if(window.innerWidth<=900) document.getElementById('menuBtn').style.display='block';
+  } catch(e){ console.error(e); document.getElementById('loginErr').style.display='block'; }
 }
 async function doLogout(){
   if(useBackend) await Backend.signOut();
@@ -214,15 +218,20 @@ async function checkAuth(){
     var ok = await Backend.initialize();
     if(ok && Backend.isConfigured()){
       useBackend = true;
+      console.log('✅ Supabase connected');
       var session = await Backend.getSession();
       if(session){
+        var user = await Backend.getUser();
         document.getElementById('loginPage').style.display='none';
         document.getElementById('adminApp').style.display='flex';
+        document.getElementById('uName').textContent=(user.profile||{}).name || user.email;
+        document.getElementById('uRole').textContent=(user.profile||{}).role || 'admin';
         nav('dashboard');
+        if(window.innerWidth<=900) document.getElementById('menuBtn').style.display='block';
         return;
       }
     }
-  } catch(e){}
+  } catch(e){ console.log('Supabase not available, using local mode'); }
   // Fallback to local
   await AdminEngine.initialize('777287583');
   var s = await AdminEngine.getCurrentSession();
@@ -232,6 +241,7 @@ async function checkAuth(){
     document.getElementById('uName').textContent=s.name;
     document.getElementById('uRole').textContent=s.role;
     nav('dashboard');
+    if(window.innerWidth<=900) document.getElementById('menuBtn').style.display='block';
   }
 }
 
@@ -318,12 +328,17 @@ async function renderAnalytics(c){
 
 /* ===== Knowledge ===== */
 async function renderKnowledge(c){
-  var items=useBackend ? await Backend.getKnowledge() : await AdminEngine.getKnowledgeByStatus();
+  var items = useBackend ? await Backend.getKnowledge() : await AdminEngine.getKnowledgeByStatus();
   c.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 style="font-size:15px;font-weight:700">قاعدة المعرفة القانونية</h2><div style="display:flex;gap:6px"><button class="kb approve" onclick="filterKW(\'approved\')">✅ معتمدة</button><button class="kb" style="background:var(--blue-500);color:#fff" onclick="filterKW(\'pending\')">⏳ مراجعة</button><button class="kb" style="background:var(--navy-800);color:#fff" onclick="filterKW(\'\')">الكل</button></div></div><div id="kwList"></div>';
   renderKWList(items);
 }
 async function filterKW(status){
-  var items=useBackend ? await Backend.getKnowledge(status) : (status ? await AdminEngine.getKnowledgeByStatus(status) : await AdminEngine.getKnowledgeByStatus());
+  var items;
+  if(useBackend){
+    items = status ? await Backend.getKnowledge(status) : await Backend.getKnowledge();
+  } else {
+    items = status ? await AdminEngine.getKnowledgeByStatus(status) : await AdminEngine.getKnowledgeByStatus();
+  }
   renderKWList(items);
 }
 function renderKWList(items){
@@ -348,7 +363,12 @@ function renderKWList(items){
 }
 async function doWF(id,state){
   var reason=state==='rejected'?prompt('سبب الرفض:'):null;
-  if(useBackend) await Backend.updateKnowledgeWorkflow(id,state,(await Backend.getUser()||{}).email||'admin'); else await AdminEngine.updateWorkflow(id,state,(await AdminEngine.getCurrentSession()||{}).username,reason);
+  var user = useBackend ? (await Backend.getUser()||{}).email||'admin' : (await AdminEngine.getCurrentSession()||{}).username||'admin';
+  if(useBackend){
+    await Backend.updateKnowledgeWorkflow(id,state,user);
+  } else {
+    await AdminEngine.updateWorkflow(id,state,user,reason);
+  }
   nav('knowledge');
   updateBadge();
 }
@@ -394,13 +414,18 @@ function showPreview(name){
 }
 async function commitFile(){
   if(!uploaded||!uploaded.articles)return;
-  var user=(await AdminEngine.getCurrentSession()||{}).username||'system';
+  var user = useBackend ? (await Backend.getUser()||{}).email||'admin' : (await AdminEngine.getCurrentSession()||{}).username||'system';
   for(var i=0;i<uploaded.articles.length;i++){
-    (useBackend ? Backend.addKnowledge : AdminEngine.addKnowledgeEntry)({
+    var data = {
       query:'رفع ملف',lawTitle:uploaded.lawTitle||'قانون مرفوع',
       articleNumber:uploaded.articles[i].number,articleText:uploaded.articles[i].text,
       section:uploaded.section||'',source:'رفع ملف: '+uploaded.filename,status:'active'
-    },user);
+    };
+    if(useBackend){
+      await Backend.addKnowledge(data,user);
+    } else {
+      await AdminEngine.addKnowledgeEntry(data,user);
+    }
   }
   alert('تمت إضافة '+uploaded.articles.length+' مادة');clearFile();updateBadge();
 }
@@ -457,7 +482,7 @@ function fg(id,label,val,type,options){
   return '<div class="fg"><label class="fl">'+label+'</label><input type="text" id="'+id+'" class="fi" value="'+esc(val)+'"></div>';
 }
 async function saveSet(){
-  if(useBackend) await Backend.saveSettings({
+  var settings = {
     advisorName:document.getElementById('setAN').value,
     advisorPersonality:document.getElementById('setAP').value,
     responseStyle:document.getElementById('setRS').value,
@@ -467,7 +492,9 @@ async function saveSet(){
     trustedSources:document.getElementById('setTS').value.split('\n').filter(Boolean),
     showConfidence:document.getElementById('setSC').checked,
     showSources:document.getElementById('setSS').checked
-  });
+  };
+  if(useBackend) await Backend.saveSettings(settings);
+  else await AdminEngine.saveSettings(settings);
   alert('تم الحفظ');
 }
 
@@ -484,12 +511,18 @@ async function renderUsers(c){
 }
 function showAddUser(){document.getElementById('addUserForm').style.display='block';}
 async function addUser(){
-  if(useBackend) await Backend.addUser({username:document.getElementById('nuUser').value,name:document.getElementById('nuName').value,password:document.getElementById('nuPass').value,role:document.getElementById('nuRole').value});
+  var userData = {username:document.getElementById('nuUser').value,name:document.getElementById('nuName').value,password:document.getElementById('nuPass').value,role:document.getElementById('nuRole').value};
+  if(useBackend) await Backend.addUser(userData);
+  else await AdminEngine.addUser(userData);
   alert('تمت الإضافة');nav('users');
 }
 async function toggleUser(u){
-  var user=(await AdminEngine.getUsers()).find(function(x){return x.username===u;});
-  if(user) if(useBackend) await Backend.updateUser(user.id,{active:!user.active}); else await AdminEngine.updateUser(u,{active:!user.active});
+  var users = useBackend ? await Backend.getUsers() : await AdminEngine.getUsers();
+  var user = users.find(function(x){return x.username===u;});
+  if(user){
+    if(useBackend) await Backend.updateUser(user.id,{active:!user.active});
+    else await AdminEngine.updateUser(u,{active:!user.active});
+  }
   nav('users');
 }
 
@@ -504,9 +537,11 @@ async function renderAudit(c){
 /* ===== Badge ===== */
 async function updateBadge(){
   try{
-    var items=await AdminEngine.getKnowledgeByStatus('pending');
+    var items;
+    if(useBackend) items = await Backend.getKnowledge('pending');
+    else items = await AdminEngine.getKnowledgeByStatus('pending');
     var b=document.getElementById('pendingBadge');
-    if(b) b.textContent=items.length||'';
+    if(b) b.textContent=(items&&items.length)||'';
   }catch(e){}
 }
 

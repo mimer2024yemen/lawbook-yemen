@@ -9,8 +9,8 @@
 
   /* ===== Supabase Configuration ===== */
   var CONFIG = {
-    SUPABASE_URL: '***',   // Replace with your Supabase URL
-    SUPABASE_ANON_KEY: '***', // Replace with your Supabase anon key
+    SUPABASE_URL: 'https://ocucwsjzrqrnivgytapk.supabase.co',
+    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jdWN3c2p6cnFybml2Z3l0YXBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2MDYwMjAsImV4cCI6MjA5OTE4MjAyMH0.DfxsE1LzQaV1NFeNudzkDBEijm1fI-K_Snzn_I6UjMY',
     TABLES: {
       users: 'admin_users',
       knowledge: 'knowledge_base',
@@ -45,7 +45,7 @@
   }
 
   function isConfigured(){
-    return CONFIG.SUPABASE_URL !== 'YOUR_SUPABASE_URL' && CONFIG.SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY';
+    return CONFIG.SUPABASE_URL !== 'YOUR_SUPABASE_URL' && CONFIG.SUPABASE_URL.length > 10;
   }
 
   /* ===== Authentication ===== */
@@ -54,10 +54,12 @@
     
     // Use Supabase Auth with email format
     var email = username + '@lawbook-ye.local';
+    
+    // Try sign in first
     var result = await supabase.auth.signInWithPassword({email: email, password: password});
     
     if(result.error){
-      // Try signing up first (first-time setup)
+      // If user doesn't exist, create them
       var signUp = await supabase.auth.signUp({email: email, password: password});
       if(signUp.error) return {error: signUp.error.message};
       result = signUp;
@@ -66,27 +68,25 @@
     currentSession = result.data.session;
     currentUser = result.data.user;
     
-    // Get user profile from our users table
+    // Ensure user profile exists in our table
     if(currentUser){
-      var profile = await dbGet(CONFIG.TABLES.users, {user_id: currentUser.id});
-      if(profile){
-        currentUser.profile = profile;
-      } else {
-        // Create profile
+      var profile = await dbGet(CONFIG.TABLES.users, {username: username});
+      if(!profile){
         await dbInsert(CONFIG.TABLES.users, {
           user_id: currentUser.id,
           username: username,
-          name: username,
-          role: 'admin',
-          permissions: ['read','write','delete','approve','settings','users','audit'],
+          name: username === 'admin' ? 'المدير الرئيسي' : username,
+          role: username === 'admin' ? 'admin' : 'viewer',
+          permissions: username === 'admin' ? ['read','write','delete','approve','settings','users','audit'] : ['read'],
+          active: true,
           created_at: new Date().toISOString()
         });
-        currentUser.profile = {username: username, role: 'admin'};
       }
+      currentUser.profile = profile || {username: username, role: username === 'admin' ? 'admin' : 'viewer'};
     }
     
-    await logAudit('login', username, {});
-    return {user: currentUser, session: currentSession};
+    await logAudit('login', username, {role: currentUser.profile.role});
+    return {user: currentUser, session: currentSession, profile: currentUser.profile};
   }
 
   async function signOut(){
