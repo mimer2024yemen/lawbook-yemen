@@ -266,26 +266,21 @@ async function init(){
 }
 
 async function loadFromSupabase(){
-  // Load all laws and articles from Supabase
+  console.log('Loading laws from Supabase...');
   var laws = await Backend.getLaws();
-  var allArticles = [];
+  console.log('Loaded ' + laws.length + ' laws');
   
-  // Load articles for each law
-  for(var i = 0; i < laws.length; i++){
-    var articles = await Backend.getLawArticles(laws[i].slug, 500);
-    for(var j = 0; j < articles.length; j++){
-      allArticles.push({
-        title: articles[j].article_text || '',
-        description: articles[j].article_text || '',
-        searchText: articles[j].article_text || '',
-        slug: articles[j].law_slug || '',
-        section: articles[j].section || '',
-        sectionLabel: articles[j].section || '',
-        articleCount: 0,
-        articles: [{number: articles[j].article_number, text: articles[j].article_text}]
-      });
-    }
-  }
+  // Load ALL articles in one query (not per-law)
+  console.log('Loading all articles...');
+  var allArticles = await Backend.dbSelect('law_articles', null, {limit: 20000});
+  console.log('Loaded ' + allArticles.length + ' articles');
+  
+  // Group articles by law_slug
+  var articlesByLaw = {};
+  allArticles.forEach(function(a){
+    if(!articlesByLaw[a.law_slug]) articlesByLaw[a.law_slug] = [];
+    articlesByLaw[a.law_slug].push({number: a.article_number, text: a.article_text});
+  });
   
   // Build database object for RAG
   var db = { laws: {}, contracts: [], posts: [] };
@@ -298,7 +293,7 @@ async function loadFromSupabase(){
       section: l.section,
       sectionLabel: l.section_label || l.section,
       url: 'viewer.html?type=law&section='+encodeURIComponent(l.section)+'&slug='+encodeURIComponent(l.slug),
-      articles: allArticles.filter(function(a){ return a.slug === l.slug; }).map(function(a){ return a.articles[0]; })
+      articles: articlesByLaw[l.slug] || []
     });
   });
   
