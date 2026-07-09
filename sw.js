@@ -14,6 +14,7 @@ var STATIC_ASSETS = [
   '/legal-response.js',
   '/data-loader.js',
   '/knowledge-manager.js',
+  '/admin-engine.js',
   '/admin.html',
   '/advisor.html',
   '/laws.html',

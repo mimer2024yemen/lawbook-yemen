@@ -8,305 +8,763 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e3a8a'/><text x='50' y='65' text-anchor='middle' font-size='35' fill='%23d4a843' font-weight='bold'>م.ق</text></svg>">
 <link rel="stylesheet" href="styles.css">
 <style>
-.admin-page{max-width:1100px;margin:0 auto;padding:20px}
-.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
-.admin-header h1{font-size:1.5rem;font-weight:800}
-.admin-tabs{display:flex;gap:6px;flex-wrap:wrap}
-.admin-tab{padding:8px 16px;border-radius:20px;background:var(--surface);border:1px solid var(--border-light);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
-.admin-tab:hover{background:var(--navy-50)}
-.admin-tab.active{background:var(--navy-800);color:#fff;border-color:var(--navy-800)}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}
-.stat-card{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:16px;text-align:center}
-.stat-num{font-size:2rem;font-weight:800;color:var(--gold-500)}
-.stat-label{font-size:12px;color:var(--text-tertiary);margin-top:4px}
-.knowledge-card{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:16px;margin-bottom:12px;transition:all .15s}
-.knowledge-card:hover{box-shadow:var(--shadow-sm)}
-.kc-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
-.kc-title{font-size:15px;font-weight:700;flex:1}
-.kc-badges{display:flex;gap:6px;flex-wrap:wrap}
-.kc-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.kc-badge.high{background:var(--green-100);color:var(--green-600)}
-.kc-badge.medium{background:var(--amber-100);color:#92400e}
-.kc-badge.low{background:var(--red-100);color:var(--red-600)}
-.kc-badge.pending{background:var(--blue-100);color:var(--blue-600)}
-.kc-badge.approved{background:var(--green-100);color:var(--green-600)}
-.kc-badge.rejected{background:var(--red-100);color:var(--red-600)}
-.kc-body{margin-bottom:12px}
-.kc-field{margin-bottom:8px}
-.kc-label{font-size:11px;font-weight:700;color:var(--text-tertiary);margin-bottom:2px}
-.kc-value{font-size:13px;color:var(--text-primary);line-height:1.7}
-.kc-issues{background:var(--amber-100);border-radius:8px;padding:10px;margin-top:8px}
-.kc-issues-title{font-size:12px;font-weight:700;color:#92400e;margin-bottom:4px}
-.kc-issue{font-size:12px;color:#92400e;margin-bottom:2px}
-.kc-actions{display:flex;gap:8px;flex-wrap:wrap}
-.kc-btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:none;font-family:inherit}
-.kc-btn.approve{background:var(--green-500);color:#fff}
-.kc-btn.approve:hover{background:var(--green-600)}
-.kc-btn.reject{background:var(--red-500);color:#fff}
-.kc-btn.reject:hover{background:var(--red-600)}
-.kc-btn.edit{background:var(--blue-500);color:#fff}
-.kc-btn.edit:hover{background:var(--blue-600)}
-.empty-state{text-align:center;padding:40px;color:var(--text-tertiary)}
-.confidence-bar{height:6px;border-radius:3px;background:var(--border-light);margin-top:6px;overflow:hidden}
-.confidence-fill{height:100%;border-radius:3px;transition:width .3s}
-.confidence-fill.high{background:var(--green-500)}
-.confidence-fill.medium{background:var(--amber-500)}
-.confidence-fill.low{background:var(--red-500)}
-@media(max-width:768px){
-  .admin-header{flex-direction:column;align-items:stretch}
-  .stats-grid{grid-template-columns:1fr 1fr}
-  .kc-header{flex-direction:column}
-  .kc-actions{flex-direction:column}
-  .kc-btn{width:100%;text-align:center}
+/* ===== Admin Dashboard Styles ===== */
+.admin-app{display:flex;min-height:100vh;background:var(--bg)}
+
+/* Sidebar */
+.admin-sidebar{width:240px;background:var(--navy-950);border-left:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh}
+.sidebar-brand{padding:16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:10px}
+.sidebar-brand-icon{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--gold-400),var(--gold-200));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--navy-900)}
+.sidebar-brand-text{color:#fff;font-size:14px;font-weight:700}
+.sidebar-brand-sub{color:var(--gold-300);font-size:10px}
+.sidebar-nav{flex:1;padding:8px;overflow-y:auto}
+.sidebar-section{padding:8px 8px 4px;font-size:10px;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1px}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;transition:all .15s;margin-bottom:2px}
+.sidebar-item:hover{background:rgba(255,255,255,.05);color:rgba(255,255,255,.8)}
+.sidebar-item.active{background:rgba(212,168,67,.1);color:var(--gold-300)}
+.sidebar-item .item-icon{font-size:16px;width:20px;text-align:center}
+.sidebar-item .item-badge{margin-right:auto;background:var(--red-500);color:#fff;padding:1px 6px;border-radius:10px;font-size:10px;font-weight:700}
+.sidebar-footer{padding:12px;border-top:1px solid rgba(255,255,255,.06)}
+.sidebar-user{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;background:rgba(255,255,255,.03)}
+.sidebar-user-avatar{width:32px;height:32px;border-radius:8px;background:var(--navy-700);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--gold-300)}
+.sidebar-user-info{flex:1}
+.sidebar-user-name{color:#fff;font-size:12px;font-weight:600}
+.sidebar-user-role{color:rgba(255,255,255,.4);font-size:10px}
+
+/* Main Content */
+.admin-main{flex:1;display:flex;flex-direction:column;min-width:0}
+.admin-topbar{padding:16px 24px;background:var(--surface);border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.admin-topbar h1{font-size:1.2rem;font-weight:700}
+.admin-topbar-actions{display:flex;gap:8px}
+.admin-content{flex:1;padding:24px;overflow-y:auto}
+
+/* Dashboard Cards */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.dash-card{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:16px;transition:all .15s}
+.dash-card:hover{box-shadow:var(--shadow-sm)}
+.dash-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.dash-card-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.dash-card-icon.blue{background:var(--blue-100);color:var(--blue-600)}
+.dash-card-icon.gold{background:var(--gold-100);color:var(--gold-600)}
+.dash-card-icon.green{background:var(--green-100);color:var(--green-600)}
+.dash-card-icon.red{background:var(--red-100);color:var(--red-600)}
+.dash-card-icon.navy{background:var(--navy-100);color:var(--navy-600)}
+.dash-card-value{font-size:1.8rem;font-weight:800;color:var(--text-primary);line-height:1}
+.dash-card-label{font-size:12px;color:var(--text-tertiary);margin-top:4px}
+.dash-card-change{font-size:11px;margin-top:4px}
+.dash-card-change.up{color:var(--green-600)}
+.dash-card-change.down{color:var(--red-600)}
+
+/* Chart placeholder */
+.chart-container{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:20px;margin-bottom:24px}
+.chart-title{font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:120px;padding-top:8px}
+.chart-bar{flex:1;background:linear-gradient(to top,var(--blue-500),var(--blue-400));border-radius:4px 4px 0 0;min-height:4px;transition:height .3s;position:relative}
+.chart-bar:hover{opacity:.8}
+.chart-bar-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--text-tertiary);white-space:nowrap}
+.chart-bar-value{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;color:var(--text-secondary)}
+
+/* Data Table */
+.data-table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border-light);border-radius:12px;overflow:hidden;margin-bottom:24px}
+.data-table th{background:var(--bg);padding:10px 14px;font-size:12px;font-weight:700;color:var(--text-tertiary);text-align:right;border-bottom:1px solid var(--border-light)}
+.data-table td{padding:10px 14px;font-size:13px;border-bottom:1px solid var(--border-light)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--bg)}
+
+/* Knowledge Cards */
+.k-card{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:16px;margin-bottom:12px}
+.k-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.k-card-title{font-size:15px;font-weight:700;flex:1}
+.k-card-badges{display:flex;gap:6px}
+.k-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.k-badge.high{background:var(--green-100);color:var(--green-600)}
+.k-badge.medium{background:var(--amber-100);color:#92400e}
+.k-badge.low{background:var(--red-100);color:var(--red-600)}
+.k-badge.pending{background:var(--blue-100);color:var(--blue-600)}
+.k-badge.approved{background:var(--green-100);color:var(--green-600)}
+.k-card-body{margin-bottom:12px}
+.k-field{margin-bottom:6px}
+.k-label{font-size:11px;font-weight:700;color:var(--text-tertiary)}
+.k-value{font-size:13px;color:var(--text-primary)}
+.k-actions{display:flex;gap:8px;flex-wrap:wrap}
+.k-btn{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.k-btn.approve{background:var(--green-500);color:#fff}
+.k-btn.approve:hover{background:var(--green-600)}
+.k-btn.reject{background:var(--red-500);color:#fff}
+.k-btn.reject:hover{background:var(--red-600)}
+.k-btn.edit{background:var(--blue-500);color:#fff}
+.k-btn.primary{background:var(--gold-400);color:var(--navy-900)}
+
+/* Forms */
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:6px}
+.form-input{width:100%;padding:10px 14px;border:1px solid var(--border-light);border-radius:8px;font-size:14px;font-family:inherit;transition:all .15s}
+.form-input:focus{border-color:var(--blue-500);outline:none;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.form-textarea{min-height:100px;resize:vertical}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 12px center}
+
+/* Login */
+.login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--bg)}
+.login-card{background:var(--surface);border:1px solid var(--border-light);border-radius:16px;padding:32px;width:100%;max-width:380px;box-shadow:var(--shadow-lg)}
+.login-logo{text-align:center;margin-bottom:24px}
+.login-logo-icon{width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,var(--gold-400),var(--gold-200));display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:var(--navy-900);margin:0 auto 12px;box-shadow:var(--shadow-gold)}
+.login-logo h2{font-size:1.2rem;font-weight:700}
+.login-logo p{font-size:13px;color:var(--text-tertiary)}
+.login-error{background:var(--red-100);color:var(--red-600);padding:10px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none}
+
+/* File Upload */
+.upload-zone{border:2px dashed var(--border-light);border-radius:12px;padding:40px;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:16px}
+.upload-zone:hover{border-color:var(--gold-400);background:rgba(212,168,67,.03)}
+.upload-zone.dragover{border-color:var(--gold-400);background:rgba(212,168,67,.06)}
+.upload-icon{font-size:36px;margin-bottom:12px}
+.upload-text{font-size:14px;color:var(--text-secondary)}
+.upload-hint{font-size:12px;color:var(--text-tertiary);margin-top:4px}
+
+/* Preview */
+.preview-card{background:var(--bg);border:1px solid var(--border-light);border-radius:12px;padding:16px;margin-top:16px}
+.preview-title{font-size:14px;font-weight:700;margin-bottom:12px}
+.preview-stats{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.preview-stat{font-size:12px;color:var(--text-secondary)}
+.preview-stat strong{color:var(--text-primary)}
+.preview-articles{max-height:300px;overflow-y:auto}
+.preview-article{padding:8px;border-bottom:1px solid var(--border-light);font-size:12px}
+.preview-article:last-child{border-bottom:none}
+
+/* Suggestions */
+.suggestion-card{background:var(--surface);border:1px solid var(--border-light);border-radius:12px;padding:16px;margin-bottom:12px}
+.suggestion-title{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.suggestion-desc{font-size:13px;color:var(--text-secondary);margin-bottom:12px}
+.suggestion-items{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.suggestion-item{padding:4px 12px;background:var(--bg);border:1px solid var(--border-light);border-radius:20px;font-size:12px;color:var(--text-secondary)}
+.suggestion-action{font-size:12px;color:var(--blue-500);font-weight:600}
+
+/* Confidence bar */
+.conf-bar{height:6px;border-radius:3px;background:var(--border-light);overflow:hidden;margin-top:4px}
+.conf-fill{height:100%;border-radius:3px;transition:width .3s}
+.conf-fill.high{background:var(--green-500)}
+.conf-fill.medium{background:var(--amber-500)}
+.conf-fill.low{background:var(--red-500)}
+
+/* Responsive */
+@media(max-width:900px){
+  .admin-sidebar{display:none}
+  .admin-sidebar.open{display:flex;position:fixed;inset:0;z-index:100}
+  .admin-content{padding:16px}
+  .dash-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+  .dash-grid{grid-template-columns:1fr}
+  .admin-topbar{padding:12px 16px}
 }
 </style>
 </head>
 <body>
-<nav class="navbar"><div class="navbar-inner"><a href="index.html" class="brand"><div class="brand-icon">م.ق</div><div class="brand-text"><div class="brand-name">لوحة الإدارة</div></div></a><a href="advisor.html" class="back-btn">← المستشار</a><a href="index.html" class="back-btn">← الرئيسية</a></div></nav>
 
-<div class="admin-page">
-  <div class="admin-header">
-    <h1>📋 إدارة المعرفة القانونية</h1>
-    <div class="admin-tabs">
-      <button class="admin-tab active" onclick="showTab('pending')">⏳ قيد المراجعة</button>
-      <button class="admin-tab" onclick="showTab('approved')">✅ معتمدة</button>
-      <button class="admin-tab" onclick="showTab('stats')">📊 إحصائيات</button>
-      <button class="admin-tab" onclick="showTab('add')">➕ إضافة يدوية</button>
+<!-- Login Page -->
+<div id="loginPage" class="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">م.ق</div>
+      <h2>لوحة الإدارة</h2>
+      <p>المستشار اليمني القانوني</p>
     </div>
-  </div>
-
-  <div id="statsSection" style="display:none">
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-num" id="statApproved">0</div><div class="stat-label">معرفة معتمدة</div></div>
-      <div class="stat-card"><div class="stat-num" id="statPending">0</div><div class="stat-label">قيد المراجعة</div></div>
-      <div class="stat-card"><div class="stat-num" id="statUsage">0</div><div class="stat-label">مرة استخدام</div></div>
-      <div class="stat-card"><div class="stat-num" id="statConfidence">0%</div><div class="stat-label">متوسط الثقة</div></div>
+    <div class="login-error" id="loginError">اسم المستخدم أو كلمة المرور غير صحيحة</div>
+    <div class="form-group">
+      <label class="form-label">اسم المستخدم</label>
+      <input type="text" id="loginUser" class="form-input" placeholder="admin" autocomplete="username">
     </div>
-    <div id="topicStats"></div>
+    <div class="form-group">
+      <label class="form-label">كلمة المرور</label>
+      <input type="password" id="loginPass" class="form-input" placeholder="••••••" autocomplete="current-password">
+    </div>
+    <button class="k-btn primary" style="width:100%;padding:12px;font-size:15px" onclick="doLogin()">تسجيل الدخول</button>
+    <p style="text-align:center;margin-top:12px;font-size:11px;color:var(--text-tertiary)">المستخدم الافتراضي: admin / admin123</p>
   </div>
+</div>
 
-  <div id="pendingSection">
-    <div id="pendingList"><div class="empty-state">جاري التحميل...</div></div>
-  </div>
+<!-- Admin Dashboard -->
+<div id="adminApp" class="admin-app" style="display:none">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-icon">م.ق</div>
+      <div><div class="sidebar-brand-text">لوحة الإدارة</div><div class="sidebar-brand-sub">المستشار اليمني القانوني</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">عام</div>
+      <div class="sidebar-item active" onclick="showSection('dashboard')"><span class="item-icon">📊</span>لوحة التحكم</div>
+      <div class="sidebar-item" onclick="showSection('analytics')"><span class="item-icon">📈</span>الإحصائيات</div>
+      
+      <div class="sidebar-section">المعرفة</div>
+      <div class="sidebar-item" onclick="showSection('knowledge')"><span class="item-icon">📚</span>قاعدة المعرفة<span class="item-badge" id="pendingBadge">0</span></div>
+      <div class="sidebar-item" onclick="showSection('upload')"><span class="item-icon">📤</span>رفع ملفات</div>
+      <div class="sidebar-item" onclick="showSection('improvement')"><span class="item-icon">🧠</span>فرص التحسين</div>
+      
+      <div class="sidebar-section">الإعدادات</div>
+      <div class="sidebar-item" onclick="showSection('ai-settings')"><span class="item-icon">⚙️</span>إعدادات المستشار</div>
+      <div class="sidebar-item" onclick="showSection('audit')"><span class="item-icon">📋</span>سجل العمليات</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">👤</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="userName">المدير</div>
+          <div class="sidebar-user-role" id="userRole">admin</div>
+        </div>
+      </div>
+      <button class="k-btn" style="width:100%;margin-top:8px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.5)" onclick="doLogout()">تسجيل الخروج</button>
+    </div>
+  </aside>
 
-  <div id="approvedSection" style="display:none">
-    <div id="approvedList"><div class="empty-state">جاري التحميل...</div></div>
-  </div>
+  <!-- Main -->
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button onclick="document.getElementById('adminSidebar').classList.toggle('open')" style="display:none;background:none;border:none;font-size:20px;cursor:pointer" id="menuBtn">☰</button>
+        <h1 id="sectionTitle">لوحة التحكم</h1>
+      </div>
+      <div class="admin-topbar-actions">
+        <a href="advisor.html" class="k-btn" style="background:var(--bg);border:1px solid var(--border-light);color:var(--text-secondary);font-size:12px">🤖 المستشار</a>
+        <a href="index.html" class="k-btn" style="background:var(--bg);border:1px solid var(--border-light);color:var(--text-secondary);font-size:12px">🏠 الرئيسية</a>
+      </div>
+    </div>
 
-  <div id="addSection" style="display:none">
-    <div class="knowledge-card">
-      <h3 style="margin-bottom:16px">إضافة معرفة قانونية جديدة</h3>
-      <div class="kc-field">
-        <div class="kc-label">اسم القانون *</div>
-        <input type="text" id="addLawTitle" style="width:100%;padding:10px;border:1px solid var(--border-light);border-radius:8px;font-family:inherit;font-size:14px" placeholder="مثال: القانون المدني اليمني">
+    <div class="admin-content" id="adminContent">
+      <!-- Dashboard Section -->
+      <div id="sec-dashboard">
+        <div class="dash-grid" id="dashCards"></div>
+        <div class="chart-container">
+          <div class="chart-title"><span>الزيارات خلال 7 أيام</span></div>
+          <div class="chart-bars" id="visitChart"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <h3 style="font-size:14px;font-weight:700;margin-bottom:12px">أكثر الأسئلة بحثاً</h3>
+            <table class="data-table" id="topSearchesTable"><tr><th>السؤال</th><th>العدد</th></tr></table>
+          </div>
+          <div>
+            <h3 style="font-size:14px;font-weight:700;margin-bottom:12px">الأسئلة بدون إجابة</h3>
+            <table class="data-table" id="noResultTable"><tr><th>السؤال</th></tr></table>
+          </div>
+        </div>
       </div>
-      <div class="kc-field">
-        <div class="kc-label">رقم المادة</div>
-        <input type="text" id="addArticleNumber" style="width:100%;padding:10px;border:1px solid var(--border-light);border-radius:8px;font-family:inherit;font-size:14px" placeholder="مثال: 1256">
+
+      <!-- Analytics Section -->
+      <div id="sec-analytics" style="display:none">
+        <div class="dash-grid" id="analyticsCards"></div>
+        <div class="chart-container">
+          <div class="chart-title"><span>الاستشارات خلال 7 أيام</span></div>
+          <div class="chart-bars" id="queryChart"></div>
+        </div>
+        <h3 style="font-size:14px;font-weight:700;margin:16px 0 12px">توزيع النوايا</h3>
+        <table class="data-table" id="intentTable"><tr><th>النوع</th><th>العدد</th><th>النسبة</th></tr></table>
       </div>
-      <div class="kc-field">
-        <div class="kc-label">نص المادة *</div>
-        <textarea id="addArticleText" style="width:100%;padding:10px;border:1px solid var(--border-light);border-radius:8px;font-family:inherit;font-size:14px;min-height:100px;resize:vertical" placeholder="نص المادة القانونية الكامل"></textarea>
+
+      <!-- Knowledge Section -->
+      <div id="sec-knowledge" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <h2 style="font-size:16px;font-weight:700">قاعدة المعرفة القانونية</h2>
+          <div style="display:flex;gap:8px">
+            <button class="k-btn approve" onclick="loadKnowledgeList('approved')">✅ المعتمدة</button>
+            <button class="k-btn" style="background:var(--blue-500);color:#fff" onclick="loadKnowledgeList('pending')">⏳ قيد المراجعة</button>
+          </div>
+        </div>
+        <div id="knowledgeList"></div>
       </div>
-      <div class="kc-field">
-        <div class="kc-label">القسم</div>
-        <select id="addSection" style="width:100%;padding:10px;border:1px solid var(--border-light);border-radius:8px;font-family:inherit;font-size:14px">
-          <option value="">اختر القسم</option>
-          <option value="personal-status">الأحوال الشخصية</option>
-          <option value="civil">المدني</option>
-          <option value="criminal">الجزائي</option>
-          <option value="commercial">التجاري</option>
-          <option value="labor">العمل</option>
-          <option value="yemeni-laws">القوانين اليمنية</option>
-          <option value="litigation-procedures">التقاضي</option>
-        </select>
+
+      <!-- Upload Section -->
+      <div id="sec-upload" style="display:none">
+        <h2 style="font-size:16px;font-weight:700;margin-bottom:16px">رفع ملفات قانونية</h2>
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+          <div class="upload-icon">📁</div>
+          <div class="upload-text">اسحب الملف هنا أو اضغط لاختياره</div>
+          <div class="upload-hint">يدعم: TXT, JSON, CSV, PDF (نص), Word (نص)</div>
+        </div>
+        <input type="file" id="fileInput" style="display:none" accept=".txt,.json,.csv,.pdf,.doc,.docx" onchange="handleFileSelect(event)">
+        <div id="filePreview"></div>
+        <div id="fileActions" style="display:none;margin-top:16px">
+          <button class="k-btn approve" onclick="commitFileData()">✅ اعتماد وإضافة</button>
+          <button class="k-btn reject" onclick="clearFileUpload()">❌ إلغاء</button>
+        </div>
       </div>
-      <div class="kc-field">
-        <div class="kc-label">المصدر (رابط أو اسم)</div>
-        <input type="text" id="addSource" style="width:100%;padding:10px;border:1px solid var(--border-light);border-radius:8px;font-family:inherit;font-size:14px" placeholder="مثال: https://yemenilaw.com أو الجريدة الرسمية">
+
+      <!-- Improvement Section -->
+      <div id="sec-improvement" style="display:none">
+        <h2 style="font-size:16px;font-weight:700;margin-bottom:16px">فرص تحسين الذكاء</h2>
+        <div id="improvementList"></div>
       </div>
-      <div class="kc-field">
-        <div class="kc-label">سنة صدور القانون</div>
-        <input type="text" id="addYear" style="width:100%;padding:10px;border:1px solid var(--border-light);border-radius:8px;font-family:inherit;font-size:14px" placeholder="مثال: 1992">
+
+      <!-- AI Settings Section -->
+      <div id="sec-ai-settings" style="display:none">
+        <h2 style="font-size:16px;font-weight:700;margin-bottom:16px">إعدادات المستشار القانوني</h2>
+        <div style="max-width:600px">
+          <div class="form-group">
+            <label class="form-label">اسم المستشار</label>
+            <input type="text" id="setAdvisorName" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">شخصية المستشار</label>
+            <textarea id="setPersonality" class="form-input form-textarea"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">أسلوب الإجابة</label>
+            <select id="setStyle" class="form-input form-select">
+              <option value="detailed">مفصل</option>
+              <option value="concise">مختصر</option>
+              <option value="balanced">متوازن</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">مستوى التحفظ القانوني</label>
+            <select id="setConservatism" class="form-input form-select">
+              <option value="high">محفظ (آمن)</option>
+              <option value="medium">متوسط</option>
+              <option value="low">متساهل</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">مستوى التفصيل</label>
+            <select id="setDetail" class="form-input form-select">
+              <option value="high">عالي</option>
+              <option value="medium">متوسط</option>
+              <option value="low">منخفض</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">القوانين ذات الأولوية (سطر لكل قانون)</label>
+            <textarea id="setPriorityLaws" class="form-input form-textarea" placeholder="القانون المدني اليمني&#10;قانون الأحوال الشخصية"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">المصادر الموثوقة (سطر لكل مصدر)</label>
+            <textarea id="setTrustedSources" class="form-input form-textarea" placeholder="yemenilaw.com&#10;moj.gov.ye"></textarea>
+          </div>
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+              <input type="checkbox" id="setShowConfidence">
+              <span class="form-label" style="margin:0">عرض درجة الثقة في الإجابات</span>
+            </label>
+          </div>
+          <div class="form-group">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+              <input type="checkbox" id="setShowSources">
+              <span class="form-label" style="margin:0">عرض المصادر في الإجابات</span>
+            </label>
+          </div>
+          <button class="k-btn primary" onclick="saveAISettings()">💾 حفظ الإعدادات</button>
+        </div>
       </div>
-      <div class="kc-field">
-        <div class="kc-label">رقم القانون</div>
-        <input type="text" id="addLawNumber" style="width:100%;padding:10px;border:1px solid var(--border-light);border-radius:8px;font-family:inherit;font-size:14px" placeholder="مثال: 13 لسنة 1992">
-      </div>
-      <div style="margin-top:16px">
-        <button class="kc-btn approve" onclick="addManualKnowledge()">إضافة واعتماد</button>
+
+      <!-- Audit Section -->
+      <div id="sec-audit" style="display:none">
+        <h2 style="font-size:16px;font-weight:700;margin-bottom:16px">سجل العمليات</h2>
+        <table class="data-table" id="auditTable">
+          <tr><th>الوقت</th><th>المستخدم</th><th>العملية</th><th>التفاصيل</th></tr>
+        </table>
       </div>
     </div>
   </div>
 </div>
 
-<footer class="footer-simple">&copy; 2026 المستشار اليمني القانوني — لوحة الإدارة</footer>
-
+<script src="admin-engine.js"></script>
 <script src="knowledge-manager.js"></script>
 <script>
-var currentTab = 'pending';
-
-function showTab(tab){
-  currentTab = tab;
-  document.querySelectorAll('.admin-tab').forEach(function(t){ t.classList.remove('active'); });
-  event.target.classList.add('active');
-  
-  document.getElementById('pendingSection').style.display = tab === 'pending' ? 'block' : 'none';
-  document.getElementById('approvedSection').style.display = tab === 'approved' ? 'block' : 'none';
-  document.getElementById('statsSection').style.display = tab === 'stats' ? 'block' : 'none';
-  document.getElementById('addSection').style.display = tab === 'add' ? 'block' : 'none';
-  
-  if(tab === 'pending') loadPending();
-  if(tab === 'approved') loadApproved();
-  if(tab === 'stats') loadStats();
+/* ===== Auth ===== */
+function doLogin(){
+  var user = document.getElementById('loginUser').value;
+  var pass = document.getElementById('loginPass').value;
+  var session = AdminEngine.login(user, pass);
+  if(session){
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'flex';
+    document.getElementById('userName').textContent = session.name;
+    document.getElementById('userRole').textContent = session.role;
+    initDashboard();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
 }
 
-async function loadPending(){
-  var items = await KnowledgeManager.getPendingItems();
-  var el = document.getElementById('pendingList');
+function doLogout(){
+  AdminEngine.logout();
+  location.reload();
+}
+
+function checkAuth(){
+  if(AdminEngine.requireAuth()){
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'flex';
+    var user = AdminEngine.getCurrentUser();
+    document.getElementById('userName').textContent = user.name;
+    document.getElementById('userRole').textContent = user.role;
+    initDashboard();
+  }
+}
+
+/* ===== Navigation ===== */
+var currentSection = 'dashboard';
+
+function showSection(section){
+  currentSection = section;
+  // Hide all sections
+  document.querySelectorAll('[id^="sec-"]').forEach(function(el){ el.style.display = 'none'; });
+  // Show target
+  var el = document.getElementById('sec-' + section);
+  if(el) el.style.display = 'block';
+  // Update sidebar
+  document.querySelectorAll('.sidebar-item').forEach(function(item){ item.classList.remove('active'); });
+  event.target.closest('.sidebar-item').classList.add('active');
+  // Update title
+  var titles = {
+    'dashboard':'لوحة التحكم','analytics':'الإحصائيات','knowledge':'قاعدة المعرفة',
+    'upload':'رفع ملفات','improvement':'فرص التحسين','ai-settings':'إعدادات المستشار','audit':'سجل العمليات'
+  };
+  document.getElementById('sectionTitle').textContent = titles[section] || section;
+  // Load section data
+  if(section === 'dashboard') loadDashboard();
+  if(section === 'analytics') loadAnalytics();
+  if(section === 'knowledge') loadKnowledgeList('pending');
+  if(section === 'improvement') loadImprovements();
+  if(section === 'ai-settings') loadAISettings();
+  if(section === 'audit') loadAuditLog();
+}
+
+/* ===== Dashboard ===== */
+function initDashboard(){
+  loadDashboard();
+  loadPendingBadge();
+  // Responsive menu
+  if(window.innerWidth <= 900) document.getElementById('menuBtn').style.display = 'block';
+}
+
+function loadDashboard(){
+  var data = AdminEngine.getDashboardData();
+  
+  document.getElementById('dashCards').innerHTML = [
+    dashCard('📊','blue',data.todayPageviews,'زيارات اليوم',''),
+    dashCard('🔍','gold',data.todaySearches,'بحث اليوم',''),
+    dashCard('🤖','green',data.todayQueries,'استشارات اليوم',''),
+    dashCard('📈','navy',data.weekPageviews,'زيارات الأسبوع',''),
+    dashCard('✅','green',data.successRate+'%','نسبة نجاح البحث',''),
+    dashCard('❌','red',data.totalNoResults,'أسئلة بدون إجابة',''),
+  ].join('');
+  
+  // Chart
+  renderChart('visitChart', data.dailyChart, 'pageviews');
+  
+  // Top searches
+  var searchHtml = '<tr><th>السؤال</th><th>العدد</th></tr>';
+  data.topSearches.forEach(function(s){
+    searchHtml += '<tr><td>'+esc(s.query)+'</td><td>'+s.count+'</td></tr>';
+  });
+  document.getElementById('topSearchesTable').innerHTML = searchHtml;
+  
+  // No results
+  var noResultHtml = '<tr><th>السؤال</th></tr>';
+  data.noResultQueries.slice(0,10).forEach(function(q){
+    noResultHtml += '<tr><td>'+esc(q)+'</td></tr>';
+  });
+  document.getElementById('noResultTable').innerHTML = noResultHtml;
+}
+
+function dashCard(icon,color,value,label,change){
+  return '<div class="dash-card"><div class="dash-card-header"><div class="dash-card-icon '+color+'">'+icon+'</div></div><div class="dash-card-value">'+value+'</div><div class="dash-card-label">'+label+'</div>'+(change?'<div class="dash-card-change">'+change+'</div>':'')+'</div>';
+}
+
+function renderChart(containerId,data,key){
+  var el = document.getElementById(containerId);
+  if(!data||!data.length){el.innerHTML='<div style="text-align:center;color:var(--text-tertiary);padding:40px">لا توجد بيانات</div>';return;}
+  var max = Math.max.apply(null,data.map(function(d){return d[key]||0;}))||1;
+  var html = '';
+  data.forEach(function(d){
+    var val = d[key]||0;
+    var h = Math.max(4, val/max*100);
+    var day = d.date.slice(5);
+    html += '<div class="chart-bar" style="height:'+h+'%"><span class="chart-bar-value">'+val+'</span><span class="chart-bar-label">'+day+'</span></div>';
+  });
+  el.innerHTML = html;
+}
+
+/* ===== Analytics ===== */
+function loadAnalytics(){
+  var data = AdminEngine.getDashboardData();
+  
+  document.getElementById('analyticsCards').innerHTML = [
+    dashCard('📊','blue',data.totalPageviews,'إجمالي الزيارات',''),
+    dashCard('🔍','gold',data.totalSearches,'إجمالي البحث',''),
+    dashCard('🤖','green',data.totalQueries,'إجمالي الاستشارات',''),
+    dashCard('📈','navy',data.monthPageviews,'زيارات الشهر',''),
+    dashCard('✅','green',data.successRate+'%','نسبة النجاح',''),
+    dashCard('⚠️','red',data.noResultRate+'%','نسبة عدم الإجابة',''),
+  ].join('');
+  
+  renderChart('queryChart', data.dailyChart, 'queries');
+  
+  // Intent table
+  var intentHtml = '<tr><th>النوع</th><th>العدد</th><th>النسبة</th></tr>';
+  var total = data.topIntents.reduce(function(s,i){return s+i.count;},0)||1;
+  data.topIntents.forEach(function(i){
+    var pct = Math.round(i.count/total*100);
+    intentHtml += '<tr><td>'+esc(i.intent)+'</td><td>'+i.count+'</td><td>'+pct+'%</td></tr>';
+  });
+  document.getElementById('intentTable').innerHTML = intentHtml;
+}
+
+/* ===== Knowledge ===== */
+async function loadKnowledgeList(type){
+  var items;
+  if(type === 'pending'){
+    items = await KnowledgeManager.getPendingItems();
+  } else {
+    items = await KnowledgeManager.getApprovedItems();
+  }
+  
+  var el = document.getElementById('knowledgeList');
   if(!items.length){
-    el.innerHTML = '<div class="empty-state">لا توجد عناصر قيد المراجعة</div>';
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-tertiary)">لا توجد عناصر</div>';
     return;
   }
-  el.innerHTML = items.map(renderKnowledgeCard).join('');
-}
-
-async function loadApproved(){
-  var items = await KnowledgeManager.getApprovedItems();
-  var el = document.getElementById('approvedList');
-  if(!items.length){
-    el.innerHTML = '<div class="empty-state">لا توجد معرفة معتمدة بعد</div>';
-    return;
-  }
-  el.innerHTML = items.map(renderKnowledgeCard).join('');
-}
-
-async function loadStats(){
-  var stats = await KnowledgeManager.getStats();
-  document.getElementById('statApproved').textContent = stats.approved;
-  document.getElementById('statPending').textContent = stats.pending;
-  document.getElementById('statUsage').textContent = stats.totalUseCount;
-  document.getElementById('statConfidence').textContent = Math.round(stats.avgConfidence * 100) + '%';
   
-  var topicHtml = '<h3 style="margin-bottom:12px">التوزيع حسب الموضوع</h3>';
-  var topics = Object.keys(stats.topics);
-  if(topics.length){
-    topicHtml += '<div class="stats-grid">';
-    topics.forEach(function(t){
-      topicHtml += '<div class="stat-card"><div class="stat-num">' + stats.topics[t] + '</div><div class="stat-label">' + esc(t) + '</div></div>';
-    });
-    topicHtml += '</div>';
-  }
-  document.getElementById('topicStats').innerHTML = topicHtml;
-}
-
-function renderKnowledgeCard(item){
-  var confClass = item.confidence >= 0.8 ? 'high' : item.confidence >= 0.5 ? 'medium' : 'low';
-  var statusClass = item.status || 'pending';
-  var statusLabel = {pending:'قيد المراجعة', approved:'معتمدة', rejected:'مرفوضة'}[statusClass] || statusClass;
-  
-  var html = '<div class="knowledge-card">';
-  html += '<div class="kc-header">';
-  html += '<div class="kc-title">' + esc(item.lawTitle || 'معرفة قانونية') + '</div>';
-  html += '<div class="kc-badges">';
-  html += '<span class="kc-badge ' + confClass + '">ثقة: ' + Math.round((item.confidence || 0) * 100) + '%</span>';
-  html += '<span class="kc-badge ' + statusClass + '">' + statusLabel + '</span>';
-  html += '</div></div>';
-  
-  html += '<div class="kc-body">';
-  if(item.query){
-    html += '<div class="kc-field"><div class="kc-label">السؤال الأصلي</div><div class="kc-value">' + esc(item.query) + '</div></div>';
-  }
-  if(item.articleNumber){
-    html += '<div class="kc-field"><div class="kc-label">رقم المادة</div><div class="kc-value">' + esc(item.articleNumber) + '</div></div>';
-  }
-  if(item.articleText){
-    html += '<div class="kc-field"><div class="kc-label">نص المادة</div><div class="kc-value">' + esc(item.articleText).slice(0, 300) + '</div></div>';
-  }
-  if(item.source){
-    html += '<div class="kc-field"><div class="kc-label">المصدر</div><div class="kc-value">' + esc(item.source) + '</div></div>';
-  }
-  if(item.year){
-    html += '<div class="kc-field"><div class="kc-label">السنة</div><div class="kc-value">' + esc(String(item.year)) + '</div></div>';
-  }
-  
-  // Confidence bar
-  var confPct = Math.round((item.confidence || 0) * 100);
-  html += '<div class="confidence-bar"><div class="confidence-fill ' + confClass + '" style="width:' + confPct + '%"></div></div>';
-  
-  // Issues
-  if(item.verificationIssues && item.verificationIssues.length){
-    html += '<div class="kc-issues"><div class="kc-issues-title">⚠️ ملاحظات التحقق</div>';
-    item.verificationIssues.forEach(function(issue){
-      html += '<div class="kc-issue">• ' + esc(issue) + '</div>';
-    });
+  el.innerHTML = items.map(function(item){
+    var confClass = item.confidence >= 0.8 ? 'high' : item.confidence >= 0.5 ? 'medium' : 'low';
+    var html = '<div class="k-card">';
+    html += '<div class="k-card-header"><div class="k-card-title">'+esc(item.lawTitle||'معرفة قانونية')+'</div>';
+    html += '<div class="k-card-badges"><span class="k-badge '+confClass+'">ثقة: '+Math.round((item.confidence||0)*100)+'%</span></div></div>';
+    html += '<div class="k-card-body">';
+    if(item.articleNumber) html += '<div class="k-field"><div class="k-label">رقم المادة</div><div class="k-value">'+esc(item.articleNumber)+'</div></div>';
+    if(item.articleText) html += '<div class="k-field"><div class="k-label">النص</div><div class="k-value">'+esc(item.articleText).slice(0,200)+'</div></div>';
+    if(item.source) html += '<div class="k-field"><div class="k-label">المصدر</div><div class="k-value">'+esc(item.source)+'</div></div>';
+    html += '<div class="conf-bar"><div class="conf-fill '+confClass+'" style="width:'+Math.round((item.confidence||0)*100)+'%"></div></div>';
     html += '</div>';
+    if(type === 'pending'){
+      html += '<div class="k-actions"><button class="k-btn approve" onclick="approveItem('+item.id+')">✅ اعتماد</button><button class="k-btn reject" onclick="rejectItem('+item.id+')">❌ رفض</button></div>';
+    }
+    html += '</div>';
+    return html;
+  }).join('');
+}
+
+async function approveItem(id){
+  await KnowledgeManager.approveKnowledge(id);
+  AdminEngine.logAudit('approve_knowledge', {id: id});
+  loadKnowledgeList('pending');
+  loadPendingBadge();
+}
+
+async function rejectItem(id){
+  var reason = prompt('سبب الرفض:');
+  await KnowledgeManager.rejectKnowledge(id, reason);
+  AdminEngine.logAudit('reject_knowledge', {id: id, reason: reason});
+  loadKnowledgeList('pending');
+  loadPendingBadge();
+}
+
+async function loadPendingBadge(){
+  try {
+    var pending = await KnowledgeManager.getPendingItems();
+    var badge = document.getElementById('pendingBadge');
+    if(badge) badge.textContent = pending.length || '';
+  } catch(e){}
+}
+
+/* ===== File Upload ===== */
+var uploadedData = null;
+
+function handleFileSelect(e){
+  var file = e.target.files[0];
+  if(!file) return;
+  
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    var content = ev.target.result;
+    var ext = file.name.split('.').pop().toLowerCase();
+    
+    if(ext === 'json'){
+      var parsed = AdminEngine.parseJSONFile(content);
+      showFilePreview(file.name, parsed);
+    } else if(ext === 'txt' || ext === 'csv'){
+      var parsed = AdminEngine.parseTextFile(content);
+      showFilePreview(file.name, parsed);
+    } else {
+      document.getElementById('filePreview').innerHTML = '<div class="preview-card"><div class="preview-title">⚠️ نوع ملف غير مدعوم حالياً</div><p style="font-size:13px;color:var(--text-secondary)">يدعم حالياً: TXT, JSON, CSV. دعم PDF و Word قيد التطوير.</p></div>';
+    }
+  };
+  reader.readAsText(file);
+}
+
+function showFilePreview(filename, parsed){
+  uploadedData = parsed;
+  var el = document.getElementById('filePreview');
+  
+  if(parsed.format === 'error'){
+    el.innerHTML = '<div class="preview-card"><div class="preview-title">❌ خطأ في قراءة الملف</div><p>'+esc(parsed.error)+'</p></div>';
+    return;
   }
+  
+  var html = '<div class="preview-card">';
+  html += '<div class="preview-title">📋 معاينة: '+esc(filename)+'</div>';
+  html += '<div class="preview-stats">';
+  
+  if(parsed.format === 'database'){
+    var lawCount = Object.values(parsed.data.laws||{}).reduce(function(s,a){return s+a.length;},0);
+    html += '<div class="preview-stat">قوانين: <strong>'+lawCount+'</strong></div>';
+  } else if(parsed.articles){
+    html += '<div class="preview-stat">مواد: <strong>'+parsed.articles.length+'</strong></div>';
+    if(parsed.lawTitle) html += '<div class="preview-stat">القانون: <strong>'+esc(parsed.lawTitle)+'</strong></div>';
+    if(parsed.section) html += '<div class="preview-stat">القسم: <strong>'+esc(parsed.section)+'</strong></div>';
+  } else if(parsed.lawTitle){
+    html += '<div class="preview-stat">القانون: <strong>'+esc(parsed.lawTitle)+'</strong></div>';
+  }
+  
+  html += '<div class="preview-stat">الثقة: <strong>'+Math.round((parsed.confidence||0)*100)+'%</strong></div>';
   html += '</div>';
   
-  // Actions
-  html += '<div class="kc-actions">';
-  if(item.status === 'pending' || item.status === undefined){
-    html += '<button class="kc-btn approve" onclick="doApprove(' + item.id + ')">✅ اعتماد</button>';
-    html += '<button class="kc-btn reject" onclick="doReject(' + item.id + ')">❌ رفض</button>';
+  // Show first few articles
+  var arts = parsed.articles || [];
+  if(arts.length){
+    html += '<div class="preview-articles">';
+    arts.slice(0,10).forEach(function(a){
+      html += '<div class="preview-article"><strong>مادة '+esc(a.number)+'</strong>: '+esc((a.text||'').slice(0,150))+'</div>';
+    });
+    if(arts.length > 10) html += '<div class="preview-article" style="color:var(--text-tertiary)">... و'+(arts.length-10)+' مادة أخرى</div>';
+    html += '</div>';
   }
-  if(item.status === 'approved'){
-    html += '<span style="font-size:12px;color:var(--text-tertiary)">استُخدمت ' + (item.useCount || 0) + ' مرة</span>';
-  }
-  html += '</div></div>';
   
-  return html;
+  html += '</div>';
+  el.innerHTML = html;
+  document.getElementById('fileActions').style.display = 'block';
 }
 
-async function doApprove(id){
-  await KnowledgeManager.approveKnowledge(id);
-  loadPending();
+function commitFileData(){
+  if(!uploadedData) return;
+  
+  if(uploadedData.articles){
+    // Add each article as knowledge
+    var count = 0;
+    uploadedData.articles.forEach(function(art){
+      KnowledgeManager.addKnowledge({
+        query: 'رفع ملف: ' + (uploadedData.lawTitle || ''),
+        lawTitle: uploadedData.lawTitle || 'قانون مرفوع',
+        articleNumber: art.number,
+        articleText: art.text,
+        section: uploadedData.section || '',
+        source: 'رفع ملف من لوحة الإدارة',
+        status: 'active'
+      });
+      count++;
+    });
+    AdminEngine.logAudit('upload_file', {articles: count, law: uploadedData.lawTitle});
+    alert('تمت إضافة '+count+' مادة قانونية');
+  }
+  
+  clearFileUpload();
+  loadPendingBadge();
 }
 
-async function doReject(id){
-  var reason = prompt('سبب الرفض (اختياري):');
-  await KnowledgeManager.rejectKnowledge(id, reason);
-  loadPending();
+function clearFileUpload(){
+  uploadedData = null;
+  document.getElementById('filePreview').innerHTML = '';
+  document.getElementById('fileActions').style.display = 'none';
+  document.getElementById('fileInput').value = '';
 }
 
-async function addManualKnowledge(){
-  var data = {
-    query: 'إضافة يدوية',
-    lawTitle: document.getElementById('addLawTitle').value,
-    articleNumber: document.getElementById('addArticleNumber').value,
-    articleText: document.getElementById('addArticleText').value,
-    section: document.getElementById('addSection').value,
-    source: document.getElementById('addSource').value,
-    year: document.getElementById('addYear').value,
-    lawNumber: document.getElementById('addLawNumber').value,
-    status: 'active'
+// Drag and drop
+var uploadZone = document.getElementById('uploadZone');
+if(uploadZone){
+  uploadZone.addEventListener('dragover', function(e){ e.preventDefault(); this.classList.add('dragover'); });
+  uploadZone.addEventListener('dragleave', function(){ this.classList.remove('dragover'); });
+  uploadZone.addEventListener('drop', function(e){
+    e.preventDefault();
+    this.classList.remove('dragover');
+    if(e.dataTransfer.files.length){
+      document.getElementById('fileInput').files = e.dataTransfer.files;
+      handleFileSelect({target:{files:e.dataTransfer.files}});
+    }
+  });
+}
+
+/* ===== AI Settings ===== */
+function loadAISettings(){
+  var s = AdminEngine.getSettings();
+  document.getElementById('setAdvisorName').value = s.advisorName;
+  document.getElementById('setPersonality').value = s.advisorPersonality;
+  document.getElementById('setStyle').value = s.responseStyle;
+  document.getElementById('setConservatism').value = s.legalConservatism;
+  document.getElementById('setDetail').value = s.detailLevel;
+  document.getElementById('setPriorityLaws').value = (s.priorityLaws||[]).join('\n');
+  document.getElementById('setTrustedSources').value = (s.trustedSources||[]).join('\n');
+  document.getElementById('setShowConfidence').checked = s.showConfidence;
+  document.getElementById('setShowSources').checked = s.showSources;
+}
+
+function saveAISettings(){
+  var settings = {
+    advisorName: document.getElementById('setAdvisorName').value,
+    advisorPersonality: document.getElementById('setPersonality').value,
+    responseStyle: document.getElementById('setStyle').value,
+    legalConservatism: document.getElementById('setConservatism').value,
+    detailLevel: document.getElementById('setDetail').value,
+    priorityLaws: document.getElementById('setPriorityLaws').value.split('\n').filter(Boolean),
+    trustedSources: document.getElementById('setTrustedSources').value.split('\n').filter(Boolean),
+    showConfidence: document.getElementById('setShowConfidence').checked,
+    showSources: document.getElementById('setShowSources').checked
   };
+  AdminEngine.saveSettings(settings);
+  AdminEngine.logAudit('save_settings', settings);
+  alert('تم حفظ الإعدادات بنجاح');
+}
+
+/* ===== Improvements ===== */
+function loadImprovements(){
+  var suggestions = AdminEngine.getImprovementSuggestions();
+  var el = document.getElementById('improvementList');
   
-  if(!data.lawTitle || !data.articleText){
-    alert('يرجى ملء الحقول المطلوبة (اسم القانون ونص المادة)');
+  if(!suggestions.length){
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-tertiary)">لا توجد اقتراحات حالياً</div>';
     return;
   }
   
-  var entry = await KnowledgeManager.addKnowledge(data);
-  if(entry.status === 'approved'){
-    alert('تمت الإضافة والاعتماد بنجاح (ثقة: ' + Math.round(entry.confidence * 100) + '%)');
-  } else {
-    alert('تمت الإضافة قيد المراجعة (ثقة: ' + Math.round(entry.confidence * 100) + '%)');
-  }
-  
-  // Clear form
-  document.getElementById('addLawTitle').value = '';
-  document.getElementById('addArticleNumber').value = '';
-  document.getElementById('addArticleText').value = '';
-  document.getElementById('addSource').value = '';
-  document.getElementById('addYear').value = '';
-  document.getElementById('addLawNumber').value = '';
+  el.innerHTML = suggestions.map(function(s){
+    var html = '<div class="suggestion-card">';
+    html += '<div class="suggestion-title">';
+    var icons = {'missing_knowledge':'🔴','popular_topics':'📊','user_vocabulary':'💬'};
+    html += (icons[s.type]||'💡')+' '+esc(s.title);
+    html += '</div>';
+    html += '<div class="suggestion-desc">'+esc(s.description)+'</div>';
+    html += '<div class="suggestion-items">';
+    s.items.slice(0,8).forEach(function(item){
+      var label = item.query || item.topic || item.word || '';
+      html += '<div class="suggestion-item">'+esc(label)+(item.count?' ('+item.count+')':'')+'</div>';
+    });
+    html += '</div>';
+    html += '<div class="suggestion-action">→ '+esc(s.action)+'</div>';
+    html += '</div>';
+    return html;
+  }).join('');
 }
 
+/* ===== Audit Log ===== */
+function loadAuditLog(){
+  var log = AdminEngine.getAuditLog().reverse().slice(0,50);
+  var el = document.getElementById('auditTable');
+  var html = '<tr><th>الوقت</th><th>المستخدم</th><th>العملية</th><th>التفاصيل</th></tr>';
+  log.forEach(function(entry){
+    var time = new Date(entry.ts).toLocaleString('ar');
+    var details = JSON.stringify(entry.details||{}).slice(0,80);
+    html += '<tr><td>'+time+'</td><td>'+esc(entry.user)+'</td><td>'+esc(entry.action)+'</td><td>'+esc(details)+'</td></tr>';
+  });
+  el.innerHTML = html;
+}
+
+/* ===== Helpers ===== */
 function esc(s){ return String(s||'').replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]; }); }
 
-// Init
-loadPending();
+/* ===== Init ===== */
+checkAuth();
+
+// Enter key for login
+document.getElementById('loginPass').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') doLogin();
+});
 </script>
 </body>
 </html>
