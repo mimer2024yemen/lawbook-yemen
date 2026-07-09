@@ -251,12 +251,13 @@
   }
 
   /* ===== Search ===== */
-  function search(index, query, limit){
+  function search(index, query, limit, intent){
     limit = limit || 12;
     var qTokens = tokenize(query);
     if(!qTokens.length) return [];
     var expTokens = expandQuery(qTokens);
     var docs = index.docs, dfMap = index.dfMap, avgDl = index.avgDl, N = index.N;
+    var intentSection = getIntentSection(intent);
     var results = [];
 
     for(var i = 0; i < docs.length; i++){
@@ -285,6 +286,9 @@
       /* Section relevance bonus */
       var sectionBonus = getSectionBonus(qNorm, doc.section, doc.fullText);
       s4 += sectionBonus;
+      /* Intent-based section boost */
+      if(intentSection && doc.section === intentSection) s4 += 30;
+      if(intentSection && doc.section !== intentSection && doc.type === 'article') s4 -= 15;
       /* Cap body influence: title signals should dominate */
       var bodyScore = s1 + s2 + s3;
       if(s4 > 30) bodyScore = Math.min(bodyScore, s4 * 0.5);
@@ -298,16 +302,34 @@
       var k = (results[i].doc.lawSlug||'')+':'+(results[i].doc.articleNumber||'');
       if(!seen[k]){ seen[k]=true; deduped.push(results[i]); }
     }
-    return deduped;
+    /* Filter out obviously irrelevant results */
+    return filterRelevant(deduped, qTokens);
+  }
+
+  function filterRelevant(results, qTokens){
+    if(results.length <= 2) return results;
+    var filtered = [];
+    for(var i = 0; i < results.length; i++){
+      var doc = results[i].doc;
+      var titleNorm = norm(doc.title || '');
+      var textNorm = norm(doc.text || '');
+      var matched = 0;
+      for(var t = 0; t < qTokens.length; t++){
+        if(titleNorm.indexOf(qTokens[t]) !== -1 || textNorm.indexOf(qTokens[t]) !== -1) matched++;
+      }
+      /* Keep if at least one query token matches, or score is very high */
+      if(matched > 0 || results[i].score > 50) filtered.push(results[i]);
+    }
+    return filtered.length > 0 ? filtered : results.slice(0, 3);
   }
 
   /* ===== Intent Detection ===== */
   var INTENTS = {
-    'divorce':/طلاق|خلع|فسخ\s+نكاح|تفويض|بائن|رجعي|مطلق/,
+    'divorce':/طلاق|طلق|خلع|فسخ\s+نكاح|تفويض|بائن|رجعي|مطلق|متزوج/,
     'maintenance':/نفقة|نفقات|مؤونه|صيغه|نفقه/,
     'custody':/حضانة|كضانه|رعايه|حاضن/,
     'inheritance':/ميراث|ارث|ترکه|فريضه|عصبه|مورث|وارث/,
-    'sale':/بيع|شراء|مبايعه|تمليك|مشتري|بائع/,
+    'sale':/بيع|شراء|اشتريت|مبايعه|تمليك|مشتري|بائع|سلعه|مرتجع|استرجاع/,
     'rental':/ايجار|استيجار|مؤجر|مستأجر|موجر|اجره/,
     'theft':/سرقة|اختلاس|نهب|سطو|سارق|مسروق/,
     'murder':/قتل|جنايه|قاتل|قتيل|نفس/,
@@ -326,6 +348,12 @@
   };
 
   function detectIntent(q){
+    /* Handle compound queries: prioritize the ACTION over the context */
+    if(/سرق|سرقة|اختلاس|نهب/.test(q)) return 'theft';
+    if(/قتل|جنايه|قاتل/.test(q)) return 'murder';
+    if(/طلاق|طلق|خلع|فسخ/.test(q)) return 'divorce';
+    if(/اشتريت|اشتري|مرتجع|استرجاع|سلعه/.test(q)) return 'sale';
+    /* Then check single-intent patterns */
     for(var k in INTENTS){ if(INTENTS[k].test(q)) return k; }
     if(/هل\s/.test(q)) return 'yesno';
     if(/ما\s+(حكم|عقوبه|نص|قانون)/.test(q)) return 'what';
@@ -363,6 +391,19 @@
       if(fNorm.indexOf('ايجار') !== -1 || fNorm.indexOf('مؤجر') !== -1) bonus += 15;
     }
     return bonus;
+  }
+
+  /* ===== Intent → Section Mapping ===== */
+  function getIntentSection(intent){
+    var map = {
+      'divorce':'personal-status', 'maintenance':'personal-status', 'custody':'personal-status',
+      'inheritance':'personal-status', 'shufa':'personal-status',
+      'theft':'criminal', 'murder':'criminal', 'prison':'criminal', 'penalty':'criminal',
+      'labor':'labor',
+      'company':'commercial', 'check':'commercial',
+      'filing':'litigation-procedures', 'appeal':'litigation-procedures', 'court':'litigation-procedures'
+    };
+    return map[intent] || '';
   }
 
   global.LegalRAGv3 = {buildIndex:buildIndex, search:search, detectIntent:detectIntent, isFollowUp:isFollowUp, norm:norm, tokenize:tokenize, expandQuery:expandQuery};
