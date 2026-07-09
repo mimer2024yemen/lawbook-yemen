@@ -13,6 +13,8 @@ var STATIC_ASSETS = [
   '/legal-rag-v3.js',
   '/legal-response.js',
   '/data-loader.js',
+  '/knowledge-manager.js',
+  '/admin.html',
   '/advisor.html',
   '/laws.html',
   '/contracts.html',

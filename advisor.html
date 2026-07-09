@@ -184,6 +184,7 @@ body{font-family:'Segoe UI',Tahoma,'Noto Sans Arabic',Arial,sans-serif;backgroun
       </div>
       <div class="topbar-actions">
         <button class="topbar-btn" onclick="clearCurrentChat()">🗑️ مسح</button>
+      <a href="admin.html" class="topbar-btn">⚙️ الإدارة</a>
       </div>
     </div>
 
@@ -228,6 +229,7 @@ body{font-family:'Segoe UI',Tahoma,'Noto Sans Arabic',Arial,sans-serif;backgroun
 
 <script src="search-engine.js"></script>
 <script src="legal-rag-v3.js"></script>
+<script src="knowledge-manager.js"></script>
 <script src="legal-response.js"></script>
 <script>
 /* ===== State ===== */
@@ -339,12 +341,57 @@ function send(){
   }, 200);
 }
 
-function processAndRespond(query, typingId, chat){
+async function processAndRespond(query, typingId, chat){
   var intent = LegalRAGv3.detectIntent(query);
-  var intent = LegalRAGv3.detectIntent(query);
-    var results = LegalRAGv3.search(ragIndex, query, 12, intent);
+  var results = LegalRAGv3.search(ragIndex, query, 12, intent);
+
+  /* Check knowledge base if RAG results are weak */
+  var knowledgeResults = [];
+  try {
+    knowledgeResults = await KnowledgeManager.searchKnowledge(query, 3);
+  } catch(e){}
+
+  /* Merge knowledge results with RAG results */
+  if(knowledgeResults.length && (!results.length || results[0].score < 30)){
+    for(var k = 0; k < knowledgeResults.length; k++){
+      var kr = knowledgeResults[k];
+      results.unshift({
+        doc: {
+          type: 'knowledge',
+          title: (kr.articleNumber ? 'مادة (' + kr.articleNumber + ') — ' : '') + (kr.lawTitle || ''),
+          text: kr.articleText || '',
+          section: kr.section || '',
+          url: '',
+          lawTitle: kr.lawTitle || '',
+          articleNumber: kr.articleNumber || ''
+        },
+        score: 100 * (kr.confidence || 0.5)
+      });
+      /* Record usage */
+      if(kr.id) KnowledgeManager.recordUsage(kr.id);
+    }
+  }
+
   var responseParts = LegalResponse.generate(query, results, intent);
   var markdown = LegalResponse.toMarkdown(responseParts);
+
+  /* If low confidence, suggest knowledge submission */
+  var hasHighConfidence = results.length && results[0].score > 30;
+  if(!hasHighConfidence && !knowledgeResults.length){
+    markdown += '\n\n---\n\n';
+    markdown += '> 📝 **لم أجد نصاً قانونياً كافياً في قاعدة البيانات.**\n>';
+    markdown += '> \n> إذا كنت تعرف القانون أو المادة المتعلقة بهذا السؤال، يمكنك إضافتها من خلال ';
+    markdown += '[لوحة الإدارة](admin.html) للمراجعة والاعتماد.\n';
+
+    /* Auto-save as pending knowledge */
+    try {
+      await KnowledgeManager.addKnowledge({
+        query: query,
+        topic: intent,
+        source: 'سؤال مستخدم — يحتاج مراجعة'
+      });
+    } catch(e){}
+  }
 
   /* Remove typing indicator */
   var typingEl = document.getElementById(typingId);
